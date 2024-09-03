@@ -1,5 +1,12 @@
 
 
+## [0.1.1-rc.1](https://github.com/cnumr/EcoindexApp/compare/0.1.1-rc.0...0.1.1-rc.1) (2024-09-03)
+
+
+### Bug Fixes
+
+* workflow listener on tag ([3821532](https://github.com/cnumr/EcoindexApp/commit/3821532bf60e8fce1344e3455bac8e22b7d47c39))
+
 ## 0.1.1-rc.0 (2024-09-03)
 
 
