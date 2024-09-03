@@ -1,5 +1,12 @@
 
 
+## [0.1.1-rc.4](https://github.com/cnumr/EcoindexApp/compare/0.1.1-rc.3...0.1.1-rc.4) (2024-09-03)
+
+
+### Bug Fixes
+
+* error tag in release upload ([72cbd94](https://github.com/cnumr/EcoindexApp/commit/72cbd94561f04dac4d87618e7403143b67647ba7))
+
 ## [0.1.1-rc.3](https://github.com/cnumr/EcoindexApp/compare/0.1.1-rc.2...0.1.1-rc.3) (2024-09-03)
 
 
