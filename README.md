@@ -2,6 +2,8 @@
 
 [![Release Electron app](https://github.com/cnumr/EcoindexApp/actions/workflows/release.yml/badge.svg)](https://github.com/cnumr/EcoindexApp/actions/workflows/release.yml)
 
+[Téléchargement de l'application](https://github.com/cnumr/EcoindexApp/releases/latest)
+
 ## Informations
 
 Cette application de bureau vous permet d'effectuer
@@ -16,6 +18,7 @@ econindex.fr
 , mais aussi d'avoir les mesures de
 <strong>lighthouse</strong>, dans un seul et même
 rapport, sans limitation. 🎉
+
 </p>
 <h2>Informations clés</h2>
 <p>
