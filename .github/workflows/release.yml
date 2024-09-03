@@ -111,7 +111,7 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                   name: Release Electron-app ${{ steps.info.outputs.version }}
-                  tag_name: electron-v${{ steps.info.outputs.version }}
+                  tag_name: ${{ steps.info.outputs.version }}
                   files: |
                       Release.txt
                       out/**/*.deb
