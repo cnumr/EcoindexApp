@@ -64,7 +64,7 @@ const config: ForgeConfig = {
             {
                 options: {
                     homepage:
-                        'https://github.com/cnumr/lighthouse-plugin-ecoindex',
+                        'https://github.com/cnumr/EcoindexApp',
                 },
             },
             ['linux']
@@ -102,7 +102,7 @@ const config: ForgeConfig = {
                     categories: ['Utility'],
                     maintainer: 'Renaud Héluin',
                     homepage:
-                        'https://github.com/cnumr/lighthouse-plugin-ecoindex',
+                        'https://github.com/cnumr/EcoindexApp',
                 },
             },
             ['linux']

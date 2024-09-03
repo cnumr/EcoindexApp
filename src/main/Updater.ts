@@ -66,12 +66,12 @@ class Updater {
             )
         }
 
-        // https://github.com/cnumr/lighthouse-plugin-ecoindex/releases.atom
+        // https://github.com/cnumr/EcoindexApp/releases.atom
         updaterLog.debug(`IS_PROD`, IS_PROD)
         if (IS_PROD) {
             const _arch = os.arch()
-            const feedUrl = `https://update.electronjs.org/cnumr/lighthouse-plugin-ecoindex/${process.platform}-${_arch}/${version}`
-            // const feedUrl = `https://update.electronjs.org/cnumr/lighthouse-plugin-ecoindex/${process.platform}-${os.arch()}/${app.getVersion()}`
+            const feedUrl = `https://update.electronjs.org/cnumr/EcoindexApp/${process.platform}-${_arch}/${version}`
+            // const feedUrl = `https://update.electronjs.org/cnumr/EcoindexApp/${process.platform}-${os.arch()}/${app.getVersion()}`
             const userAgent = format(
                 '%s/%s (%s: %s)',
                 pkg.productName,
