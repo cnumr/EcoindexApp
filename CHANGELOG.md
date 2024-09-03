@@ -1,3 +1,17 @@
+
+
+## 0.1.1-rc.0 (2024-09-03)
+
+
+### Bug Fixes
+
+* change repo settings in `package.json` ([6429b43](https://github.com/cnumr/EcoindexApp/commit/6429b43deccf40fd8a63604a65971f8ded008050))
+
+
+### Features
+
+* migrate app on his own repository ([e9ebd28](https://github.com/cnumr/EcoindexApp/commit/e9ebd28db747c214fe4f4b543adfeb3384c0b8a8))
+
 > **Moving repository and restart tag version.**
 
 ## [0.1.0](https://github.com/cnumr/lighthouse-plugin-ecoindex/compare/electron-v1.3.41...electron-v0.1.0) (2024-09-03)
