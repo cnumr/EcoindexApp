@@ -1,5 +1,12 @@
 
 
+## [0.1.1](https://github.com/cnumr/EcoindexApp/compare/0.1.1-rc.4...0.1.1) (2024-09-03)
+
+
+### Features
+
+* better logger, enable Auto update [#4](https://github.com/cnumr/EcoindexApp/issues/4) ([692ec85](https://github.com/cnumr/EcoindexApp/commit/692ec8500d69e2ae88570d25bbbccb6e00b4f6e0))
+
 ## [0.1.1-rc.4](https://github.com/cnumr/EcoindexApp/compare/0.1.1-rc.3...0.1.1-rc.4) (2024-09-03)
 
 
