@@ -2,63 +2,87 @@
 
 [![Release Electron app](https://github.com/cnumr/EcoindexApp/actions/workflows/release.yml/badge.svg)](https://github.com/cnumr/EcoindexApp/actions/workflows/release.yml)
 
+## Informations
+
+Cette application de bureau vous permet d'effectuer
+mesures comme sur le site
+<a
+                                href="https://econindex.fr/"
+                                target="_blank"
+                                className="underline"
+                            >
+econindex.fr
+</a>
+, mais aussi d'avoir les mesures de
+<strong>lighthouse</strong>, dans un seul et même
+rapport, sans limitation. 🎉
+</p>
+<h2>Informations clés</h2>
+<p>
+Vous pouvez soit mesurer
+<strong>une série d'URLs</strong>, ou des
+<strong>parcours de visite entiers</strong>.
+<br />
+Cette version d'ecoindex fournit des mesures stables
+et cohérentes comme avec
+<a
+                                href="https://econindex.fr/"
+                                target="_blank"
+                                className="underline"
+                            >
+econindex.fr
+</a>
+ou
+<code
+                                title="outil en python qui s'utilise en ligne de commande, dans le terminal."
+                                className="border-b border-dashed border-primary"
+                            >
+ecoindex-cli
+</code>
+.<br />
+La gestion du cache du navigateur garantit des
+mesures <strong>réalistes</strong>
+</p>
+<p>Avec cette application, vous obtiendrez :</p>
+<ul>
+<li>
+<strong>Mesures simples :</strong>
+<ul>
+<li>
+Un rapport HTML Lighthouse avec
+l'écoindex et ses bonnes pratiques.
+</li>
+</ul>
+</li>
+<li>
+<strong>Mesures de parcours :</strong>
+<ul>
+<li>
+Les rapports de Lighthouse en HTML ou
+JSON avec l'ecoindex, ses bonnes
+pratiques et la génération de la
+déclaration environnementale,
+pré-remplie.
+</li>
+<li>
+Un fichier de configuration, enregistré
+dans le dossier des mesures, vous
+permettra de relancer les mesures autant
+de fois que vous le souhaitez, et
+d'obtenir ainsi une tendance de la
+performance environnementale de ce site
+/ de cette unité fonctionnelle.
+</li>
+</ul>
+</li>
+</ul>
+
 ## Documentations
 
 https://cnumr.github.io/lighthouse-plugin-ecoindex/
 
-## Informations
+## DEV Informations
 
 -   ElectronJS / Electron Forge with `template=webpack-typescript`
 -   React
 -   TailwindCSS
-
-## TODO
-
-see https://github.com/cnumr/EcoindexApp/issues
-
--   [x] Set icon
--   [x] Build on OS
-    -   [x] Mac (sign with Apple Dev)
-    -   [x] Windows
-    -   [ ] Linux
--   [x] Auto build with CI/CD
--   [x] Translat
--   [x] Create simple mesure
--   [ ] ~~Use path /usr/bin and /usr/bin/which to launch node `/usr/bin/which node` and npm `/usr/bin/which npm` action~~
--   [x] Fix not showing buttons to install plugin
-    -   [x] handler for install plugin
--   [x] Fix not showing buttons to install Node
-    -   [x] handler for install Node
--   [x] Create complex mesure
-    -   [x] Save JSON on disk
-        -   [x] Fix extra-header not JSON
-    -   [x] Read/Reload JSON from disk (doing)
-    -   [x] Use JSON to display data
-    -   [x] Launch mesure from JSON (save before)
-
-# Help links
-
--   https://github.com/electron/forge/issues/3558#issuecomment-2163993613
--   https://www.electronforge.io/guides/code-signing/code-signing-macos
--   https://support.apple.com/en-us/102654
--   https://help.apple.com/xcode/mac/current/#/dev3a05256b8
--   https://felixrieseberg.com/codesigning-electron-apps-in-ci/
--   https://github.com/electron/osx-sign
--   https://docs.github.com/en/actions/deployment/deploying-xcode-applications/installing-an-apple-certificate-on-macos-runners-for-xcode-development
--   https://github.com/electron/forge/issues/3315
--   https://github.com/sneljo1/auryo/blob/5180622e43d236feaebd00013f3d78e93f02cac1/internals/scripts/add-osx-cert.sh
-
-# osx package win32
-
-`brew install mono`
-`brew install xquartz`
-`brew install --cask --no-quarantine wine-stable`
-
-`export PATH=$PATH:/Library/Frameworks/Mono.framework/Versions/Current/bin/mono`
-`brew install p7zip`
-
-`npm run make -- --platform=win32`
-
-## wine proxy
-
-`chmod  +x wine_proxy/wine`
