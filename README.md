@@ -1,6 +1,10 @@
 # Ecoindex-app
 
-[![Release Electron app](https://github.com/cnumr/lighthouse-plugin-ecoindex/actions/workflows/release.yml/badge.svg)](https://github.com/cnumr/lighthouse-plugin-ecoindex/actions/workflows/release.yml)
+[![Release Electron app](https://github.com/cnumr/EcoindexApp/actions/workflows/release.yml/badge.svg)](https://github.com/cnumr/EcoindexApp/actions/workflows/release.yml)
+
+## Documentations
+
+https://cnumr.github.io/lighthouse-plugin-ecoindex/
 
 ## Informations
 
@@ -10,7 +14,7 @@
 
 ## TODO
 
-see https://github.com/cnumr/lighthouse-plugin-ecoindex/issues
+see https://github.com/cnumr/EcoindexApp/issues
 
 -   [x] Set icon
 -   [x] Build on OS
