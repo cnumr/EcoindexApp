@@ -1,5 +1,13 @@
 
 
+## [0.1.1-rc.2](https://github.com/cnumr/EcoindexApp/compare/0.1.1-rc.1...0.1.1-rc.2) (2024-09-03)
+
+
+### Bug Fixes
+
+* fix build path ([de15c2f](https://github.com/cnumr/EcoindexApp/commit/de15c2f9de2b07b8087bf52414f8ea2a9991a441))
+* fix repository path ([e1d695b](https://github.com/cnumr/EcoindexApp/commit/e1d695b0274a4f0699c596458827ce76ac47ceea))
+
 ## [0.1.1-rc.1](https://github.com/cnumr/EcoindexApp/compare/0.1.1-rc.0...0.1.1-rc.1) (2024-09-03)
 
 
