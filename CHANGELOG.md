@@ -1,5 +1,12 @@
 
 
+## [0.1.1-rc.3](https://github.com/cnumr/EcoindexApp/compare/0.1.1-rc.2...0.1.1-rc.3) (2024-09-03)
+
+
+### Features
+
+* activate enable Auto update [#4](https://github.com/cnumr/EcoindexApp/issues/4) ([f9563dd](https://github.com/cnumr/EcoindexApp/commit/f9563dd19bcede6479a9ad8d2f1e1f6cb01f1b2e))
+
 ## [0.1.1-rc.2](https://github.com/cnumr/EcoindexApp/compare/0.1.1-rc.1...0.1.1-rc.2) (2024-09-03)
 
 
