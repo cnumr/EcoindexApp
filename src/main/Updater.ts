@@ -34,12 +34,12 @@ let IS_PROD = process.env.NODE_ENV === 'production'
 /**
  * IS NOT WORKING BECAUSE OF THE CHOICE TO HAVE `electron-vX.Y.x` AS TAGNAME THAS IS NOT SEMVER COMPLIANT..
  */
-let version = `electron-v${app.getVersion()}`
+let version = `${app.getVersion()}`
 
 // eslint-disable-next-line no-constant-condition
 if (true) {
     IS_PROD = true
-    version = 'electron-v1.3.8'
+    version = '1.3.8'
 }
 
 /**
