@@ -5,8 +5,8 @@
     "private": true,
     "version": "0.1.0",
     "description": "An application to measures the ecological impact of a website with LightHouse and Ecoindex.",
-    "homepage": "https://github.com/cnumr/lighthouse-plugin-ecoindex#readme",
-    "bugs": "https://github.com/cnumr/lighthouse-plugin-ecoindex/issues",
+    "homepage": "https://github.com/cnumr/EcoindexApp#readme",
+    "bugs": "https://github.com/cnumr/EcoindexApp/issues",
     "publisher": "Association Green IT",
     "license": "MIT",
     "author": {
@@ -29,7 +29,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/cnumr/lighthouse-plugin-ecoindex.git"
+        "url": "https://github.com/cnumr/EcoindexApp.git"
     },
     "main": ".webpack/main",
     "scripts": {
