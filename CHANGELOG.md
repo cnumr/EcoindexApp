@@ -1,5 +1,12 @@
 
 
+## [0.1.2](https://github.com/cnumr/EcoindexApp/compare/0.1.1...0.1.2) (2024-09-04)
+
+
+### Features
+
+* externalize hello window content in markdown ([9bcf366](https://github.com/cnumr/EcoindexApp/commit/9bcf366cec147166579ae29e2892ac1ce6455d67))
+
 ## [0.1.1](https://github.com/cnumr/EcoindexApp/compare/0.1.1-rc.4...0.1.1) (2024-09-03)
 
 
