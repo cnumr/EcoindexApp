@@ -201,4 +201,7 @@
     p ul {
         @apply mb-4 ml-8 mt-2 list-disc;
     }
+    .prose code {
+        @apply bg-primary !font-mono !font-normal !text-primary-foreground before:!hidden after:!hidden;
+    }
 }

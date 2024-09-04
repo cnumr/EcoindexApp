@@ -27,6 +27,7 @@ const config: ForgeConfig = {
         icon: path.resolve(__dirname, 'assets', 'app-ico'),
         extraResource: [
             './src/extraResources/scripts',
+            './src/extraResources/md',
             './src/locales',
             './node_modules/puppeteer',
         ],
@@ -63,8 +64,7 @@ const config: ForgeConfig = {
         new MakerRpm(
             {
                 options: {
-                    homepage:
-                        'https://github.com/cnumr/EcoindexApp',
+                    homepage: 'https://github.com/cnumr/EcoindexApp',
                 },
             },
             ['linux']
@@ -101,8 +101,7 @@ const config: ForgeConfig = {
                 options: {
                     categories: ['Utility'],
                     maintainer: 'Renaud Héluin',
-                    homepage:
-                        'https://github.com/cnumr/EcoindexApp',
+                    homepage: 'https://github.com/cnumr/EcoindexApp',
                 },
             },
             ['linux']

@@ -5,6 +5,8 @@ declare module '*.svg' {
 declare module 'src/shared/tailwind-helper' {
     export function cn(...classes: string[]): string
 }
+declare module '*.md'
+
 // declare module '*.css';
 // declare module '*.png';
 // declare module '*.jpg';
