@@ -18,6 +18,7 @@ import { ConsoleApp } from '../components/console'
 import { DarkModeSwitcher } from '../components/dark-mode-switcher'
 import { Footer } from '../components/footer'
 import { Header } from '../components/Header'
+import { InitErrorAlerts } from '../components/initialization-error-alerts'
 import { Input } from '../ui/input'
 import { JsonPanMesure } from '../components/json-pan'
 import { MySkeleton } from '../components/my-skeleton'
@@ -294,16 +295,6 @@ function TheApp() {
         if (filePath !== undefined) {
             setWorkDir(filePath)
         }
-    }
-
-    /**
-     * Handler to open URL of the official Node.js installer.
-     */
-    const installNode = () => {
-        window.open(
-            `https://nodejs.org/en/download/prebuilt-installer`,
-            `_blank`
-        )
     }
 
     /**
@@ -597,148 +588,10 @@ function TheApp() {
             <main className="flex h-screen flex-col justify-between gap-4 p-4">
                 <div className="flex flex-col items-center gap-4">
                     <Header />
-                    {false && (
-                        <div className="flex flex-col text-sm">
-                            <div>appReady: {appReady ? 'true' : 'false'}</div>
-                            <div>
-                                isFirstStart: {isFirstStart ? 'true' : 'false'}
-                            </div>
-                            <div>
-                                isNodeInstalled:{' '}
-                                {isNodeInstalled ? 'true' : 'false'}
-                            </div>
-                            <div>
-                                isLighthouseEcoindexPluginInstalled:{' '}
-                                {isLighthouseEcoindexPluginInstalled
-                                    ? 'true'
-                                    : 'false'}
-                            </div>
-                            <div>
-                                isPuppeteerBrowserInstalled:{' '}
-                                {isPuppeteerBrowserInstalled ? 'true' : 'false'}
-                            </div>
-                            <div>
-                                isNodeVersionOK:{' '}
-                                {isNodeVersionOK ? 'true' : 'false'}
-                            </div>
-                            <div>workDir: {workDir}</div>
-                            <div>homeDir: {homeDir}</div>
-                            <div>
-                                PuppeteerBrowser: {puppeteerBrowserInstalled}
-                            </div>
-                            <div>
-                                userCanWrite: {userCanWrite ? 'true' : 'false'}
-                            </div>
-                        </div>
-                    )}
-                    {!initializing && !appReady && isFirstStart && (
-                        <AlertBox title={t('First launch')} variant="default">
-                            <div className="flex items-center justify-between gap-4">
-                                <span>
-                                    {t(
-                                        `It's the first time you are using the application, you must start the addons installation.`
-                                    )}
-                                </span>
-                                <Button
-                                    variant="default"
-                                    id="bt-install-node"
-                                    onClick={() => launchInitialization(true)}
-                                >
-                                    {t('Install')}
-                                </Button>
-                            </div>
-                        </AlertBox>
-                    )}
-                    {!initializing && !appReady && isNodeInstalled && (
-                        <AlertBox title={t('Error on Node')}>
-                            <div className="flex items-center justify-between gap-4">
-                                <span>
-                                    {t(
-                                        'Node is not installed, install it (you must be admin of your computer)! After installation, restart application.'
-                                    )}
-                                </span>
-                                <Button
-                                    variant="destructive"
-                                    id="bt-install-node"
-                                    onClick={installNode}
-                                >
-                                    {t('Install')}
-                                </Button>
-                            </div>
-                        </AlertBox>
-                    )}
-                    {!initializing && !appReady && isNodeVersionOK && (
-                        <AlertBox title={t('Error on Node Version')}>
-                            <div className="flex items-center justify-between gap-4">
-                                <span>
-                                    {t(
-                                        'Your Node installation is outdated, you must upgrade it to 20 or upper, upgrade it (you must be admin of your computer)! After upgrade, restart application.'
-                                    )}
-                                </span>
-                                <Button
-                                    variant="destructive"
-                                    onClick={installNode}
-                                >
-                                    {t('Upgrade')}
-                                </Button>
-                            </div>
-                        </AlertBox>
-                    )}
-                    {!initializing && !appReady && !userCanWrite && (
-                        <AlertBox title={t('Permissions Error')}>
-                            <div className="flex items-center justify-between gap-4">
-                                <span>
-                                    {t(
-                                        `You must accept and enter your password, when prompted, in order to install the necessary elements.`
-                                    )}
-                                </span>
-                                <Button
-                                    variant="destructive"
-                                    onClick={forceRefresh}
-                                >
-                                    {t('Retry')}
-                                </Button>
-                            </div>
-                        </AlertBox>
-                    )}
-                    {!initializing &&
-                        !appReady &&
-                        !isFirstStart &&
-                        (!isNodeInstalled || !isNodeVersionOK) && (
-                            <AlertBox variant="bug" title={t('Report error')}>
-                                <div className="flex items-center justify-between gap-4">
-                                    <span>
-                                        {t(
-                                            "You have an error but you think it's a bug. Report to the developper by clicking the button (datas are saved to your clipboard) and send theim by mail to "
-                                        )}
-                                        <a
-                                            href="mailto:renaud@greenit.fr"
-                                            className="underline"
-                                        >
-                                            renaud@greenit.fr
-                                        </a>{' '}
-                                        🙏
-                                    </span>
-                                    <SimpleTooltip
-                                        tooltipContent={
-                                            <p>
-                                                {t(
-                                                    'Copy application informations to clipboard.'
-                                                )}
-                                            </p>
-                                        }
-                                    >
-                                        <Button
-                                            id="bt-report"
-                                            variant="default"
-                                            onClick={copyToClipBoard}
-                                        >
-                                            {t('Report')}
-                                        </Button>
-                                    </SimpleTooltip>
-                                </div>
-                            </AlertBox>
-                        )}
+                    <InitErrorAlerts
+                        datasFromHost={datasFromHost}
+                        launchInitialization={launchInitialization}
+                    />
                     {!appReady && <MySkeleton />}
                     {appReady && (
                         <>
