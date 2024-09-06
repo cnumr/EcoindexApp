@@ -1,5 +1,12 @@
 
 
+## [0.1.4](https://github.com/cnumr/EcoindexApp/compare/0.1.3...0.1.4) (2024-09-06)
+
+
+### Bug Fixes
+
+* error update plugin ([7d56ab3](https://github.com/cnumr/EcoindexApp/commit/7d56ab318dfbc07ba51319ab823747752d4ea7a2))
+
 ## [0.1.3](https://github.com/cnumr/EcoindexApp/compare/0.1.2...0.1.3) (2024-09-06)
 
 
