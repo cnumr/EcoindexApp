@@ -338,6 +338,26 @@ export const initialization = async (
                     channels.INITIALIZATION_DATAS,
                     pluginVersion
                 )
+            } else {
+                mainLog.log(`8.3 Plugin installation ...`)
+                const getPluginNormalInstallationReturned =
+                    await initPluginNormalInstallation(event)
+                initializedDatas.initPluginNormalInstallation =
+                    getPluginNormalInstallationReturned.result as boolean
+                mainLog.log(getPluginNormalInstallationReturned)
+                const normalPluginInstallation = new ConfigData(
+                    'plugin_installed'
+                )
+                normalPluginInstallation.result =
+                    initializedDatas.initPluginNormalInstallation
+                normalPluginInstallation.message =
+                    initializedDatas.initPluginNormalInstallation
+                        ? `Plugin installed`
+                        : `Installation plugin failed`
+                getMainWindow().webContents.send(
+                    channels.INITIALIZATION_DATAS,
+                    normalPluginInstallation
+                )
             }
         } else {
             // plugin not installed

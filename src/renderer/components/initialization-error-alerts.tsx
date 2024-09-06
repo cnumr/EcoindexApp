@@ -58,7 +58,6 @@ export const InitErrorAlerts = ({
          */
         window.initialisationAPI.sendConfigDatasToFront(
             (configData: ConfigData) => {
-                frontLog.debug(`sendConfigDatasToFront`, configData)
                 if (configData.error) {
                     frontLog.error(configData)
                     window.alert(
