@@ -1,5 +1,17 @@
 
 
+## [0.1.3](https://github.com/cnumr/EcoindexApp/compare/0.1.2...0.1.3) (2024-09-06)
+
+
+### Bug Fixes
+
+* browser test install nouvelle initialisation de l'application [#2](https://github.com/cnumr/EcoindexApp/issues/2) ([4f06661](https://github.com/cnumr/EcoindexApp/commit/4f0666143df26233aa3f711404d339a332986f5c))
+
+
+### Features
+
+* better errors handler nouvelle initialisation de l'application [#2](https://github.com/cnumr/EcoindexApp/issues/2) ([7facb42](https://github.com/cnumr/EcoindexApp/commit/7facb42dde69d18cb48f4e539c0586d018176216))
+
 ## [0.1.2](https://github.com/cnumr/EcoindexApp/compare/0.1.1...0.1.2) (2024-09-04)
 
 
