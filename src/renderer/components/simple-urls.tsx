@@ -21,7 +21,7 @@ export const SimpleUrlsList: FC<ILayout> = ({
     urlsList = [{ value: '' }],
     visible = false,
     setUrlsList,
-    title = 'Urls to mesure',
+    title,
     isFullWidth = false,
 }) => {
     const { t } = useTranslation()
@@ -78,7 +78,7 @@ export const SimpleUrlsList: FC<ILayout> = ({
                         'text-center': !isFullWidth,
                     })}
                 >
-                    {title}
+                    {t('Urls to mesure') || title}
                 </Tag>
             )}
             <div
