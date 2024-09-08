@@ -153,14 +153,14 @@ function TheApp() {
     /**
      * Increment function to handle the waiting popin.
      */
-    const increment = () => {
+    const increment = (force = false) => {
         const STEPS = 7
         initReloadButton(false)
         loadingScreen = loadingScreen + 1
         setProgress(loadingScreen * (100 / STEPS))
         frontLog.log(`Verify configuration step ${loadingScreen}/${STEPS}`)
         setPopinText(`${t('Loading...')} ${loadingScreen}/${STEPS}`)
-        if (loadingScreen === STEPS) {
+        if (loadingScreen === STEPS || force) {
             initReloadButton(true)
             frontLog.log(`All initialization datas readed! 👀`)
             setDisplayPopin(false)
@@ -490,6 +490,7 @@ function TheApp() {
                         break
                     case ConfigData.APP_READY:
                         setAppReady(configData.result as boolean)
+                        increment(true)
                         break
                     case ConfigData.APP_CAN_NOT_BE_LAUNCHED:
                         frontLog.log(

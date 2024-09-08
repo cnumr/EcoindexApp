@@ -57,6 +57,25 @@ export const initialization = async (
     forceInitialisation = false
 ) => {
     const mainLog = getMainLog().scope('main/initialization')
+    const updatePlugin = async () => {
+        mainLog.log(`8.3 Plugin installation ...`)
+        const getPluginNormalInstallationReturned =
+            await initPluginNormalInstallation(event)
+        initializedDatas.initPluginNormalInstallation =
+            getPluginNormalInstallationReturned.result as boolean
+        mainLog.log(getPluginNormalInstallationReturned)
+        const normalPluginInstallation = new ConfigData('plugin_installed')
+        normalPluginInstallation.result =
+            initializedDatas.initPluginNormalInstallation
+        normalPluginInstallation.message =
+            initializedDatas.initPluginNormalInstallation
+                ? `Plugin installed`
+                : `Installation plugin failed`
+        getMainWindow().webContents.send(
+            channels.INITIALIZATION_DATAS,
+            normalPluginInstallation
+        )
+    }
     mainLog.info(`forceInitialisation`, forceInitialisation)
     const initializedDatas: initializedDatas = {}
     try {
@@ -339,25 +358,7 @@ export const initialization = async (
                     pluginVersion
                 )
             } else {
-                mainLog.log(`8.3 Plugin installation ...`)
-                const getPluginNormalInstallationReturned =
-                    await initPluginNormalInstallation(event)
-                initializedDatas.initPluginNormalInstallation =
-                    getPluginNormalInstallationReturned.result as boolean
-                mainLog.log(getPluginNormalInstallationReturned)
-                const normalPluginInstallation = new ConfigData(
-                    'plugin_installed'
-                )
-                normalPluginInstallation.result =
-                    initializedDatas.initPluginNormalInstallation
-                normalPluginInstallation.message =
-                    initializedDatas.initPluginNormalInstallation
-                        ? `Plugin installed`
-                        : `Installation plugin failed`
-                getMainWindow().webContents.send(
-                    channels.INITIALIZATION_DATAS,
-                    normalPluginInstallation
-                )
+                await updatePlugin()
             }
         } else {
             // plugin not installed
@@ -387,43 +388,8 @@ export const initialization = async (
                 channels.INITIALIZATION_DATAS,
                 normalPluginInstallation
             )
-            // } else {
-            //     mainLog.log(`7.3 Electron CAN'T install plugin ...`)
-            //     mainLog.log(`7.3 Plugin SUDO installation ...`)
-            //     const getPluginSudoInstallationReturned =
-            //         await initPluginSudoInstallation(event)
-            //     initializedDatas.initPluginSudoInstallation =
-            //         getPluginSudoInstallationReturned.result as boolean
-            //     mainLog.log(getPluginSudoInstallationReturned)
-            //     const sudoPluginInstallation = new ConfigData(
-            //         'plugin_installed'
-            //     )
-            //     sudoPluginInstallation.result =
-            //         initializedDatas.initPluginNormalInstallation
-            //     sudoPluginInstallation.message =
-            //         initializedDatas.initPluginNormalInstallation
-            //             ? `Plugin installed`
-            //             : `Installation plugin failed`
-            //     getMainWindow().webContents.send(
-            //         channels.INITIALIZATION_DATAS,
-            //         sudoPluginInstallation
-            //     )
-            // }
             mainLog.log(`8.2 Plugin NOT installed on host ...`)
-            mainLog.log(`8.3 Verify plugin version after install ...`)
-            const getPluginGetLastVersionReturned =
-                await initPluginGetLastVersion(event, `uninstalled`)
-            initializedDatas.initPluginGetLastVersion =
-                getPluginGetLastVersionReturned.result as string
-            mainLog.log(getPluginGetLastVersionReturned)
-            const pluginMessage = `Plugin version installed is ${initializedDatas.initPluginGetLastVersion}`
-            const pluginVersion = new ConfigData('plugin_version')
-            pluginVersion.result = initializedDatas.initPluginGetLastVersion
-            pluginVersion.message = pluginMessage
-            getMainWindow().webContents.send(
-                channels.INITIALIZATION_DATAS,
-                pluginVersion
-            )
+            await updatePlugin()
         }
 
         // #region END
