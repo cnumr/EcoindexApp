@@ -1,5 +1,17 @@
 
 
+## [0.1.5](https://github.com/cnumr/EcoindexApp/compare/0.1.4...0.1.5) (2024-09-08)
+
+
+### Bug Fixes
+
+* fix problems of not ending initialization nouvelle initialisation de l'application [#2](https://github.com/cnumr/EcoindexApp/issues/2) ([eb2e01a](https://github.com/cnumr/EcoindexApp/commit/eb2e01a83beb241a39112c90aa423c72f66b3689))
+
+
+### Features
+
+* **localization:** add a missing translation ([0553520](https://github.com/cnumr/EcoindexApp/commit/0553520f28f15340f40bfa0770f127bd741b4fbc))
+
 ## [0.1.4](https://github.com/cnumr/EcoindexApp/compare/0.1.3...0.1.4) (2024-09-06)
 
 
