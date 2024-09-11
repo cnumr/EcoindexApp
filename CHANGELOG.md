@@ -1,5 +1,12 @@
 
 
+## [0.1.6](https://github.com/cnumr/EcoindexApp/compare/0.1.5...0.1.6) (2024-09-11)
+
+
+### Features
+
+* better browser installation and verification (use plugin code) ([59523b6](https://github.com/cnumr/EcoindexApp/commit/59523b6440e6c36980c2be48e78ca3bab8eec130))
+
 ## [0.1.5](https://github.com/cnumr/EcoindexApp/compare/0.1.4...0.1.5) (2024-09-08)
 
 
