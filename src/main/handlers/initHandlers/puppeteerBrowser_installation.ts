@@ -5,6 +5,7 @@ import { channels } from '../../../shared/constants'
 import { exec } from 'child_process'
 import { getMainLog } from '../../main'
 import { getMainWindow } from '../../memory'
+import { installMandatoryBrowser } from 'lighthouse-plugin-ecoindex/install-browser.cjs'
 
 /**
  * Initialization, Install Puppeteer browsers on host.
@@ -19,7 +20,21 @@ export const initPuppeteerBrowserInstallation = async (
         'main/initialization/initPuppeteerBrowserInstallation'
     )
     const toReturned = new ConfigData('puppeteer_browser_installation')
+    const browserInstalled = await installMandatoryBrowser()
     return new Promise<ConfigData>((resolve) => {
+        if (browserInstalled) {
+            toReturned.result = true
+            toReturned.message = `puppeteer and browsers are installed`
+            getMainWindow().webContents.send(
+                channels.HOST_INFORMATIONS_BACK,
+                toReturned
+            )
+            return resolve(toReturned)
+        } else {
+            toReturned.error = `puppeteer and browsers can't be installed`
+            toReturned.message = `puppeteer and browsers can't be installed`
+            return resolve(toReturned)
+        }
         const cmds = [
             `npm install -g puppeteer --loglevel=error`,
             // `npm install -g puppeteer@21.9.0 --loglevel=error`,

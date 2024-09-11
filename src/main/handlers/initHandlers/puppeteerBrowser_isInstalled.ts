@@ -1,11 +1,10 @@
 import { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
-import { accessSync, constants } from 'node:fs'
 
 import { ConfigData } from '../../../class/ConfigData'
 import { channels } from '../../../shared/constants'
+import { checkIfMandatoryBrowserInstalled } from 'lighthouse-plugin-ecoindex/install-browser.cjs'
 import { getMainLog } from '../../main'
 import { getMainWindow } from '../../memory'
-import puppeteer from 'puppeteer'
 
 /**
  * Initialization, Check if Puppeteer browsers are installed on host.
@@ -23,25 +22,18 @@ export const initPuppeteerBrowserIsInstalled = async (
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     try {
-        const executablePath = puppeteer.executablePath()
-        mainLog.debug(`executablePath`, executablePath)
-        accessSync(executablePath, constants.F_OK)
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const browser = await puppeteer.launch({
-            headless: true,
-            args: [
-                '--disable-gpu',
-                '--disable-dev-shm-usage',
-                '--disable-setuid-sandbox',
-                '--no-sandbox',
-            ],
-        })
-        const puppeterVersion = await (await browser.newPage())
-            .browser()
-            .version()
-        await browser.close()
-        toReturned.result = puppeterVersion
-        toReturned.message = `Puppeteer Browser installed=${puppeterVersion}`
+        const browserInstalled = await checkIfMandatoryBrowserInstalled()
+        if (browserInstalled) {
+            toReturned.result = browserInstalled.buildId
+            toReturned.message = `Puppeteer Browser installed=${browserInstalled.buildId}`
+        } else {
+            mainLog.error(
+                `Error on initPuppeteerBrowserIsInstalled 🚫`,
+                `browserInstalled not founded.`
+            )
+            toReturned.error = `Error on initPuppeteerBrowserIsInstalled 🚫`
+            toReturned.message = `Error on initPuppeteerBrowserIsInstalled 🚫`
+        }
     } catch (error) {
         mainLog.error(`Error on initPuppeteerBrowserIsInstalled 🚫`, error)
         toReturned.error = `Error on initPuppeteerBrowserIsInstalled 🚫`

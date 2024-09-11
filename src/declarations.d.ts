@@ -6,6 +6,7 @@ declare module 'src/shared/tailwind-helper' {
     export function cn(...classes: string[]): string
 }
 declare module '*.md'
+declare module 'lighthouse-plugin-ecoindex/install-browser.cjs'
 
 // declare module '*.css';
 // declare module '*.png';
