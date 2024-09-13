@@ -1,5 +1,13 @@
 
 
+## [0.1.7](https://github.com/cnumr/EcoindexApp/compare/0.1.6...0.1.7) (2024-09-13)
+
+
+### Features
+
+* add creation folder if missing ([5b461e2](https://github.com/cnumr/EcoindexApp/commit/5b461e238a238ed41bc99803bc812b2177b3e611))
+* change delay before check if update avalaible ([55408af](https://github.com/cnumr/EcoindexApp/commit/55408af65ff6c7a721605d8e3e9e41aaa0d38198))
+
 ## [0.1.6](https://github.com/cnumr/EcoindexApp/compare/0.1.5...0.1.6) (2024-09-11)
 
 
