@@ -1,5 +1,5 @@
 import { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
-import { accessSync, constants } from 'node:fs'
+import { accessSync, constants, mkdirSync } from 'node:fs'
 import { getMainWindow, getNpmDir } from '../../memory'
 
 import { ConfigData } from '../../../class/ConfigData'
@@ -37,13 +37,25 @@ export const initPluginCanInstall = (
             )
             return resolve(toReturned)
         } catch (error) {
-            toReturned.result = false
-            toReturned.message = `User CAN'T install in ${returned}`
-            getMainWindow().webContents.send(
-                channels.HOST_INFORMATIONS_BACK,
-                toReturned
-            )
-            return resolve(toReturned)
+            try {
+                mkdirSync(returned)
+                mainLog.info(`NpmDir created at ${returned}`)
+                toReturned.result = true
+                toReturned.message = `User can install (folder created) in ${returned}`
+                getMainWindow().webContents.send(
+                    channels.HOST_INFORMATIONS_BACK,
+                    toReturned
+                )
+                return resolve(toReturned)
+            } catch (error) {
+                toReturned.result = false
+                toReturned.message = `User CAN'T install in ${returned}`
+                getMainWindow().webContents.send(
+                    channels.HOST_INFORMATIONS_BACK,
+                    toReturned
+                )
+                return resolve(toReturned)
+            }
         }
     })
 }
