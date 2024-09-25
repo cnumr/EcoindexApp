@@ -90,3 +90,8 @@ typings/
 
 # Electron-Forge
 out/
+
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
