@@ -1,4 +1,4 @@
-import { ChildProcess, spawn } from 'child_process'
+import { ChildProcess, fork, spawn } from 'child_process'
 import { IpcMainEvent, shell } from 'electron'
 import { getNodeDir, getNpmDir, getWorkDir, isDev } from '../memory'
 
@@ -11,7 +11,6 @@ import { getMainLog } from '../main'
 import i18n from '../../configs/i18next.config'
 import os from 'node:os'
 import path from 'node:path'
-import { runCourses } from 'lighthouse-plugin-ecoindex/cli/run.js'
 import { showNotification } from '../utils/ShowNotification'
 import { utils } from '../../shared/constants'
 
@@ -23,7 +22,7 @@ import { utils } from '../../shared/constants'
   workDir: string
 }>
  */
-async function _prepareCollect(): Promise<{
+export async function _prepareCollect(): Promise<{
     command: string[]
     nodeDir: string
     workDir: string
@@ -43,66 +42,23 @@ async function _prepareCollect(): Promise<{
         _debugLogs(`Npm dir: ${npmDir}`)
 
         const command = [
-            path.join(npmDir, `lighthouse-plugin-ecoindex`, `cli`, `run.js`),
+            path.join(
+                __dirname,
+                `../..`,
+                `node_modules`,
+                `lighthouse-plugin-ecoindex`,
+                `cli`,
+                `index.js`
+            ),
             'collect',
         ]
+
         if (os.platform() === `win32`) {
             nodeDir = nodeDir.replace(/\\/gm, path.sep)
         }
         return { command, nodeDir, workDir: _workDir.replace(/ /g, '\\ ') }
     } catch (error) {
         mainLog.error('Error in _prepareCollect', error)
-    }
-}
-
-class CollectDatas {
-    collectType: `simple` | `complexe`
-    outputPath: string
-    output?: string[]
-    listAllAudits: false
-    generationDate: string
-}
-
-class SimpleCollectDatas extends CollectDatas {
-    collectType: 'simple'
-    url: string[]
-}
-class ComplexeCollectDatas extends CollectDatas {
-    collectType: 'complexe'
-    jsonFile: string
-}
-
-function _prepareDatas(
-    collectType: `simple` | `complexe`,
-    output: string[],
-    input: string | ISimpleUrlInput[]
-): ComplexeCollectDatas | SimpleCollectDatas {
-    const _workDir = getWorkDir() as string
-    if (!_workDir || _workDir === '') {
-        throw new Error('Work dir not found')
-    }
-    if (collectType === 'simple') {
-        const collectDatas: SimpleCollectDatas = {
-            collectType,
-            outputPath: _workDir,
-            output,
-            url: (input as ISimpleUrlInput[]).map((url) => {
-                return url.value
-            }),
-            listAllAudits: false,
-            generationDate: new Date().toISOString(),
-        }
-        return collectDatas
-    } else {
-        const collectDatas: ComplexeCollectDatas = {
-            collectType,
-            outputPath: _workDir,
-            output,
-            jsonFile: input as string,
-            listAllAudits: false,
-            generationDate: new Date().toISOString(),
-        }
-        return collectDatas
     }
 }
 
@@ -114,7 +70,7 @@ function _prepareDatas(
  * @param logStream
  * @returns string
  */
-async function _runCollect(
+export async function _runCollect(
     command: string[],
     nodeDir: string,
     event: IpcMainEvent,
@@ -124,15 +80,30 @@ async function _runCollect(
     try {
         const out: string[] = []
 
-        _debugLogs(`runCollect: ${nodeDir} ${JSON.stringify(command, null, 2)}`)
+        // _debugLogs(`runCollect: ${nodeDir} ${JSON.stringify(command, null, 2)}`)
+        // _debugLogs(
+        //     `runCollect: ${process.execPath} ${JSON.stringify(command, null, 2)}`
+        // )
         // const controller = new AbortController()
         // const { signal } = controller
-        const childProcess: ChildProcess = spawn(`"${nodeDir}"`, command, {
-            stdio: ['pipe', 'pipe', process.stderr],
-            shell: true,
-            windowsHide: true,
-            // signal,
-        })
+        // const [script, ...args] = command
+        // _debugLogs(`runCollect: ${script} ${JSON.stringify(args, null, 2)}`)
+        // const childProcess: ChildProcess = fork(script, args, {
+        //     stdio: ['pipe', 'pipe', process.stderr, 'ipc'],
+        //     // signal,
+        // })
+        // mainLog.log(`process`, process)
+        const childProcess: ChildProcess = spawn(
+            // `"${process.execPath}"`,
+            `"${nodeDir}"`,
+            command,
+            {
+                stdio: ['pipe', 'pipe', process.stderr, 'ipc'],
+                shell: true,
+                windowsHide: true,
+                // signal,
+            }
+        )
 
         childProcess.on('exit', (code, signal) => {
             if (isSimple && out.length > 0) {
@@ -187,24 +158,6 @@ async function _runCollect(
     }
 }
 
-async function _runDirectCollect(
-    command: SimpleCollectDatas | ComplexeCollectDatas,
-    event: IpcMainEvent,
-    isSimple = false
-) {
-    const mainLog = getMainLog().scope('main/runDirectCollect')
-    try {
-        runCourses(command)
-        // gérer les logs
-        if (isSimple) {
-            // gérer l'ouverture dans le navigateur is simple
-        }
-        return 'mesure done'
-    } catch (error) {
-        mainLog.error('Error in _runCollect', error)
-    }
-}
-
 /**
  * Handlers, SimpleCollect
  * @param event IpcMainEvent
@@ -224,23 +177,20 @@ export const handleSimpleCollect = async (
         body: i18n.t('Process intialization.'),
     })
 
-    // prepare common collect
-    const collectDatas = _prepareDatas(`simple`, [`html`], urlsList)
-    // const { command, nodeDir, workDir: _workDir } = await _prepareCollect()
-
+    const { command, nodeDir, workDir: _workDir } = await _prepareCollect()
     _debugLogs('Simple measure start, process intialization...')
     _debugLogs(`Urls list: ${JSON.stringify(urlsList)}`)
     try {
-        // urlsList.forEach((url) => {
-        //     if (url.value) {
-        //         command.push('-u')
-        //         command.push(url.value)
-        //     }
-        // })
-        // command.push('-o')
-        // command.push('html')
-        // command.push('--output-path')
-        // command.push(`${_workDir}`)
+        urlsList.forEach((url) => {
+            if (url.value) {
+                command.push('-u')
+                command.push(url.value)
+            }
+        })
+        command.push('-o')
+        command.push('html')
+        command.push('--output-path')
+        command.push(`${_workDir}`)
         // Fake mesure and path. TODO: use specified path and urls
         showNotification({
             subtitle: i18n.t(' 🚀Simple collect'),
@@ -248,11 +198,9 @@ export const handleSimpleCollect = async (
         })
         try {
             if (isDev())
-                // mainLog.debug(`before (simple) runCollect`, nodeDir, command)
-                mainLog.debug(`before (simple) runCollect`, collectDatas)
+                mainLog.debug(`before (simple) runCollect`, nodeDir, command)
 
-            // await _runCollect(command, nodeDir, event, true)
-            await _runDirectCollect(collectDatas, event, true)
+            await _runCollect(command, nodeDir, event, true)
         } catch (error) {
             showNotification({
                 subtitle: i18n.t('🚫 Simple collect'),
@@ -261,7 +209,6 @@ export const handleSimpleCollect = async (
             throw new Error('Simple collect error')
         }
         // process.stdout.write(data)
-        const _workDir = collectDatas.outputPath
         showNotification({
             subtitle: i18n.t('🎉 Simple collect'),
             body: i18n.t(
@@ -349,22 +296,19 @@ export const handleJsonSaveAndCollect = async (
         } else {
             if (isDev()) mainLog.debug('Json measure start...')
 
-            // prepare common collect
-            const collectDatas = _prepareDatas(`complexe`, null, jsonFilePath)
-            // const {
-            //     command,
-            //     nodeDir,
-            //     workDir: _workDir,
-            // } = await _prepareCollect()
+            const {
+                command,
+                nodeDir,
+                workDir: _workDir,
+            } = await _prepareCollect()
             _debugLogs('Json measure start...')
             _debugLogs(`JSON datas ${JSON.stringify(jsonDatas, null, 2)}`)
-            // command.push('--json-file')
-            // command.push(path.join(_workDir, utils.JSON_FILE_NAME))
-            // command.push('--output-path')
-            // command.push(_workDir)
+            command.push('--json-file')
+            command.push(path.join(_workDir, utils.JSON_FILE_NAME))
+            command.push('--output-path')
+            command.push(_workDir)
             try {
-                // await _runCollect(command, nodeDir, event)
-                await _runDirectCollect(collectDatas, event, false)
+                await _runCollect(command, nodeDir, event)
             } catch (error) {
                 mainLog.error('Simple collect error', error)
                 throw new Error('Simple collect error')
