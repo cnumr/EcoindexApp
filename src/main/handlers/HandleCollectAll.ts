@@ -59,12 +59,8 @@ export async function _prepareCollect(): Promise<{
               )
 
         if (os.platform() === `win32`) {
-            mainLog.log(`nodeDir before:`, nodeDir)
             nodeDir = nodeDir.replace(/\\/gm, path.sep)
-            mainLog.log(`nodeDir after:`, nodeDir)
-            mainLog.log(`scriptPath before:`, scriptPath)
             scriptPath = scriptPath.replace(/\\/gm, path.sep)
-            mainLog.log(`scriptPath after:`, scriptPath)
         }
         const command = [scriptPath, 'collect']
         mainLog.log(`command`, command) // change to debug
@@ -102,10 +98,11 @@ export async function _runCollect(
             _debugLogs(
                 `runCollect: ${nodeDir} ${JSON.stringify(command, null, 2)}`
             )
+            const [script, ...args] = command
             childProcess = spawn(
                 // `"${process.execPath}"`,
                 `"${nodeDir}"`,
-                command,
+                [`"${script}"`, ...args],
                 {
                     stdio: ['pipe', 'pipe', process.stderr, 'ipc'],
                     shell: true,
