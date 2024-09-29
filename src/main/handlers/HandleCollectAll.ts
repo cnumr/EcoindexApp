@@ -41,29 +41,28 @@ export async function _prepareCollect(): Promise<{
         const npmDir = getNpmDir()
         _debugLogs(`Npm dir: ${npmDir}`)
 
-        const command = [
-            isDev()
-                ? path.join(
-                      __dirname,
-                      `../..`,
-                      `node_modules`,
-                      `lighthouse-plugin-ecoindex`,
-                      `cli`,
-                      `index.mjs`
-                  )
-                : path.join(
-                      __dirname,
-                      `../../..`,
-                      `lighthouse-plugin-ecoindex`,
-                      `cli`,
-                      `index.mjs`
-                  ),
-            'collect',
-        ]
+        let scriptPath = isDev()
+            ? path.join(
+                  __dirname,
+                  `../..`,
+                  `node_modules`,
+                  `lighthouse-plugin-ecoindex`,
+                  `cli`,
+                  `index.mjs`
+              )
+            : path.join(
+                  __dirname,
+                  `../../..`,
+                  `lighthouse-plugin-ecoindex`,
+                  `cli`,
+                  `index.mjs`
+              )
 
         if (os.platform() === `win32`) {
             nodeDir = nodeDir.replace(/\\/gm, path.sep)
+            scriptPath = scriptPath.replace(/\\\\/gm, `\\`)
         }
+        const command = [scriptPath, 'collect']
         mainLog.log(`command`, command)
         return { command, nodeDir, workDir: _workDir.replace(/ /g, '\\ ') }
     } catch (error) {
