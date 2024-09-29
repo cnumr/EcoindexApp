@@ -49,14 +49,14 @@ export async function _prepareCollect(): Promise<{
                       `node_modules`,
                       `lighthouse-plugin-ecoindex`,
                       `cli`,
-                      `index.js`
+                      `index.mjs`
                   )
                 : path.join(
                       __dirname,
                       `../../..`,
                       `lighthouse-plugin-ecoindex`,
                       `cli`,
-                      `index.js`
+                      `index.mjs`
                   ),
             'collect',
         ]
