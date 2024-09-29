@@ -1,12 +1,5 @@
 
 
-# [0.2.0-rc.0](https://github.com/cnumr/EcoindexApp/compare/0.1.8-rc.0...0.2.0-rc.0) (2024-09-29)
-
-
-### Bug Fixes
-
-* win32 sep ([02ae54d](https://github.com/cnumr/EcoindexApp/commit/02ae54dc036e6d300b65267501a89c86ca336dda))
-
 ## [0.1.8-rc.0](https://github.com/cnumr/EcoindexApp/compare/0.1.7...0.1.8-rc.0) (2024-09-29)
 
 
