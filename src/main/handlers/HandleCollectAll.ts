@@ -42,20 +42,29 @@ export async function _prepareCollect(): Promise<{
         _debugLogs(`Npm dir: ${npmDir}`)
 
         const command = [
-            path.join(
-                __dirname,
-                `../..`,
-                `node_modules`,
-                `lighthouse-plugin-ecoindex`,
-                `cli`,
-                `index.js`
-            ),
+            isDev()
+                ? path.join(
+                      __dirname,
+                      `../..`,
+                      `node_modules`,
+                      `lighthouse-plugin-ecoindex`,
+                      `cli`,
+                      `index.js`
+                  )
+                : path.join(
+                      __dirname,
+                      `../../..`,
+                      `lighthouse-plugin-ecoindex`,
+                      `cli`,
+                      `index.js`
+                  ),
             'collect',
         ]
 
         if (os.platform() === `win32`) {
             nodeDir = nodeDir.replace(/\\/gm, path.sep)
         }
+        mainLog.log(`command`, command)
         return { command, nodeDir, workDir: _workDir.replace(/ /g, '\\ ') }
     } catch (error) {
         mainLog.error('Error in _prepareCollect', error)

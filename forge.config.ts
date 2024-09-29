@@ -29,6 +29,7 @@ const config: ForgeConfig = {
             './src/extraResources/scripts',
             './src/extraResources/md',
             './src/locales',
+            './node_modules/lighthouse-plugin-ecoindex',
         ],
         win32metadata: {
             CompanyName: 'Green IT',
