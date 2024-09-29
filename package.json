@@ -3,7 +3,7 @@
     "displayName": "EcoindexApp",
     "productName": "EcoindexApp",
     "private": true,
-    "version": "0.2.0-rc.1",
+    "version": "0.2.0-rc.2",
     "description": "An application to measures the ecological impact of a website with LightHouse and Ecoindex.",
     "homepage": "https://github.com/cnumr/EcoindexApp#readme",
     "bugs": "https://github.com/cnumr/EcoindexApp/issues",
