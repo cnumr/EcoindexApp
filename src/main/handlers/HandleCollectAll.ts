@@ -89,30 +89,35 @@ export async function _runCollect(
     try {
         const out: string[] = []
 
-        // _debugLogs(`runCollect: ${nodeDir} ${JSON.stringify(command, null, 2)}`)
-        // _debugLogs(
-        //     `runCollect: ${process.execPath} ${JSON.stringify(command, null, 2)}`
-        // )
+        const useSpawn = true
+
         // const controller = new AbortController()
         // const { signal } = controller
-        // const [script, ...args] = command
-        // _debugLogs(`runCollect: ${script} ${JSON.stringify(args, null, 2)}`)
-        // const childProcess: ChildProcess = fork(script, args, {
-        //     stdio: ['pipe', 'pipe', process.stderr, 'ipc'],
-        //     // signal,
-        // })
-        // mainLog.log(`process`, process)
-        const childProcess: ChildProcess = spawn(
-            // `"${process.execPath}"`,
-            `"${nodeDir}"`,
-            command,
-            {
+
+        let childProcess: ChildProcess
+        if (useSpawn) {
+            _debugLogs(
+                `runCollect: ${nodeDir} ${JSON.stringify(command, null, 2)}`
+            )
+            childProcess = spawn(
+                // `"${process.execPath}"`,
+                `"${nodeDir}"`,
+                command,
+                {
+                    stdio: ['pipe', 'pipe', process.stderr, 'ipc'],
+                    shell: true,
+                    windowsHide: true,
+                    // signal,
+                }
+            )
+        } else {
+            const [script, ...args] = command
+            _debugLogs(`runCollect: ${script} ${JSON.stringify(args, null, 2)}`)
+            childProcess = fork(script, args, {
                 stdio: ['pipe', 'pipe', process.stderr, 'ipc'],
-                shell: true,
-                windowsHide: true,
                 // signal,
-            }
-        )
+            })
+        }
 
         childProcess.on('exit', (code, signal) => {
             if (isSimple && out.length > 0) {
@@ -206,9 +211,6 @@ export const handleSimpleCollect = async (
             body: i18n.t('Collect started...'),
         })
         try {
-            if (isDev())
-                mainLog.debug(`before (simple) runCollect`, nodeDir, command)
-
             await _runCollect(command, nodeDir, event, true)
         } catch (error) {
             showNotification({
