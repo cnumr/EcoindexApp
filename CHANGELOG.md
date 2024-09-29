@@ -1,5 +1,16 @@
 
 
+## [0.1.8-rc.0](https://github.com/cnumr/EcoindexApp/compare/0.1.7...0.1.8-rc.0) (2024-09-29)
+
+
+### Features
+
+* continue ([ec0a87f](https://github.com/cnumr/EcoindexApp/commit/ec0a87fbd308a3ec02202d87f798ee25c385dd59))
+* optimize initialization ([9b97a02](https://github.com/cnumr/EcoindexApp/commit/9b97a0261df76647de30415ee54a1ef2d3553f27))
+* update custom plugin ([ca2d2bd](https://github.com/cnumr/EcoindexApp/commit/ca2d2bdac3e2b5f538d347f201f6277e5c086ac6))
+* use internal custom plugin ([51ab5c9](https://github.com/cnumr/EcoindexApp/commit/51ab5c9d4868e2c15ee817bd385533a73f35df1a))
+* use of the internal custom plugin ([6e5ba35](https://github.com/cnumr/EcoindexApp/commit/6e5ba355512c754dde91cb9b3291e9dc02c913f1))
+
 ## [0.1.7](https://github.com/cnumr/EcoindexApp/compare/0.1.6...0.1.7) (2024-09-13)
 
 
