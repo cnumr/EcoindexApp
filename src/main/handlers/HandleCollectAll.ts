@@ -59,11 +59,15 @@ export async function _prepareCollect(): Promise<{
               )
 
         if (os.platform() === `win32`) {
+            mainLog.log(`nodeDir before:`, nodeDir)
             nodeDir = nodeDir.replace(/\\/gm, path.sep)
-            scriptPath = scriptPath.replace(/\\\\/gm, `\\`)
+            mainLog.log(`nodeDir after:`, nodeDir)
+            mainLog.log(`scriptPath before:`, scriptPath)
+            scriptPath = scriptPath.replace(/\\/gm, path.sep)
+            mainLog.log(`scriptPath after:`, scriptPath)
         }
         const command = [scriptPath, 'collect']
-        mainLog.log(`command`, command)
+        mainLog.log(`command`, command) // change to debug
         return { command, nodeDir, workDir: _workDir.replace(/ /g, '\\ ') }
     } catch (error) {
         mainLog.error('Error in _prepareCollect', error)
