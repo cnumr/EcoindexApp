@@ -1,5 +1,12 @@
 
 
+# [0.2.0-rc.4](https://github.com/cnumr/EcoindexApp/compare/0.2.0-rc.3...0.2.0-rc.4) (2024-09-30)
+
+
+### Bug Fixes
+
+* path win32 ([14cea60](https://github.com/cnumr/EcoindexApp/commit/14cea6014dfd342f6d430db862110da5ae40c3a2))
+
 # [0.2.0-rc.3](https://github.com/cnumr/EcoindexApp/compare/0.2.0-rc.2...0.2.0-rc.3) (2024-09-30)
 
 
