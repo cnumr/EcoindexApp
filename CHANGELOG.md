@@ -1,5 +1,21 @@
 
 
+# [0.2.0](https://github.com/cnumr/EcoindexApp/compare/0.1.7...0.2.0) (2024-10-04)
+
+
+### Bug Fixes
+
+* add try catch ([0e9a94c](https://github.com/cnumr/EcoindexApp/commit/0e9a94c74f59f5bc0f9f9a89d7a67221288bd935))
+* alert errors ([583f12c](https://github.com/cnumr/EcoindexApp/commit/583f12ce0443d5b253730ce03d99864109761526))
+* duplicate alert ([5394af6](https://github.com/cnumr/EcoindexApp/commit/5394af6c3a53dcf29dea9bb74a393eb1716531c6))
+* errors on Node and NodeVersion handler ([f69b5cc](https://github.com/cnumr/EcoindexApp/commit/f69b5cc79f391fe21565b291f5e74358c46be4ba))
+* type of MakerDMGConfig omits `appPath` ([4d75506](https://github.com/cnumr/EcoindexApp/commit/4d7550621b4f9765c119b83848f7f93d40b28e95))
+
+
+### Features
+
+* update `lighthouse-plugin-ecoindex` version ([0731be9](https://github.com/cnumr/EcoindexApp/commit/0731be9deffa3e6f48fbdb0462b91b7af581747c))
+
 ## [0.1.7](https://github.com/cnumr/EcoindexApp/compare/0.1.6...0.1.7) (2024-09-13)
 
 
