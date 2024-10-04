@@ -76,7 +76,7 @@ const config: ForgeConfig = {
                 background: path.resolve(__dirname, 'assets', 'dmgbg.png'),
                 icon: path.resolve(__dirname, 'assets', 'app-ico.icns'),
                 overwrite: true,
-            },
+            } as any, // type of MakerDMGConfig omits `appPath`
             ['darwin']
         ),
         {
