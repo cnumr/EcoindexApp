@@ -56,6 +56,12 @@ export const initialization = async (
     event: IpcMainEvent | IpcMainInvokeEvent,
     forceInitialisation = false
 ) => {
+    const checkNode = true
+    const getHomeDir = true
+    const getNpmDir = true
+    const checkCanInstall = true
+    const installCustomPlugin = true
+    const installPuppeteer = true
     const mainLog = getMainLog().scope('main/initialization')
     const updatePlugin = async () => {
         mainLog.log(`8.3 Plugin installation ...`)
@@ -114,284 +120,321 @@ export const initialization = async (
             mainLog.info(`Installation asked manually for 1st installation.`)
             mainLog.debug(`forced mode started from button`)
         }
-        mainLog.log(`1. Node installed start...`)
         // #region Node installed
-        const isNodeReturned = await initIsNodeInstalled(event)
-        initializedDatas.initIsNodeInstalled = isNodeReturned.result as boolean
-        mainLog.log(isNodeReturned)
-        getMainWindow().webContents.send(
-            channels.INITIALIZATION_DATAS,
-            isNodeReturned
-        )
-        if (isNodeReturned.error) {
-            mainLog.info(`Without Node, the app can't work. Stop and alert.`)
-            const stopWithoutNode = new ConfigData('app_can_not_be_launched')
-            stopWithoutNode.error = `No Node installed`
-            stopWithoutNode.message = `Without Node, the app can't work. Stop and alert.`
+        if (checkNode) {
+            mainLog.log(`1. Node installed start...`)
+            const isNodeReturned = await initIsNodeInstalled(event)
+            initializedDatas.initIsNodeInstalled =
+                isNodeReturned.result as boolean
+            mainLog.log(isNodeReturned)
             getMainWindow().webContents.send(
                 channels.INITIALIZATION_DATAS,
-                stopWithoutNode
+                isNodeReturned
             )
-            // stop all
-            return false
-        }
-        mainLog.log(`2. Node Version upper or equal to 18 start...`)
-        // #region Node has good version
-        const isNode20Returned = await initIsNodeNodeVersionOK(event)
-        initializedDatas.initIsNodeNodeVersionOK =
-            isNode20Returned.result as boolean
-        mainLog.log(isNode20Returned)
-        getMainWindow().webContents.send(
-            channels.INITIALIZATION_DATAS,
-            isNode20Returned
-        )
-        if (isNodeReturned.error) {
-            mainLog.info(`Without Node 20, the app can't work. Stop and alert.`)
-            const stopWithoutNode20 = new ConfigData(
-                'app_can_not_be_launched',
-                'error_type_node_version_error'
-            )
-            stopWithoutNode20.error = `No Node ${utils.LOWER_NODE_VERSION} installed`
-            stopWithoutNode20.message = `Without Node ${utils.LOWER_NODE_VERSION}, the app can't work. Stop and alert.`
-            getMainWindow().webContents.send(
-                channels.INITIALIZATION_DATAS,
-                stopWithoutNode20
-            )
-            // stop all
-            return false
-        }
-        mainLog.log(`3. Get Npm Dir...`)
-        // #region Npm Dir
-        const getNpmDirReturned = await initSetNpmDir(event)
-        initializedDatas.initSetNpmDir = getNpmDirReturned.result as string
-        mainLog.log(getNpmDirReturned)
-        if (getNpmDirReturned.error) {
-            mainLog.info(`Without Npm Dir, the app can't work. Stop and alert.`)
-            const stopWithoutNpmDir = new ConfigData(
-                'app_can_not_be_launched',
-                'error_type_no_npm_dir'
-            )
-            stopWithoutNpmDir.error = `No Npm dir founded`
-            stopWithoutNpmDir.message = `Without Npm Dir, the app can't work. Stop and alert.`
-            getMainWindow().webContents.send(
-                channels.INITIALIZATION_DATAS,
-                stopWithoutNpmDir
-            )
-            // stop all
-            return false
-        } else {
-            getMainWindow().webContents.send(
-                channels.INITIALIZATION_DATAS,
-                getNpmDirReturned
-            )
-        }
-        mainLog.log(`4. Get User HomeDir...`)
-        // #region Home Dir
-        const getHomeDirReturned = await initGetHomeDir(event)
-        initializedDatas.initGetHomeDir = getHomeDirReturned.result as string
-        mainLog.log(getHomeDirReturned)
-        getMainWindow().webContents.send(
-            channels.INITIALIZATION_DATAS,
-            getHomeDirReturned
-        )
-        mainLog.log(`5. Get Last used WorkDir or fallback in User HomeDir ...`)
-        // #region WorkDir
-        const getWorkDirReturned = await initGetWorkDir(event)
-        initializedDatas.initGetWorkDir = getWorkDirReturned.result as string
-        mainLog.log(getWorkDirReturned)
-        getMainWindow().webContents.send(
-            channels.INITIALIZATION_DATAS,
-            getWorkDirReturned
-        )
-        // #region User can install ?
-        mainLog.log(`6. Check if user can install elements ...`)
-        const getPluginCanInstallReturned = await initPluginCanInstall(event)
-        initializedDatas.initPluginCanInstall =
-            getPluginCanInstallReturned.result as boolean
-        mainLog.log(getPluginCanInstallReturned)
-        if (
-            os.platform() === 'darwin' &&
-            !initializedDatas.initPluginCanInstall
-        ) {
-            mainLog.debug(
-                `os.platform() === 'darwin'`,
-                os.platform() === 'darwin'
-            )
-            mainLog.debug(
-                `!initializedDatas.initPluginCanInstall`,
-                !initializedDatas.initPluginCanInstall
-            )
-            // #region Fix User rights
-            const getSudoFixNpmDirRightsReturned =
-                await initSudoFixNpmDirRights(event)
-            initializedDatas.initSudoFixNpmDirRights =
-                getSudoFixNpmDirRightsReturned.result as boolean
-            mainLog.log(getSudoFixNpmDirRightsReturned)
-            if (getSudoFixNpmDirRightsReturned.error) {
-                const errorOnFixingUserRights = new ConfigData(
-                    'app_can_not_be_launched',
-                    'error_type_cant_fix_user_rights'
+            if (isNodeReturned.error) {
+                mainLog.info(
+                    `Without Node, the app can't work. Stop and alert.`
                 )
-                errorOnFixingUserRights.error =
-                    getSudoFixNpmDirRightsReturned.error.toString()
-                errorOnFixingUserRights.message = `Error on fixing user rights on ${os.platform()}.\n${getSudoFixNpmDirRightsReturned.error.toString()}`
+                const stopWithoutNode = new ConfigData(
+                    'app_can_not_be_launched',
+                    'error_type_no_node'
+                )
+                stopWithoutNode.error = `No Node installed`
+                stopWithoutNode.message = `Without Node, the app can't work. Stop and alert.`
                 getMainWindow().webContents.send(
                     channels.INITIALIZATION_DATAS,
-                    errorOnFixingUserRights
+                    stopWithoutNode
                 )
-                mainLog.log(errorOnFixingUserRights)
+                // stop all
                 return false
             }
-        } else if (
-            os.platform() !== 'darwin' &&
-            !initializedDatas.initPluginCanInstall
-        ) {
-            mainLog.debug(
-                `os.platform() !== 'darwin'`,
-                os.platform() !== 'darwin'
-            )
-            mainLog.debug(
-                `!initializedDatas.initPluginCanInstall`,
-                !initializedDatas.initPluginCanInstall
-            )
-            // #region Can't Fix User rights
-            const cantFixUserRights = new ConfigData(
-                'app_can_not_be_launched',
-                'error_type_cant_fix_user_rights'
-            )
-            cantFixUserRights.error = `Can't fix user rights`
-            cantFixUserRights.message = `Need to fix user rights on ${os.platform()}`
+            mainLog.log(`2. Node Version upper or equal to 18 start...`)
+            // #region Node has good version
+            const isNode20Returned = await initIsNodeNodeVersionOK(event)
+            initializedDatas.initIsNodeNodeVersionOK =
+                isNode20Returned.result as boolean
+            mainLog.log(isNode20Returned)
             getMainWindow().webContents.send(
                 channels.INITIALIZATION_DATAS,
-                cantFixUserRights
+                isNode20Returned
             )
-            return false
-        } else {
-            mainLog.log(`User can install plugins`)
-        }
-        // ...User can install
-        mainLog.log(`7. Is a Puppeteer Browser installed ...`)
-        // #region Puppeteer Browser Installed
-        let getPuppeteerBrowserIsInstalledReturned =
-            await initPuppeteerBrowserIsInstalled(event)
-        initializedDatas.initPuppeteerBrowserIsInstalled =
-            getPuppeteerBrowserIsInstalledReturned.result !== null
-        // #region Puppeteer Browser Installation
-        if (getPuppeteerBrowserIsInstalledReturned.error) {
-            mainLog.log(`7.a Puppeteer Browser need to be installed ...`)
-            const getPuppeteerBrowserInstallationReturned =
-                await initPuppeteerBrowserInstallation(event)
-            // #region Puppeteer Browser Verification
-            if (getPuppeteerBrowserInstallationReturned.result !== null) {
-                mainLog.log(
-                    `7.b Verification Puppeteer installed after installation ...`
+            if (isNode20Returned.error) {
+                mainLog.info(
+                    `Without Node 20, the app can't work. Stop and alert.`
                 )
-                getPuppeteerBrowserIsInstalledReturned =
-                    await initPuppeteerBrowserIsInstalled(event)
-                initializedDatas.initPuppeteerBrowserIsInstalled =
-                    getPuppeteerBrowserIsInstalledReturned.result !== null
+                const stopWithoutNode20 = new ConfigData(
+                    'app_can_not_be_launched',
+                    'error_type_node_version_error'
+                )
+                stopWithoutNode20.error = `No Node ${utils.LOWER_NODE_VERSION} installed`
+                stopWithoutNode20.message = `Without Node ${utils.LOWER_NODE_VERSION}, the app can't work. Stop and alert.`
+                getMainWindow().webContents.send(
+                    channels.INITIALIZATION_DATAS,
+                    stopWithoutNode20
+                )
+                // stop all
+                return false
             }
         } else {
-            mainLog.log(
-                `Puppeteer Browser allready installed, no need to install it`
-            )
+            mainLog.debug(`Skipped Check Node`)
         }
-        mainLog.log(getPuppeteerBrowserIsInstalledReturned)
-        getMainWindow().webContents.send(
-            channels.INITIALIZATION_DATAS,
-            getPuppeteerBrowserIsInstalledReturned
-        )
-        if (getPuppeteerBrowserIsInstalledReturned.error) {
-            mainLog.info(
-                `Without Puppeteer Browser, the app can't work. Stop and alert.`
-            )
-            const stopWithoutPuppeteerBrowser = new ConfigData(
-                'app_can_not_be_launched',
-                'error_type_browser_no_installed'
-            )
-            stopWithoutPuppeteerBrowser.error = `No Puppeteer Browser installed`
-            stopWithoutPuppeteerBrowser.message = `Without Puppeteer Browser, the app can't work. Stop and alert.`
-            getMainWindow().webContents.send(
-                channels.INITIALIZATION_DATAS,
-                stopWithoutPuppeteerBrowser
-            )
-            // stop all
-            return false
-        }
-
-        mainLog.log(`8.1 Is a Plugin installed on host ...`)
-        // #region Plugin Installed
-        const getPluginIsInstalledReturned = await initPluginIsIntalled(event)
-        initializedDatas.initPluginIsIntalled =
-            getPluginIsInstalledReturned.result as string
-        mainLog.log(getPluginIsInstalledReturned)
-        // #region Plugin Last Version
-        if (initializedDatas.initPluginIsIntalled) {
-            // plugin installed
-            mainLog.log(`8.2 Plugin is Installed on host ...`)
-            mainLog.log(`8.2 Check plugin last version on registry ...`)
-            const getPluginGetLastVersionReturned =
-                await initPluginGetLastVersion(
-                    event,
-                    initializedDatas.initPluginIsIntalled as string
+        // #region Npm Dir
+        if (getNpmDir) {
+            mainLog.log(`3. Get Npm Dir...`)
+            const getNpmDirReturned = await initSetNpmDir(event)
+            initializedDatas.initSetNpmDir = getNpmDirReturned.result as string
+            mainLog.log(getNpmDirReturned)
+            if (getNpmDirReturned.error) {
+                mainLog.info(
+                    `Without Npm Dir, the app can't work. Stop and alert.`
                 )
-            initializedDatas.initPluginGetLastVersion =
-                getPluginGetLastVersionReturned.result as string
-            mainLog.log(getPluginGetLastVersionReturned)
-            if (
-                initializedDatas.initPluginGetLastVersion ===
-                initializedDatas.initPluginIsIntalled
-            ) {
-                const pluginMessage = `Plugin version installed is ${initializedDatas.initPluginGetLastVersion}`
-                const pluginOK = new ConfigData('plugin_installed')
-                pluginOK.result = true
-                pluginOK.message = pluginMessage
+                const stopWithoutNpmDir = new ConfigData(
+                    'app_can_not_be_launched',
+                    'error_type_no_npm_dir'
+                )
+                stopWithoutNpmDir.error = `No Npm dir founded`
+                stopWithoutNpmDir.message = `Without Npm Dir, the app can't work. Stop and alert.`
                 getMainWindow().webContents.send(
                     channels.INITIALIZATION_DATAS,
-                    pluginOK
+                    stopWithoutNpmDir
                 )
-                const pluginVersion = new ConfigData('plugin_version')
-                pluginVersion.result = initializedDatas.initPluginGetLastVersion
-                pluginVersion.message = pluginMessage
-                getMainWindow().webContents.send(
-                    channels.INITIALIZATION_DATAS,
-                    pluginVersion
-                )
+                // stop all
+                return false
             } else {
-                await updatePlugin()
+                getMainWindow().webContents.send(
+                    channels.INITIALIZATION_DATAS,
+                    getNpmDirReturned
+                )
             }
         } else {
-            // plugin not installed
-            mainLog.log(`8.2 Plugin NOT installed on host ...`)
-            mainLog.log(`8.2 Check if electron can install plugin ...`)
+            mainLog.debug(`Skipped Get NPM Dir`)
+        }
+        // #region Home Dir
+        if (getHomeDir) {
+            mainLog.log(`4. Get User HomeDir...`)
+            const getHomeDirReturned = await initGetHomeDir(event)
+            initializedDatas.initGetHomeDir =
+                getHomeDirReturned.result as string
+            mainLog.log(getHomeDirReturned)
+            getMainWindow().webContents.send(
+                channels.INITIALIZATION_DATAS,
+                getHomeDirReturned
+            )
+            mainLog.log(
+                `5. Get Last used WorkDir or fallback in User HomeDir ...`
+            )
+            // #region WorkDir
+            const getWorkDirReturned = await initGetWorkDir(event)
+            initializedDatas.initGetWorkDir =
+                getWorkDirReturned.result as string
+            mainLog.log(getWorkDirReturned)
+            getMainWindow().webContents.send(
+                channels.INITIALIZATION_DATAS,
+                getWorkDirReturned
+            )
+        } else {
+            mainLog.debug(`Skipped Get Home Dir`)
+        }
+        // #region User can install ?
+        if (checkCanInstall) {
+            // disable node, node version and npmDir
+            mainLog.log(`6. Check if user can install elements ...`)
             const getPluginCanInstallReturned =
                 await initPluginCanInstall(event)
             initializedDatas.initPluginCanInstall =
                 getPluginCanInstallReturned.result as boolean
             mainLog.log(getPluginCanInstallReturned)
-            // if (initializedDatas.initPluginCanInstall) {
-            mainLog.log(`8.3 Electron install plugin ...`)
-            mainLog.log(`8.3 Plugin installation ...`)
-            const getPluginNormalInstallationReturned =
-                await initPluginNormalInstallation(event)
-            initializedDatas.initPluginNormalInstallation =
-                getPluginNormalInstallationReturned.result as boolean
-            mainLog.log(getPluginNormalInstallationReturned)
-            const normalPluginInstallation = new ConfigData('plugin_installed')
-            normalPluginInstallation.result =
-                initializedDatas.initPluginNormalInstallation
-            normalPluginInstallation.message =
-                initializedDatas.initPluginNormalInstallation
-                    ? `Plugin installed`
-                    : `Installation plugin failed`
+            if (
+                (os.platform() === 'darwin' || os.platform() === 'linux') &&
+                !initializedDatas.initPluginCanInstall
+            ) {
+                mainLog.debug(`os.platform():`, os.platform())
+                mainLog.debug(
+                    `!initializedDatas.initPluginCanInstall`,
+                    !initializedDatas.initPluginCanInstall
+                )
+                // #region Fix User rights
+                const getSudoFixNpmDirRightsReturned =
+                    await initSudoFixNpmDirRights(event)
+                initializedDatas.initSudoFixNpmDirRights =
+                    getSudoFixNpmDirRightsReturned.result as boolean
+                mainLog.log(getSudoFixNpmDirRightsReturned)
+                if (getSudoFixNpmDirRightsReturned.error) {
+                    const errorOnFixingUserRights = new ConfigData(
+                        'app_can_not_be_launched',
+                        'error_type_cant_fix_user_rights'
+                    )
+                    errorOnFixingUserRights.error =
+                        getSudoFixNpmDirRightsReturned.error.toString()
+                    errorOnFixingUserRights.message = `Error on fixing user rights on ${os.platform()}.\n${getSudoFixNpmDirRightsReturned.error.toString()}`
+                    getMainWindow().webContents.send(
+                        channels.INITIALIZATION_DATAS,
+                        errorOnFixingUserRights
+                    )
+                    mainLog.log(errorOnFixingUserRights)
+                    return false
+                }
+            } else if (
+                !(os.platform() === 'darwin' || os.platform() === 'linux') &&
+                !initializedDatas.initPluginCanInstall
+            ) {
+                mainLog.debug(`os.platform():`, os.platform())
+                mainLog.debug(
+                    `!initializedDatas.initPluginCanInstall`,
+                    !initializedDatas.initPluginCanInstall
+                )
+                // #region Can't Fix User rights
+                const cantFixUserRights = new ConfigData(
+                    'app_can_not_be_launched',
+                    'error_type_cant_fix_user_rights'
+                )
+                cantFixUserRights.error = `Can't fix user rights`
+                cantFixUserRights.message = `Need to fix user rights on ${os.platform()}`
+                getMainWindow().webContents.send(
+                    channels.INITIALIZATION_DATAS,
+                    cantFixUserRights
+                )
+                return false
+            } else {
+                mainLog.log(`User can install plugins`)
+            }
+        } else {
+            mainLog.debug(`Skipped User can install`)
+        }
+        // ...User can install
+        // #region Puppeteer Browser Installed
+        if (installPuppeteer) {
+            mainLog.log(`7. Is a Puppeteer Browser installed ...`)
+            let getPuppeteerBrowserIsInstalledReturned =
+                await initPuppeteerBrowserIsInstalled(event)
+            initializedDatas.initPuppeteerBrowserIsInstalled =
+                getPuppeteerBrowserIsInstalledReturned.result !== null
+            // #region Puppeteer Browser Installation
+            if (getPuppeteerBrowserIsInstalledReturned.error) {
+                mainLog.log(`7.a Puppeteer Browser need to be installed ...`)
+                const getPuppeteerBrowserInstallationReturned =
+                    await initPuppeteerBrowserInstallation(event)
+                // #region Puppeteer Browser Verification
+                if (getPuppeteerBrowserInstallationReturned.result !== null) {
+                    mainLog.log(
+                        `7.b Verification Puppeteer installed after installation ...`
+                    )
+                    getPuppeteerBrowserIsInstalledReturned =
+                        await initPuppeteerBrowserIsInstalled(event)
+                    initializedDatas.initPuppeteerBrowserIsInstalled =
+                        getPuppeteerBrowserIsInstalledReturned.result !== null
+                }
+            } else {
+                mainLog.log(
+                    `Puppeteer Browser allready installed, no need to install it`
+                )
+            }
+            mainLog.log(getPuppeteerBrowserIsInstalledReturned)
             getMainWindow().webContents.send(
                 channels.INITIALIZATION_DATAS,
-                normalPluginInstallation
+                getPuppeteerBrowserIsInstalledReturned
             )
-            mainLog.log(`8.2 Plugin NOT installed on host ...`)
-            await updatePlugin()
+            if (getPuppeteerBrowserIsInstalledReturned.error) {
+                mainLog.info(
+                    `Without Puppeteer Browser, the app can't work. Stop and alert.`
+                )
+                const stopWithoutPuppeteerBrowser = new ConfigData(
+                    'app_can_not_be_launched',
+                    'error_type_browser_no_installed'
+                )
+                stopWithoutPuppeteerBrowser.error = `No Puppeteer Browser installed`
+                stopWithoutPuppeteerBrowser.message = `Without Puppeteer Browser, the app can't work. Stop and alert.`
+                getMainWindow().webContents.send(
+                    channels.INITIALIZATION_DATAS,
+                    stopWithoutPuppeteerBrowser
+                )
+                // stop all
+                return false
+            }
+        } else {
+            mainLog.debug(`Skipped User can install`)
         }
-
+        // #region Plugin Installed
+        if (installCustomPlugin) {
+            // disable node, node version and npmDir
+            mainLog.log(`8.1 Is a Plugin installed on host ...`)
+            const getPluginIsInstalledReturned =
+                await initPluginIsIntalled(event)
+            initializedDatas.initPluginIsIntalled =
+                getPluginIsInstalledReturned.result as string
+            mainLog.log(getPluginIsInstalledReturned)
+            // #region Plugin Last Version
+            if (initializedDatas.initPluginIsIntalled) {
+                // plugin installed
+                mainLog.log(`8.2 Plugin is Installed on host ...`)
+                mainLog.log(`8.2 Check plugin last version on registry ...`)
+                const getPluginGetLastVersionReturned =
+                    await initPluginGetLastVersion(
+                        event,
+                        initializedDatas.initPluginIsIntalled as string
+                    )
+                initializedDatas.initPluginGetLastVersion =
+                    getPluginGetLastVersionReturned.result as string
+                mainLog.log(getPluginGetLastVersionReturned)
+                if (
+                    initializedDatas.initPluginGetLastVersion ===
+                    initializedDatas.initPluginIsIntalled
+                ) {
+                    const pluginMessage = `Plugin version installed is ${initializedDatas.initPluginGetLastVersion}`
+                    const pluginOK = new ConfigData('plugin_installed')
+                    pluginOK.result = true
+                    pluginOK.message = pluginMessage
+                    getMainWindow().webContents.send(
+                        channels.INITIALIZATION_DATAS,
+                        pluginOK
+                    )
+                    const pluginVersion = new ConfigData('plugin_version')
+                    pluginVersion.result =
+                        initializedDatas.initPluginGetLastVersion
+                    pluginVersion.message = pluginMessage
+                    getMainWindow().webContents.send(
+                        channels.INITIALIZATION_DATAS,
+                        pluginVersion
+                    )
+                } else {
+                    await updatePlugin()
+                }
+            } else {
+                // plugin not installed
+                mainLog.log(`8.2 Plugin NOT installed on host ...`)
+                mainLog.log(`8.2 Check if electron can install plugin ...`)
+                const getPluginCanInstallReturned =
+                    await initPluginCanInstall(event)
+                initializedDatas.initPluginCanInstall =
+                    getPluginCanInstallReturned.result as boolean
+                mainLog.log(getPluginCanInstallReturned)
+                // if (initializedDatas.initPluginCanInstall) {
+                mainLog.log(`8.3 Electron install plugin ...`)
+                mainLog.log(`8.3 Plugin installation ...`)
+                const getPluginNormalInstallationReturned =
+                    await initPluginNormalInstallation(event)
+                initializedDatas.initPluginNormalInstallation =
+                    getPluginNormalInstallationReturned.result as boolean
+                mainLog.log(getPluginNormalInstallationReturned)
+                const normalPluginInstallation = new ConfigData(
+                    'plugin_installed'
+                )
+                normalPluginInstallation.result =
+                    initializedDatas.initPluginNormalInstallation
+                normalPluginInstallation.message =
+                    initializedDatas.initPluginNormalInstallation
+                        ? `Plugin installed`
+                        : `Installation plugin failed`
+                getMainWindow().webContents.send(
+                    channels.INITIALIZATION_DATAS,
+                    normalPluginInstallation
+                )
+                mainLog.log(`8.2 Plugin NOT installed on host ...`)
+                await updatePlugin()
+            }
+        } else {
+            mainLog.debug(`Skipped Plugin Installation`)
+        }
         // #region END
         const appReady = new ConfigData('appReady')
         if (readInitalizedDatas(initializedDatas)) {
