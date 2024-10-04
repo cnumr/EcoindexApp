@@ -1,5 +1,56 @@
 
 
+# [0.2.0-rc.4](https://github.com/cnumr/EcoindexApp/compare/0.2.0-rc.3...0.2.0-rc.4) (2024-09-30)
+
+
+### Bug Fixes
+
+* path win32 ([14cea60](https://github.com/cnumr/EcoindexApp/commit/14cea6014dfd342f6d430db862110da5ae40c3a2))
+
+# [0.2.0-rc.3](https://github.com/cnumr/EcoindexApp/compare/0.2.0-rc.2...0.2.0-rc.3) (2024-09-30)
+
+
+### Bug Fixes
+
+* path win32 ([1c98694](https://github.com/cnumr/EcoindexApp/commit/1c986946f453c1030f0406061124ebb073d71c04))
+
+# [0.2.0-rc.2](https://github.com/cnumr/EcoindexApp/compare/0.2.0-rc.1...0.2.0-rc.2) (2024-09-29)
+
+
+### Bug Fixes
+
+* path win32 ([4e2e69b](https://github.com/cnumr/EcoindexApp/commit/4e2e69b6707c7b3dcd9846befd2079b0216f20c9))
+
+# [0.2.0-rc.1](https://github.com/cnumr/EcoindexApp/compare/0.2.0-rc.0...0.2.0-rc.1) (2024-09-29)
+
+
+### Bug Fixes
+
+* path win32 ([92e1b73](https://github.com/cnumr/EcoindexApp/commit/92e1b73a908298f052f1dc6559db7a9c1af18593))
+
+# [0.2.0-rc.0](https://github.com/cnumr/EcoindexApp/compare/0.1.8-rc.0...0.2.0-rc.0) (2024-09-29)
+
+
+### Bug Fixes
+
+* win32 sep ([02ae54d](https://github.com/cnumr/EcoindexApp/commit/02ae54dc036e6d300b65267501a89c86ca336dda))
+
+
+### Reverts
+
+* Revert "chore: release v0.2.0-rc.0" ([740cc11](https://github.com/cnumr/EcoindexApp/commit/740cc119e89777ba0eee230ca567e56393f28878))
+
+## [0.1.8-rc.0](https://github.com/cnumr/EcoindexApp/compare/0.1.7...0.1.8-rc.0) (2024-09-29)
+
+
+### Features
+
+* continue ([ec0a87f](https://github.com/cnumr/EcoindexApp/commit/ec0a87fbd308a3ec02202d87f798ee25c385dd59))
+* optimize initialization ([9b97a02](https://github.com/cnumr/EcoindexApp/commit/9b97a0261df76647de30415ee54a1ef2d3553f27))
+* update custom plugin ([ca2d2bd](https://github.com/cnumr/EcoindexApp/commit/ca2d2bdac3e2b5f538d347f201f6277e5c086ac6))
+* use internal custom plugin ([51ab5c9](https://github.com/cnumr/EcoindexApp/commit/51ab5c9d4868e2c15ee817bd385533a73f35df1a))
+* use of the internal custom plugin ([6e5ba35](https://github.com/cnumr/EcoindexApp/commit/6e5ba355512c754dde91cb9b3291e9dc02c913f1))
+
 ## [0.1.7](https://github.com/cnumr/EcoindexApp/compare/0.1.6...0.1.7) (2024-09-13)
 
 

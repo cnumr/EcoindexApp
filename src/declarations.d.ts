@@ -7,6 +7,7 @@ declare module 'src/shared/tailwind-helper' {
 }
 declare module '*.md'
 declare module 'lighthouse-plugin-ecoindex/install-browser.cjs'
+declare module 'lighthouse-plugin-ecoindex/cli/run.js'
 
 // declare module '*.css';
 // declare module '*.png';

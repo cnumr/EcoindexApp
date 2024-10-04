@@ -29,7 +29,7 @@ const config: ForgeConfig = {
             './src/extraResources/scripts',
             './src/extraResources/md',
             './src/locales',
-            './node_modules/puppeteer',
+            './node_modules/lighthouse-plugin-ecoindex',
         ],
         win32metadata: {
             CompanyName: 'Green IT',
@@ -76,7 +76,7 @@ const config: ForgeConfig = {
                 background: path.resolve(__dirname, 'assets', 'dmgbg.png'),
                 icon: path.resolve(__dirname, 'assets', 'app-ico.icns'),
                 overwrite: true,
-            },
+            } as any, // type of MakerDMGConfig omits `appPath`
             ['darwin']
         ),
         {
