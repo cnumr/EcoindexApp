@@ -58,47 +58,56 @@ export const InitErrorAlerts = ({
          */
         window.initialisationAPI.sendConfigDatasToFront(
             (configData: ConfigData) => {
-                if (configData.error) {
-                    frontLog.error(configData)
-                    window.alert(
-                        `${configData.type} : ${configData.message ? configData.message : configData.error}`
-                    )
-                }
-                if (configData.type !== ConfigData.APP_CAN_NOT_BE_LAUNCHED)
-                    return
-                switch (configData.errorType) {
-                    case ConfigData.ERROR_TYPE_FIRST_INSTALL:
-                        setIsFirstStart(true)
-                        break
-                    case ConfigData.ERROR_TYPE_NO_NODE:
-                        setIsNodeInError(true)
-                        setIsGenericInError(true)
-                        break
-                    case ConfigData.ERROR_TYPE_NO_WRITE_ACCESS:
-                        setIsWriteAccessInError(true)
-                        setIsGenericInError(true)
-                        break
-                    case ConfigData.ERROR_TYPE_CANT_FIX_USER_RIGHTS:
-                        setIsWriteAccessCantFix(true)
-                        setIsGenericInError(true)
-                        break
-                    case ConfigData.ERROR_TYPE_BROWSER_NOT_INSTALLED:
-                        setIsBrowserInError(true)
-                        setIsGenericInError(true)
-                        break
-                    case ConfigData.ERROR_TYPE_NODE_VERSION_ERROR:
-                        setIsNodeVersionInError(true)
-                        setIsGenericInError(true)
-                        break
-                    case ConfigData.ERROR_TYPE_NO_NPM_DIR:
-                        setIsNpmDirInError(true)
-                        setIsGenericInError(true)
-                        break
-
-                    default:
-                        alert(
-                            `ConfigData.errorType=${configData.errorType} not handle in App.tsx`
+                try {
+                    frontLog.debug(`configData`, configData)
+                    if (configData.type !== ConfigData.APP_CAN_NOT_BE_LAUNCHED)
+                        return
+                    if (
+                        configData.error &&
+                        process.env['WEBPACK_SERVE'] === 'true'
+                    ) {
+                        window.alert(
+                            `${configData.type} : ${configData.message ? configData.message : configData.error}`
                         )
+                    }
+                    switch (configData.errorType) {
+                        case ConfigData.ERROR_TYPE_FIRST_INSTALL:
+                            setIsFirstStart(true)
+                            break
+                        case ConfigData.ERROR_TYPE_NO_NODE:
+                            setIsNodeInError(true)
+                            setIsGenericInError(true)
+                            break
+                        case ConfigData.ERROR_TYPE_NO_WRITE_ACCESS:
+                            setIsWriteAccessInError(true)
+                            setIsGenericInError(true)
+                            break
+                        case ConfigData.ERROR_TYPE_CANT_FIX_USER_RIGHTS:
+                            setIsWriteAccessCantFix(true)
+                            setIsGenericInError(true)
+                            break
+                        case ConfigData.ERROR_TYPE_BROWSER_NOT_INSTALLED:
+                            setIsBrowserInError(true)
+                            setIsGenericInError(true)
+                            break
+                        case ConfigData.ERROR_TYPE_NODE_VERSION_ERROR:
+                            setIsNodeVersionInError(true)
+                            setIsGenericInError(true)
+                            break
+                        case ConfigData.ERROR_TYPE_NO_NPM_DIR:
+                            setIsNpmDirInError(true)
+                            setIsGenericInError(true)
+                            break
+
+                        default:
+                            if (configData.errorType) {
+                                alert(
+                                    `ConfigData.errorType=${configData.errorType} not handle in App.tsx`
+                                )
+                            }
+                    }
+                } catch (error) {
+                    frontLog.error(`Error`, error)
                 }
             }
         )
