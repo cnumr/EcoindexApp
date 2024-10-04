@@ -442,12 +442,14 @@ function TheApp() {
         window.initialisationAPI.sendConfigDatasToFront(
             (configData: ConfigData) => {
                 frontLog.debug(`sendConfigDatasToFront`, configData)
-                if (configData.error) {
-                    frontLog.error(configData)
-                    window.alert(
-                        `${configData.type} : ${configData.message ? configData.message : configData.error}`
-                    )
-                }
+                // if (configData.error) {
+                //     frontLog.error(configData)
+                //     if (process.env['WEBPACK_SERVE'] === 'true') {
+                //         window.alert(
+                //             `0. ${configData.type} : ${configData.message ? configData.message : configData.error}`
+                //         )
+                //     }
+                // }
                 switch (configData.type) {
                     case ConfigData.WORKDIR:
                         setWorkDir(configData.result as string)
@@ -521,20 +523,29 @@ function TheApp() {
                                 break
 
                             default:
-                                alert(
-                                    `ConfigData.errorType=${configData.errorType} not handle in App.tsx`
-                                )
-                            // throw new Error(
-                            //     'ConfigData.errorType not handle in App.tsx'
-                            // )
+                                // if (configData.errorType !== undefined) {
+                                //     window.alert(
+                                //         `1. ConfigData.errorType=${configData.errorType} not handle in App.tsx`
+                                //     )
+                                // } else {
+                                //     frontLog.error(
+                                //         `ConfigData.errorType=${configData.errorType} not handle in App.tsx`
+                                //     )
+                                // }
+                                break
                         }
                         break
 
                     default:
-                        alert(
-                            `ConfigData.type=${configData.type} not handle in App.tsx`
-                        )
-                    // throw new Error('ConfigData not handle in App.tsx')
+                    // if (configData.type) {
+                    //     window.alert(
+                    //         `2. ConfigData.type=${configData.type} not handle in App.tsx`
+                    //     )
+                    // } else {
+                    //     frontLog.error(
+                    //         `ConfigData.type=${configData.type} not handle in App.tsx`
+                    //     )
+                    // }
                 }
             }
         )
