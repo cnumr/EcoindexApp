@@ -1,5 +1,17 @@
 
 
+## [0.2.1](https://github.com/cnumr/EcoindexApp/compare/0.2.0...0.2.1) (2024-10-07)
+
+
+### Bug Fixes
+
+* [#1](https://github.com/cnumr/EcoindexApp/issues/1) et [#11](https://github.com/cnumr/EcoindexApp/issues/11) try fixing ([16f8e4d](https://github.com/cnumr/EcoindexApp/commit/16f8e4d566abae29c98be2d84dbc0d6513b94de1))
+
+
+### Features
+
+* to prepare next version of collect ([0db8268](https://github.com/cnumr/EcoindexApp/commit/0db8268376decba0217639e432d7ba4bb36cb820))
+
 # [0.2.0](https://github.com/cnumr/EcoindexApp/compare/0.1.7...0.2.0) (2024-10-04)
 
 
