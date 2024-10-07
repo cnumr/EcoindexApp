@@ -1,5 +1,12 @@
 
 
+# [0.3.0-rc.0](https://github.com/cnumr/EcoindexApp/compare/0.2.1...0.3.0-rc.0) (2024-10-07)
+
+
+### Features
+
+* use `npm root -g` for npmDir ([b4e7bae](https://github.com/cnumr/EcoindexApp/commit/b4e7bae73c48679109e5c69857fe95d4542fba79))
+
 ## [0.2.1](https://github.com/cnumr/EcoindexApp/compare/0.2.0...0.2.1) (2024-10-07)
 
 
