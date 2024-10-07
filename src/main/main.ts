@@ -49,7 +49,9 @@ mainLog.debug(`userData`, app.getPath('userData'))
 export const getMainLog = () => {
     return log
 }
-log.info(`******************** APP IS STARTING ********************`)
+log.info(
+    `******************** APP v${packageJson.version} IS STARTING ********************`
+)
 
 // #region update app
 updateElectronApp({
