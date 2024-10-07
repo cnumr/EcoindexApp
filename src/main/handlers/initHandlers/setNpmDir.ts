@@ -23,7 +23,8 @@ export const initSetNpmDir = (_event: IpcMainEvent | IpcMainInvokeEvent) => {
     return new Promise<ConfigData>((resolve) => {
         try {
             // npm config get prefix
-            const cmd = `npm config get prefix`
+            // const cmd = `npm config get prefix`
+            const cmd = `npm root -g`
             exec(cmd, (error, stdout, stderr) => {
                 if (error) {
                     mainLog.error(`exec error: ${error}`)
@@ -33,10 +34,11 @@ export const initSetNpmDir = (_event: IpcMainEvent | IpcMainInvokeEvent) => {
                 }
                 if (stderr) mainLog.debug(`stderr: ${stderr}`)
                 if (stdout) {
-                    const returned: string =
-                        os.platform() === 'win32'
-                            ? path.join(stdout.trim(), `node_modules`)
-                            : path.join(stdout.trim(), `lib`, `node_modules`)
+                    // const returned: string =
+                    //     os.platform() === 'win32'
+                    //         ? path.join(stdout.trim(), `node_modules`)
+                    //         : path.join(stdout.trim(), `lib`, `node_modules`)
+                    const returned: string = stdout.trim()
                     setNpmDir(returned)
                     store.set(`npmDir`, returned)
                     toReturned.result = returned
