@@ -244,10 +244,7 @@ export const initialization = async (
             initializedDatas.initPluginCanInstall =
                 getPluginCanInstallReturned.result as boolean
             mainLog.log(getPluginCanInstallReturned)
-            if (
-                (os.platform() === 'darwin' || os.platform() === 'linux') &&
-                !initializedDatas.initPluginCanInstall
-            ) {
+            if (!initializedDatas.initPluginCanInstall) {
                 mainLog.debug(`os.platform():`, os.platform())
                 mainLog.debug(
                     `!initializedDatas.initPluginCanInstall`,
@@ -274,27 +271,6 @@ export const initialization = async (
                     mainLog.log(errorOnFixingUserRights)
                     return false
                 }
-            } else if (
-                !(os.platform() === 'darwin' || os.platform() === 'linux') &&
-                !initializedDatas.initPluginCanInstall
-            ) {
-                mainLog.debug(`os.platform():`, os.platform())
-                mainLog.debug(
-                    `!initializedDatas.initPluginCanInstall`,
-                    !initializedDatas.initPluginCanInstall
-                )
-                // #region Can't Fix User rights
-                const cantFixUserRights = new ConfigData(
-                    'app_can_not_be_launched',
-                    'error_type_cant_fix_user_rights'
-                )
-                cantFixUserRights.error = `Can't fix user rights`
-                cantFixUserRights.message = `Need to fix user rights on ${os.platform()}`
-                getMainWindow().webContents.send(
-                    channels.INITIALIZATION_DATAS,
-                    cantFixUserRights
-                )
-                return false
             } else {
                 mainLog.log(`User can install plugins`)
             }

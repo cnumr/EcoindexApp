@@ -72,38 +72,32 @@ export const initSudoFixNpmDirRights = (
     const mainLog = getMainLog().scope(
         'main/initialization/initSudoFixNpmDirRights'
     )
-    if (os.platform() === 'darwin') {
-        mainLog.debug(`Fix User rights on NPM Dir with sudo.`)
-        const toReturned = new ConfigData('fix_npm_user_rights')
-        return new Promise<ConfigData>((resolve) => {
-            const cmd = `chown -R $USER $(npm config get prefix)/{lib/node_modules,bin,share} && echo "Done"`
-            sudoPrompt.exec(
-                cmd,
-                { name: 'Fix user permissions on Node' },
-                (error, stdout, stderr) => {
-                    if (error) {
-                        mainLog.error(`exec error: ${error}`)
-                        toReturned.error = error
-                        toReturned.message = `CAN'T fix Npm user rights`
-                        return resolve(toReturned)
-                    }
-                    if (stderr) mainLog.debug(`stderr: ${stderr}`)
-                    if (stdout) {
-                        const returned: string = (stdout as string).trim()
-                        toReturned.result = true
-                        toReturned.message = `User rights FIXED returned ${returned}`
-                        // getMainWindow().webContents.send(
-                        //     channels.HOST_INFORMATIONS_BACK,
-                        //     toReturned
-                        // )
-                        return resolve(toReturned)
-                    }
+    mainLog.debug(`Fix User rights on NPM Dir with sudo.`)
+    const toReturned = new ConfigData('fix_npm_user_rights')
+    return new Promise<ConfigData>((resolve) => {
+        const cmd = `chown -R $USER $(npm config get prefix)/{lib/node_modules,bin,share} && echo "Done"`
+        sudoPrompt.exec(
+            cmd,
+            { name: 'Fix user permissions on Node' },
+            (error, stdout, stderr) => {
+                if (error) {
+                    mainLog.error(`exec error: ${error}`)
+                    toReturned.error = error
+                    toReturned.message = `CAN'T fix Npm user rights`
+                    return resolve(toReturned)
                 }
-            )
-        })
-    } else {
-        mainLog.debug(
-            `NOT ON DARWIN PLATFORM, CAN'T Fix User rights on NPM Dir.`
+                if (stderr) mainLog.debug(`stderr: ${stderr}`)
+                if (stdout) {
+                    const returned: string = (stdout as string).trim()
+                    toReturned.result = true
+                    toReturned.message = `User rights FIXED returned ${returned}`
+                    // getMainWindow().webContents.send(
+                    //     channels.HOST_INFORMATIONS_BACK,
+                    //     toReturned
+                    // )
+                    return resolve(toReturned)
+                }
+            }
         )
-    }
+    })
 }
