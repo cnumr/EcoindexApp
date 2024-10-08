@@ -1,5 +1,12 @@
 
 
+# [0.3.0-rc.1](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.0...0.3.0-rc.1) (2024-10-08)
+
+
+### Bug Fixes
+
+* enabled mkdir on Windows app ([0ca4450](https://github.com/cnumr/EcoindexApp/commit/0ca4450d925f2c64a3bbcedf574df880bd01cfbe))
+
 # [0.3.0-rc.0](https://github.com/cnumr/EcoindexApp/compare/0.2.1...0.3.0-rc.0) (2024-10-07)
 
 
