@@ -78,7 +78,12 @@ export const initSudoFixNpmDirRights = (
         const toReturned = new ConfigData('fix_npm_user_rights')
         return new Promise<ConfigData>((resolve) => {
             const libPath = path.join(`lib`, `node_modules`)
-            const cmd = `mkdir -p $(npm config get prefix)/${libPath} && chown -R $USER $(npm config get prefix)/{${libPath},bin,share} && echo "Done"`
+            let cmd = ``
+            if (os.platform() === 'win32') {
+                cmd = `mkdir $(npm config get prefix)/${libPath} && chown -R $USER $(npm config get prefix)/{${libPath},bin,share} && echo "Done"`
+            } else {
+                cmd = `mkdir -p $(npm config get prefix)/${libPath} && chown -R $USER $(npm config get prefix)/{${libPath},bin,share} && echo "Done"`
+            }
             sudoPrompt.exec(
                 cmd,
                 { name: 'Fix user permissions on Node' },
