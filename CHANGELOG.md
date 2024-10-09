@@ -1,5 +1,12 @@
 
 
+# [0.3.0-rc.2](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.1...0.3.0-rc.2) (2024-10-09)
+
+
+### Bug Fixes
+
+* bad if on `os.plateform()` ([d20f80a](https://github.com/cnumr/EcoindexApp/commit/d20f80acbe0badaf1d3734ce72eb900ebb6b4ab6))
+
 # [0.3.0-rc.1](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.0...0.3.0-rc.1) (2024-10-08)
 
 
