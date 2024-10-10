@@ -9,6 +9,7 @@
     "3. Launch the measures": "3. Lancer la mesure",
     "A new version has been downloaded. Restart the application to apply the updates.": "Une nouvelle version a été téléchargée. Redémarrez l'application pour appliquer les mises à jour.",
     "A new version of EcoindexApp is available!": "Une nouvelle version d'EcoindexApp est disponible !",
+    "A new version of the app is avalaible ({{version}}), do you want to download it?": "Une nouvelle version de l'application ({{version}}) est disponible, voulez-vous la télécharger ?",
     "About": "A propos",
     "Add a course": "Ajouter un parcours",
     "Add an ExtraHeader item": "Ajouter un élément à ExtraHeader",

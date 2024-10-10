@@ -21,6 +21,7 @@ import { Header } from '../components/Header'
 import { InitErrorAlerts } from '../components/initialization-error-alerts'
 import { Input } from '../ui/input'
 import { JsonPanMesure } from '../components/json-pan'
+import { LinuxUpdate } from '../../class/LinuxUpdate'
 import { MySkeleton } from '../components/my-skeleton'
 import { PopinLoading } from '../components/loading-popin'
 import { ReloadIcon } from '@radix-ui/react-icons'
@@ -359,6 +360,21 @@ function TheApp() {
      * Detect window opening.
      */
     useEffect(() => {
+        /**
+         * Handler (main->front), get LinuxUpdate from main
+         */
+        window.electronAPI.handleNewLinuxVersion((linuxUpdate: LinuxUpdate) => {
+            frontLog.debug(`linuxUpdate`, linuxUpdate)
+            const resp = window.confirm(
+                t(
+                    `A new version of the app is avalaible ({{version}}), do you want to download it?`,
+                    { version: linuxUpdate.latestReleaseVersion }
+                )
+            )
+            if (resp === true) {
+                window.open(linuxUpdate.latestReleaseURL, `_blank`)
+            }
+        })
         /**
          * Handler (main->front), get data from main
          */

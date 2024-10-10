@@ -82,6 +82,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
             channels.CHANGE_LANGUAGE_TO_FRONT,
             (_event, languageCode) => callback(languageCode)
         ),
+    handleNewLinuxVersion: (callback: any) =>
+        ipcRenderer.on(channels.ALERT_LINUX_UPDATE, (_event, linuxUpdate) =>
+            callback(linuxUpdate)
+        ),
 })
 
 contextBridge.exposeInMainWorld('store', {

@@ -38,6 +38,7 @@ const constants: IConstants = {
         CHANGE_LANGUAGE_TO_FRONT: 'change-language-to-front',
         INSTALL_PUPPETEER_BROWSER: 'install-puppeteer-browser',
         SHOW_HIDE_WELCOME_WINDOW: 'show-hide-welcome-window',
+        ALERT_LINUX_UPDATE: 'alert-linux-update',
     },
     scripts: {
         GET_NODE: 'get-node',

@@ -1,3 +1,5 @@
+import { LinuxUpdate } from './class/LinuxUpdate'
+
 export interface IVersionsAPI {
     node: () => string
     chrome: () => string
@@ -17,6 +19,7 @@ export interface IElectronAPI {
     sendLogToFront: (callback) => string
     sendMessageToFrontLog: (callback) => object
     sendDatasToFront: (callback) => object
+    handleNewLinuxVersion: (callback) => LinuxUpdate
     // Front → Main
     getInitialTranslations: () => Promise<object>
     handleSetFolderOuput: () => Promise<string>
