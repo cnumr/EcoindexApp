@@ -79,7 +79,7 @@ export const initSudoFixNpmDirRights = (
         const libPath = path.join(`lib`, `node_modules`)
         let cmd = ``
         if (os.platform() === 'win32') {
-            cmd = `mkdir $(npm config get prefix)/${libPath} && chown -R $USER $(npm config get prefix)/{${libPath},bin,share} && echo "Done"`
+            cmd = `mkdir $(npm config get prefix)\\\\${libPath} && chown -R $USER $(npm config get prefix)/{${libPath},bin,share} && echo "Done"`
         } else {
             cmd = `mkdir -p $(npm config get prefix)/${libPath} && chown -R $USER $(npm config get prefix)/{${libPath},bin,share} && echo "Done"`
         }
