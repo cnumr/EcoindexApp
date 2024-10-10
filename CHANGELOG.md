@@ -1,5 +1,17 @@
 
 
+# [0.3.0-rc.3](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.2...0.3.0-rc.3) (2024-10-10)
+
+
+### Bug Fixes
+
+* bad path for windows ([65b3899](https://github.com/cnumr/EcoindexApp/commit/65b3899c33c1b92e3a356452988d534c6e47ff6c))
+
+
+### Features
+
+* auto update for Linux ([29eef3a](https://github.com/cnumr/EcoindexApp/commit/29eef3ad174bf376566bbb3416a55644170d6450))
+
 # [0.3.0-rc.2](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.1...0.3.0-rc.2) (2024-10-09)
 
 
