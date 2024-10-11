@@ -1,5 +1,12 @@
 
 
+# [0.3.0-rc.4](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.3...0.3.0-rc.4) (2024-10-11)
+
+
+### Bug Fixes
+
+* takeown Windows ([98505ae](https://github.com/cnumr/EcoindexApp/commit/98505ae3a7f652c0171d89faffd0fcbd2937e281))
+
 # [0.3.0-rc.3](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.2...0.3.0-rc.3) (2024-10-10)
 
 
