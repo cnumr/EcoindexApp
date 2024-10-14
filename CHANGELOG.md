@@ -1,5 +1,12 @@
 
 
+# [0.3.0-rc.6](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.5...0.3.0-rc.6) (2024-10-14)
+
+
+### Bug Fixes
+
+* typofix ([ff98e7f](https://github.com/cnumr/EcoindexApp/commit/ff98e7f6804fb68dfb1ae8f23c5110f6d7086b39))
+
 # [0.3.0-rc.5](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.4...0.3.0-rc.5) (2024-10-14)
 
 
