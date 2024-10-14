@@ -1,5 +1,12 @@
 
 
+# [0.3.0-rc.5](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.4...0.3.0-rc.5) (2024-10-14)
+
+
+### Bug Fixes
+
+* remplace `&&` by `&` in Windows cammand ([a77b864](https://github.com/cnumr/EcoindexApp/commit/a77b864c6f46f764e6379cf675f3a10965dc1abb))
+
 # [0.3.0-rc.4](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.3...0.3.0-rc.4) (2024-10-11)
 
 
