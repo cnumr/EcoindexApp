@@ -1,5 +1,12 @@
 
 
+# [0.3.0-rc.8](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.7...0.3.0-rc.8) (2024-10-15)
+
+
+### Bug Fixes
+
+* try fixing on Windows ([9a86b34](https://github.com/cnumr/EcoindexApp/commit/9a86b3495698597340e6a0d726b669ccc06dd8cf))
+
 # [0.3.0-rc.7](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.6...0.3.0-rc.7) (2024-10-14)
 
 
