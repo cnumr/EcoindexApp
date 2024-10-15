@@ -77,10 +77,11 @@ export const initSudoFixNpmDirRights = (
     const toReturned = new ConfigData('fix_npm_user_rights')
     return new Promise<ConfigData>((resolve) => {
         const libPath = path.join(`lib`, `node_modules`)
+        const npmDir = (store.get(`npmDir`, null) || getNpmDir()) as string
         let cmd = ``
         if (os.platform() === 'win32') {
             // cmd = `mkdir $(npm config get prefix)\\${libPath} & TAKEOWN /F $(npm config get prefix)\\${libPath} /R & TAKEOWN /F $(npm config get prefix)\\bin /R & TAKEOWN /F $(npm config get prefix)\\share /R & echo "Done"`
-            cmd = `mkdir $(npm config get prefix)\\node_modules & icacls $(npm config get prefix)\\node_modules /reset /t /c /l /q & echo "Done"`
+            cmd = `icacls $(npm config get prefix) /reset /t /c /l /q; mkdir ${npmDir}; echo "Done"`
         } else {
             cmd = `mkdir -p $(npm config get prefix)/${libPath} && chown -R $USER $(npm config get prefix)/{${libPath},bin,share} && echo "Done"`
         }
