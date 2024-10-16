@@ -13,6 +13,15 @@ import sudoPrompt from '@vscode/sudo-prompt'
 const store = new Store()
 
 /**
+ * Test if Shell runner is `cmd.exe`
+ * @returns `boolean` cmd.exe is the shell runner.
+ */
+const isWindowsCMD = () => {
+    if (os.platform() !== 'win32') throw new Error(`Plateform is not win32`)
+    return process.env.SHELL.toLowerCase().includes(`cmd.exe`)
+}
+
+/**
  * Initialization, Detect if User can install plugins.
  * @param _event MainEvent.
  * @returns Promise&lt;ConfigData>
@@ -27,11 +36,11 @@ export const initPluginCanInstall = (
     mainLog.debug(`Check if User can install plugins with NPM.`)
     const toReturned = new ConfigData('plugins_can_be_installed')
     return new Promise<ConfigData>((resolve) => {
-        const returned = (store.get(`npmDir`, null) || getNpmDir()) as string
+        const npmDir = (store.get(`npmDir`, null) || getNpmDir()) as string
         try {
-            accessSync(returned, constants.R_OK && constants.W_OK)
+            accessSync(npmDir, constants.R_OK && constants.W_OK)
             toReturned.result = true
-            toReturned.message = `User can install in ${returned}`
+            toReturned.message = `User can install in ${npmDir}`
             getMainWindow().webContents.send(
                 channels.HOST_INFORMATIONS_BACK,
                 toReturned
@@ -39,10 +48,10 @@ export const initPluginCanInstall = (
             return resolve(toReturned)
         } catch (error) {
             try {
-                mkdirSync(returned)
-                mainLog.info(`NpmDir created at ${returned}`)
+                mkdirSync(npmDir, { recursive: true })
+                mainLog.info(`NpmDir created at ${npmDir}`)
                 toReturned.result = true
-                toReturned.message = `User can install (folder created) in ${returned}`
+                toReturned.message = `User can install (folder created) in ${npmDir}`
                 getMainWindow().webContents.send(
                     channels.HOST_INFORMATIONS_BACK,
                     toReturned
@@ -50,7 +59,7 @@ export const initPluginCanInstall = (
                 return resolve(toReturned)
             } catch (error) {
                 toReturned.result = false
-                toReturned.message = `User CAN'T install in ${returned}`
+                toReturned.message = `User CAN'T install in ${npmDir}`
                 getMainWindow().webContents.send(
                     channels.HOST_INFORMATIONS_BACK,
                     toReturned
@@ -80,8 +89,12 @@ export const initSudoFixNpmDirRights = (
         const npmDir = (store.get(`npmDir`, null) || getNpmDir()) as string
         let cmd = ``
         if (os.platform() === 'win32') {
-            // cmd = `mkdir $(npm config get prefix)\\${libPath} & TAKEOWN /F $(npm config get prefix)\\${libPath} /R & TAKEOWN /F $(npm config get prefix)\\bin /R & TAKEOWN /F $(npm config get prefix)\\share /R & echo "Done"`
-            cmd = `icacls $(npm config get prefix) /reset /t /c /l /q; mkdir ${npmDir}; echo "Done"`
+            mainLog.info(`process.env.SHELL`, process.env.SHELL)
+            if (isWindowsCMD) {
+                cmd = `mkdir $(npm config get prefix)\\${libPath} && TAKEOWN /F $(npm config get prefix)\\${libPath} /R && TAKEOWN /F $(npm config get prefix)\\bin /R && TAKEOWN /F $(npm config get prefix)\\share /R & echo "Done"`
+            } else {
+                cmd = `icacls $(npm config get prefix) /reset /t /c /l /q; mkdir ${npmDir}; echo "Done"`
+            }
         } else {
             cmd = `mkdir -p $(npm config get prefix)/${libPath} && chown -R $USER $(npm config get prefix)/{${libPath},bin,share} && echo "Done"`
         }
