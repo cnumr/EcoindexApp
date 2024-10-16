@@ -94,6 +94,9 @@ export const initSudoFixNpmDirRights = (
                 cmd = `mkdir $(npm config get prefix)\\${libPath} && TAKEOWN /F $(npm config get prefix)\\${libPath} /R && TAKEOWN /F $(npm config get prefix)\\bin /R && TAKEOWN /F $(npm config get prefix)\\share /R & echo "Done"`
             } else {
                 cmd = `icacls $(npm config get prefix) /reset /t /c /l /q; mkdir ${npmDir}; echo "Done"`
+                toReturned.error = `EcoindexApp doesn't work with PowerShell as default shell.`
+                toReturned.message = `EcoindexApp doesn't work with PowerShell as default shell.`
+                return resolve(toReturned)
             }
         } else {
             cmd = `mkdir -p $(npm config get prefix)/${libPath} && chown -R $USER $(npm config get prefix)/{${libPath},bin,share} && echo "Done"`
