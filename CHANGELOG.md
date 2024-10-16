@@ -1,5 +1,17 @@
 
 
+# [0.3.0-rc.9](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.8...0.3.0-rc.9) (2024-10-16)
+
+
+### Bug Fixes
+
+* try fixing on Windows ([7ceb532](https://github.com/cnumr/EcoindexApp/commit/7ceb5321f7a7ed6c5f400bcd1c92832bf8e5a661))
+
+
+### Features
+
+* do nothing with powerShell ([ec06458](https://github.com/cnumr/EcoindexApp/commit/ec06458412e4cd06eb14600b8818338e84aec38f))
+
 # [0.3.0-rc.8](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.7...0.3.0-rc.8) (2024-10-15)
 
 
