@@ -1,5 +1,13 @@
 
 
+# [0.3.0](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.9...0.3.0) (2024-10-17)
+
+
+### Features
+
+* déplacer le bouton de création de parcours en bas du formulaire [#12](https://github.com/cnumr/EcoindexApp/issues/12) ([4442f73](https://github.com/cnumr/EcoindexApp/commit/4442f732b3d31a545dd7acf6f7e45eced3135fd4))
+* lors de la première installation réussie, la "boite de dialogue" ne disparait pas [#13](https://github.com/cnumr/EcoindexApp/issues/13) ([c7a58b7](https://github.com/cnumr/EcoindexApp/commit/c7a58b7e2ef246fc28b914b94eef03adf85a229b))
+
 # [0.3.0-rc.9](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.8...0.3.0-rc.9) (2024-10-16)
 
 
