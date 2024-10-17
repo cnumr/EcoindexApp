@@ -339,21 +339,6 @@ export const JsonPanMesure: FC<ILayout> = ({
                     <fieldset>
                         <legend>
                             <span>{t('Courses')}</span>
-                            <Button
-                                type="button"
-                                size="sm"
-                                variant="default"
-                                id="btn-add-course"
-                                title={t('Add a course')}
-                                disabled={!appReady}
-                                onClick={handlerAddCourse}
-                            >
-                                <CirclePlus
-                                    className="mr-2 size-4"
-                                    aria-label={t('add')}
-                                />
-                                <span>{t('Add a course')}</span>
-                            </Button>
                         </legend>
                         {jsonDatas?.courses.map((course, index) => {
                             const innerSetUrlsList = (
@@ -466,6 +451,23 @@ export const JsonPanMesure: FC<ILayout> = ({
                                 </fieldset>
                             )
                         })}
+                        <div className="flex justify-center">
+                            <Button
+                                type="button"
+                                size="sm"
+                                variant="default"
+                                id="btn-add-course"
+                                title={t('Add a course')}
+                                disabled={!appReady}
+                                onClick={handlerAddCourse}
+                            >
+                                <CirclePlus
+                                    className="mr-2 size-4"
+                                    aria-label={t('add')}
+                                />
+                                <span>{t('Add a course')}</span>
+                            </Button>
+                        </div>
                     </fieldset>
                 </form>
             </CardContent>
