@@ -60,6 +60,13 @@ export const InitErrorAlerts = ({
             (configData: ConfigData) => {
                 try {
                     frontLog.debug(`configData`, configData)
+                    // If app ready, hide button Init Installation
+                    if (
+                        configData.type === ConfigData.APP_READY &&
+                        configData.result === true
+                    ) {
+                        setIsFirstStart(false)
+                    }
                     if (configData.type !== ConfigData.APP_CAN_NOT_BE_LAUNCHED)
                         return
                     if (
