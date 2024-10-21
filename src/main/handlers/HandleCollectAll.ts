@@ -6,13 +6,25 @@ import { _debugLogs } from '../utils/MultiDebugLogs'
 import { _echoReadable } from '../utils/EchoReadable'
 import { _sendMessageToFrontLog } from '../utils/SendMessageToFrontLog'
 import { convertJSONDatasFromISimpleUrlInput } from '../utils/ConvertJSONDatas'
-import fs from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { getMainLog } from '../main'
 import i18n from '../../configs/i18next.config'
 import os from 'node:os'
 import path from 'node:path'
 import { showNotification } from '../utils/ShowNotification'
 import { utils } from '../../shared/constants'
+import fs from 'fs'
+
+// Instead of importing runCourses directly, we'll load it dynamically
+let runCourses: (cliFlags: any) => Promise<void>
+
+async function loadRunCourses() {
+  const pluginPath = require.resolve('lighthouse-plugin-ecoindex/run.cjs')
+  const pluginDir = path.dirname(pluginPath)
+  const runPath = path.join(pluginDir, 'run.cjs')
+  const runModule = await import(runPath)
+  runCourses = runModule.default
+}
 
 /**
  * Utils, prepare Json Collect.
@@ -22,7 +34,7 @@ import { utils } from '../../shared/constants'
   workDir: string
 }>
  */
-export async function _prepareCollect(): Promise<{
+async function _prepareCollect(): Promise<{
     command: string[]
     nodeDir: string
     workDir: string
@@ -42,9 +54,13 @@ export async function _prepareCollect(): Promise<{
         _debugLogs(`Npm dir: ${npmDir}`)
 
         const command = [
-            `${npmDir}/lighthouse-plugin-ecoindex/cli/index.js`.replace(
-                /\//gm,
-                path.sep
+            path.join(
+                __dirname,
+                `../..`,
+                `node_modules`,
+                `lighthouse-plugin-ecoindex`,
+                `cli`,
+                `run.js`
             ),
             'collect',
         ]
@@ -57,6 +73,57 @@ export async function _prepareCollect(): Promise<{
     }
 }
 
+class CollectDatas {
+    collectType: `simple` | `complexe`
+    outputPath: string
+    output?: string[]
+    listAllAudits: false
+    generationDate: string
+}
+
+class SimpleCollectDatas extends CollectDatas {
+    declare collectType: 'simple'
+    url: string[]
+}
+class ComplexeCollectDatas extends CollectDatas {
+    declare collectType: 'complexe'
+    jsonFile: string
+}
+
+function _prepareDatas(
+    collectType: `simple` | `complexe`,
+    output: string[],
+    input: string | ISimpleUrlInput[]
+): ComplexeCollectDatas | SimpleCollectDatas {
+    const _workDir = getWorkDir() as string
+    if (!_workDir || _workDir === '') {
+        throw new Error('Work dir not found')
+    }
+    if (collectType === 'simple') {
+        const collectDatas: SimpleCollectDatas = {
+            collectType,
+            outputPath: _workDir,
+            output,
+            url: (input as ISimpleUrlInput[]).map((url) => {
+                return url.value
+            }),
+            listAllAudits: false,
+            generationDate: new Date().toISOString(),
+        }
+        return collectDatas
+    } else {
+        const collectDatas: ComplexeCollectDatas = {
+            collectType,
+            outputPath: _workDir,
+            output,
+            jsonFile: input as string,
+            listAllAudits: false,
+            generationDate: new Date().toISOString(),
+        }
+        return collectDatas
+    }
+}
+
 /**
  * Utils, Collect
  * @param command string[]
@@ -65,7 +132,7 @@ export async function _prepareCollect(): Promise<{
  * @param logStream
  * @returns string
  */
-export async function _runCollect(
+async function _runCollect(
     command: string[],
     nodeDir: string,
     event: IpcMainEvent,
@@ -75,14 +142,33 @@ export async function _runCollect(
     try {
         const out: string[] = []
 
-        _debugLogs(`runCollect: ${nodeDir} ${JSON.stringify(command, null, 2)}`)
+        const [script, ...args] = command
+        _debugLogs(`runCollect: ${script} ${JSON.stringify(args, null, 2)}`)
+        _debugLogs(
+            `runCollect: ${process.execPath} ${JSON.stringify(command, null, 2)}`
+        )
         // const controller = new AbortController()
         // const { signal } = controller
-        const childProcess: ChildProcess = spawn(`"${nodeDir}"`, command, {
+        // const childProcess: ChildProcess = fork(script, args, {
+        //     stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
+        //     // stdio: [0, 1, 2, 'ipc'],
+        //     // silent: true,
+        //     // signal,
+        // })
+        // childProcess.send('hello')
+        const childProcess: ChildProcess = spawn(nodeDir, command, {
             stdio: ['pipe', 'pipe', process.stderr],
             shell: true,
             windowsHide: true,
             // signal,
+            // signal,
+        })
+        childProcess.on('message', (mess) => {
+            _debugLogs(`Message detected`, mess)
+        })
+        childProcess.on('error', (err) => {
+            _debugLogs(`Error detected`, err)
+            // This will be called with err being an AbortError if the controller aborts
         })
 
         childProcess.on('exit', (code, signal) => {
@@ -138,6 +224,41 @@ export async function _runCollect(
     }
 }
 
+async function _runDirectCollect(
+    command: SimpleCollectDatas | ComplexeCollectDatas,
+    event: IpcMainEvent,
+    isSimple = false
+) {
+    const mainLog = getMainLog().scope('main/runDirectCollect')
+    try {
+        if (!runCourses) {
+            await loadRunCourses()
+        }
+        const __dirname = path.dirname(__filename)
+         // Set the LIGHTHOUSE_PATH environment variable
+        process.env.LIGHTHOUSE_PATH = path.join(__dirname, '..', '..', 'node_modules', 'lighthouse')
+        // eslint-disable-next-line @typescript-eslint/no-extra-semi
+        await runCourses(command)
+        // gérer les logs
+        if (isSimple) {
+            // gérer l'ouverture dans le navigateur is simple
+            shell.openExternal(
+                path.join(
+                    command.outputPath,
+                    command.generationDate,
+                    `generic.report.html`
+                ),
+                {
+                    activate: true,
+                }
+            )
+        }
+        return 'mesure done'
+    } catch (error) {
+        mainLog.error('Error in _runCollect', error)
+    }
+}
+
 /**
  * Handlers, SimpleCollect
  * @param event IpcMainEvent
@@ -157,7 +278,10 @@ export const handleSimpleCollect = async (
         body: i18n.t('Process intialization.'),
     })
 
+    // prepare common collect
+    // const collectDatas = _prepareDatas(`simple`, [`html`], urlsList)
     const { command, nodeDir, workDir: _workDir } = await _prepareCollect()
+
     _debugLogs('Simple measure start, process intialization...')
     _debugLogs(`Urls list: ${JSON.stringify(urlsList)}`)
     try {
@@ -177,10 +301,14 @@ export const handleSimpleCollect = async (
             body: i18n.t('Collect started...'),
         })
         try {
-            if (isDev())
-                mainLog.debug(`before (simple) runCollect`, nodeDir, command)
-
+            if (isDev()) {
+                // mainLog.debug(`before (simple) runCollect`, nodeDir, command)
+                const [script, ...args] = command
+                mainLog.debug(`before (simple) runCollect`, script, args)
+                // mainLog.debug(`before (simple) runCollect`, collectDatas)
+            }
             await _runCollect(command, nodeDir, event, true)
+            // await _runDirectCollect(collectDatas, event, true)
         } catch (error) {
             showNotification({
                 subtitle: i18n.t('🚫 Simple collect'),
@@ -189,6 +317,7 @@ export const handleSimpleCollect = async (
             throw new Error('Simple collect error')
         }
         // process.stdout.write(data)
+        // const _workDir = collectDatas.outputPath
         showNotification({
             subtitle: i18n.t('🎉 Simple collect'),
             body: i18n.t(
@@ -276,19 +405,22 @@ export const handleJsonSaveAndCollect = async (
         } else {
             if (isDev()) mainLog.debug('Json measure start...')
 
-            const {
-                command,
-                nodeDir,
-                workDir: _workDir,
-            } = await _prepareCollect()
+            // prepare common collect
+            const collectDatas = _prepareDatas(`complexe`, null, jsonFilePath)
+            // const {
+            //     command,
+            //     nodeDir,
+            //     workDir: _workDir,
+            // } = await _prepareCollect()
             _debugLogs('Json measure start...')
             _debugLogs(`JSON datas ${JSON.stringify(jsonDatas, null, 2)}`)
-            command.push('--json-file')
-            command.push(path.join(_workDir, utils.JSON_FILE_NAME))
-            command.push('--output-path')
-            command.push(_workDir)
+            // command.push('--json-file')
+            // command.push(path.join(_workDir, utils.JSON_FILE_NAME))
+            // command.push('--output-path')
+            // command.push(_workDir)
             try {
-                await _runCollect(command, nodeDir, event)
+                // await _runCollect(command, nodeDir, event)
+                await _runDirectCollect(collectDatas, event, false)
             } catch (error) {
                 mainLog.error('Simple collect error', error)
                 throw new Error('Simple collect error')
