@@ -1,7 +1,6 @@
 import type { Configuration } from 'webpack'
 import { plugins } from './webpack.plugins'
 import { rules } from './webpack.rules'
-import webpack from 'webpack'
 
 export const mainConfig: Configuration = {
     /**
@@ -13,23 +12,8 @@ export const mainConfig: Configuration = {
     module: {
         rules,
     },
-    plugins: [
-        ...plugins,
-        new webpack.NormalModuleReplacementPlugin(
-            /node:url/,
-            require.resolve('url/')
-        ),
-    ],
+    plugins,
     resolve: {
         extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
-        fallback: {
-            fs: false,
-            path: require.resolve('path-browserify'),
-            url: require.resolve('url/'),
-        },
-    },
-    externals: {
-        'lighthouse': 'commonjs lighthouse',
-        'lighthouse-plugin-ecoindex': 'commonjs lighthouse-plugin-ecoindex',
     },
 }

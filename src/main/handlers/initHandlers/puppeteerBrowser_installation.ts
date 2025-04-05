@@ -4,7 +4,8 @@ import { ConfigData } from '../../../class/ConfigData'
 import { channels } from '../../../shared/constants'
 import { getMainLog } from '../../main'
 import { getMainWindow } from '../../memory'
-import { installMandatoryBrowser } from 'lighthouse-plugin-ecoindex/install-browser.cjs'
+
+// import { installMandatoryBrowser } from 'lighthouse-plugin-ecoindex-core/dist/install-browser.cjs'
 
 /**
  * Initialization, Install Puppeteer browsers on host.
@@ -20,7 +21,11 @@ export const initPuppeteerBrowserInstallation = async (
     )
     try {
         const toReturned = new ConfigData('puppeteer_browser_installation')
+        const { default: installMandatoryBrowser } = await import(
+            'lighthouse-plugin-ecoindex-core/install-browser.cjs'
+        )
         const browserInstalled = await installMandatoryBrowser()
+        // const browserInstalled = await installMandatoryBrowser()
         return new Promise<ConfigData>((resolve) => {
             if (browserInstalled) {
                 toReturned.result = true

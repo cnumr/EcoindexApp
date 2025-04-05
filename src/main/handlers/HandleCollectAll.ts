@@ -6,25 +6,15 @@ import { _debugLogs } from '../utils/MultiDebugLogs'
 import { _echoReadable } from '../utils/EchoReadable'
 import { _sendMessageToFrontLog } from '../utils/SendMessageToFrontLog'
 import { convertJSONDatasFromISimpleUrlInput } from '../utils/ConvertJSONDatas'
+import { error } from 'console'
 import { fileURLToPath } from 'node:url'
+import fs from 'fs'
 import { getMainLog } from '../main'
 import i18n from '../../configs/i18next.config'
 import os from 'node:os'
 import path from 'node:path'
 import { showNotification } from '../utils/ShowNotification'
 import { utils } from '../../shared/constants'
-import fs from 'fs'
-
-// Instead of importing runCourses directly, we'll load it dynamically
-let runCourses: (cliFlags: any) => Promise<void>
-
-async function loadRunCourses() {
-  const pluginPath = require.resolve('lighthouse-plugin-ecoindex/run.cjs')
-  const pluginDir = path.dirname(pluginPath)
-  const runPath = path.join(pluginDir, 'run.cjs')
-  const runModule = await import(runPath)
-  runCourses = runModule.default
-}
 
 /**
  * Utils, prepare Json Collect.
@@ -231,14 +221,24 @@ async function _runDirectCollect(
 ) {
     const mainLog = getMainLog().scope('main/runDirectCollect')
     try {
-        if (!runCourses) {
-            await loadRunCourses()
-        }
-        const __dirname = path.dirname(__filename)
-         // Set the LIGHTHOUSE_PATH environment variable
-        process.env.LIGHTHOUSE_PATH = path.join(__dirname, '..', '..', 'node_modules', 'lighthouse')
-        // eslint-disable-next-line @typescript-eslint/no-extra-semi
-        await runCourses(command)
+        // const __dirname = path.dirname(__filename)
+        // // Set the LIGHTHOUSE_PATH environment variable
+        // process.env.LIGHTHOUSE_PATH = path.join(
+        //     __dirname,
+        //     '..',
+        //     '..',
+        //     'node_modules',
+        //     'lighthouse'
+        // )
+
+        const { default: runCourses } = await import(
+            'lighthouse-plugin-ecoindex-courses/run.cjs'
+        )
+        mainLog.debug('runCourses imported successfully')
+
+        const result = await runCourses(command)
+        mainLog.debug('runCourses result:', result)
+
         // gérer les logs
         if (isSimple) {
             // gérer l'ouverture dans le navigateur is simple
@@ -279,7 +279,7 @@ export const handleSimpleCollect = async (
     })
 
     // prepare common collect
-    // const collectDatas = _prepareDatas(`simple`, [`html`], urlsList)
+    const collectDatas = _prepareDatas(`simple`, [`html`], urlsList)
     const { command, nodeDir, workDir: _workDir } = await _prepareCollect()
 
     _debugLogs('Simple measure start, process intialization...')
@@ -307,8 +307,8 @@ export const handleSimpleCollect = async (
                 mainLog.debug(`before (simple) runCollect`, script, args)
                 // mainLog.debug(`before (simple) runCollect`, collectDatas)
             }
-            await _runCollect(command, nodeDir, event, true)
-            // await _runDirectCollect(collectDatas, event, true)
+            // await _runCollect(command, nodeDir, event, true)
+            await _runDirectCollect(collectDatas, event, true)
         } catch (error) {
             showNotification({
                 subtitle: i18n.t('🚫 Simple collect'),

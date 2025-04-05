@@ -2,7 +2,7 @@ import { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
 
 import { ConfigData } from '../../../class/ConfigData'
 import { channels } from '../../../shared/constants'
-import { checkIfMandatoryBrowserInstalled } from 'lighthouse-plugin-ecoindex/install-browser.cjs'
+// import { checkIfMandatoryBrowserInstalled } from 'lighthouse-plugin-ecoindex-core/dist/install-browser.cjs'
 import { getMainLog } from '../../main'
 import { getMainWindow } from '../../memory'
 
@@ -22,6 +22,9 @@ export const initPuppeteerBrowserIsInstalled = async (
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     try {
+        const { default: checkIfMandatoryBrowserInstalled } = await import(
+            'lighthouse-plugin-ecoindex-core/install-browser.cjs'
+        )
         const browserInstalled = await checkIfMandatoryBrowserInstalled()
         if (browserInstalled) {
             toReturned.result = browserInstalled.buildId
