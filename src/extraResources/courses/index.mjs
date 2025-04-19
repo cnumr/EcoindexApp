@@ -7,7 +7,7 @@ import { runCourses as runCoursesCli } from 'lighthouse-plugin-ecoindex-courses/
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-console.log('Current directory:', __dirname)
+// console.log('Current directory:', __dirname)
 
 // Utiliser le répertoire de travail passé via la variable d'environnement
 const workDir = process.env.WORK_DIR

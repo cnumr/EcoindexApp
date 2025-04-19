@@ -5,6 +5,7 @@ import { getNodeDir, getNpmDir, getWorkDir, isDev } from '../memory'
 import { Readable } from 'stream'
 import { _debugLogs } from '../utils/MultiDebugLogs'
 import { _echoReadable } from '../utils/EchoReadable'
+import { _sendMessageToFrontConsole } from '../utils/SendMessageToFrontConsole'
 import { _sendMessageToFrontLog } from '../utils/SendMessageToFrontLog'
 import { convertJSONDatasFromISimpleUrlInput } from '../utils/ConvertJSONDatas'
 import { error } from 'console'
@@ -270,7 +271,11 @@ async function _runDirectCollect(
                     'extraResources',
                     'courses',
                     'index.mjs'
-                )
+                ),
+                ['test'],
+                {
+                    stdio: ['ignore', 'pipe', 'pipe'],
+                }
             )
 
             let hasExited = false
@@ -278,7 +283,16 @@ async function _runDirectCollect(
             // Gérer les logs stdout
             if (child.stdout) {
                 child.stdout.on('data', (data) => {
-                    mainLog.debug(`stdout: ${data.toString()}`)
+                    const all = /\n/g
+                    const first = /^\n/
+                    // Only remove the last newline characters (\n)
+                    const last = /\n$/
+                    // Only all the last newlines (\n)
+                    const all_last = /\n+$/
+                    const _data = data.toString().replace(all_last, '')
+                    mainLog.debug(_data)
+                    _sendMessageToFrontLog(_data)
+                    _sendMessageToFrontConsole(_data)
                 })
             }
 
