@@ -343,6 +343,22 @@ async function _runDirectCollect(
                     mainLog.error('Error deleting temporary file:', error)
                 }
 
+                // gérer l'ouverture dans le navigateur is simple
+                try {
+                    if (isSimple) {
+                        const url = path.join(workDir, `generic.report.html`)
+                        console.log('url', url)
+                        shell.showItemInFolder(url)
+                    }
+                } catch (error) {
+                    console.error('Error opening browser:', error)
+                    _sendMessageToFrontLog(
+                        'Error',
+                        `Error opening browser: ${error}`
+                    )
+                    mainLog.log(`Error opening browser: ${error}`)
+                }
+
                 if (!hasExited) {
                     hasExited = true
                     if (code === 0) {
@@ -363,31 +379,7 @@ async function _runDirectCollect(
                 mainLog.log('Child process spawned successfully')
             })
         })
-        // try {
-        //     // gérer l'ouverture dans le navigateur is simple
-        //     if (isSimple) {
-        //         const url = path.join(
-        //             workDir,
-        //             `generic.report.html`
-        //         )
-        //         console.log('url', url)
-        //         shell.openExternal(url, {
-        //             activate: true,
-        //         })
-        //     }
-        // } catch (error) {
-        //     console.error(
-        //         'Error opening browser:',
-        //         error
-        //     )
-        //     _sendMessageToFrontLog(
-        //         'Error',
-        //         `Error opening browser: ${error}`
-        //     )
-        //     mainLog.log(
-        //         `Error opening browser: ${error}`
-        //     )
-        // }
+
         return 'mesure done'
     } catch (error) {
         mainLog.error('Error in _runDirectCollect', error)
