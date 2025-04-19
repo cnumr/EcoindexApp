@@ -343,7 +343,7 @@ async function _runDirectCollect(
                     mainLog.error('Error deleting temporary file:', error)
                 }
 
-                // gérer l'ouverture dans le navigateur is simple
+                // gérer l'ouverture dans l'explorateur de fichiers is simple
                 try {
                     if (isSimple) {
                         const url = path.join(workDir, `generic.report.html`)
@@ -351,12 +351,12 @@ async function _runDirectCollect(
                         shell.showItemInFolder(url)
                     }
                 } catch (error) {
-                    console.error('Error opening browser:', error)
+                    console.error('Error opening folder:', error)
                     _sendMessageToFrontLog(
                         'Error',
-                        `Error opening browser: ${error}`
+                        `Error opening folder: ${error}`
                     )
-                    mainLog.log(`Error opening browser: ${error}`)
+                    mainLog.log(`Error opening folder: ${error}`)
                 }
 
                 if (!hasExited) {
