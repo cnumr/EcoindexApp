@@ -1,7 +1,8 @@
 import { ChildProcess, spawn } from 'child_process'
-import { IpcMainEvent, shell } from 'electron'
+import { IpcMainEvent, shell, utilityProcess } from 'electron'
 import { getNodeDir, getNpmDir, getWorkDir, isDev } from '../memory'
 
+import { Readable } from 'stream'
 import { _debugLogs } from '../utils/MultiDebugLogs'
 import { _echoReadable } from '../utils/EchoReadable'
 import { _sendMessageToFrontLog } from '../utils/SendMessageToFrontLog'
@@ -221,41 +222,176 @@ async function _runDirectCollect(
 ) {
     const mainLog = getMainLog().scope('main/runDirectCollect')
     try {
-        // const __dirname = path.dirname(__filename)
-        // // Set the LIGHTHOUSE_PATH environment variable
-        // process.env.LIGHTHOUSE_PATH = path.join(
-        //     __dirname,
-        //     '..',
-        //     '..',
-        //     'node_modules',
-        //     'lighthouse'
-        // )
+        const workDir = path
+            .join(command.outputPath, command.generationDate)
+            .split('.')[0]
+            .replace(/:/g, '-')
+        mainLog.log('Work directory:', workDir)
 
-        const { default: runCourses } = await import(
-            'lighthouse-plugin-ecoindex-courses/run.cjs'
-        )
-        mainLog.debug('runCourses imported successfully')
+        const tempFilePath = path.join(workDir, 'command-data.json')
+        mainLog.log('Temporary file path:', tempFilePath)
 
-        const result = await runCourses(command)
-        mainLog.debug('runCourses result:', result)
-
-        // gérer les logs
-        if (isSimple) {
-            // gérer l'ouverture dans le navigateur is simple
-            shell.openExternal(
-                path.join(
-                    command.outputPath,
-                    command.generationDate,
-                    `generic.report.html`
-                ),
-                {
-                    activate: true,
-                }
-            )
+        // S'assurer que le répertoire existe
+        if (!fs.existsSync(workDir)) {
+            mainLog.log('Creating directory:', workDir)
+            fs.mkdirSync(workDir, { recursive: true })
         }
+
+        // Écrire les données dans le fichier
+        mainLog.log('Writing command data to file')
+        const cliFlags = {
+            url: ['https://www.ecoindex.fr/', 'https://novagaia.fr/'],
+            output: ['json', 'html'],
+            exportPath: workDir,
+            generationDate: command.generationDate,
+        }
+        fs.writeFileSync(tempFilePath, JSON.stringify(cliFlags))
+        mainLog.log('Command data written to:', tempFilePath)
+
+        // Vérifier que le fichier existe
+        if (fs.existsSync(tempFilePath)) {
+            mainLog.log('File exists, size:', fs.statSync(tempFilePath).size)
+        } else {
+            mainLog.error('File does not exist after writing!')
+        }
+
+        // Définir les variables d'environnement pour le processus Node.js
+        process.env.WORK_DIR = workDir
+
+        // Créer une Promise qui se résoudra quand le processus enfant sera terminé
+        await new Promise<void>((resolve, reject) => {
+            mainLog.debug('Starting utility process...')
+            const child = utilityProcess.fork(
+                path.join(
+                    __dirname,
+                    '..',
+                    '..',
+                    'src',
+                    'extraResources',
+                    'courses',
+                    'index.mjs'
+                )
+            )
+
+            let hasExited = false
+
+            // Gérer les logs stdout
+            if (child.stdout) {
+                child.stdout.on('data', (data) => {
+                    mainLog.debug(`stdout: ${data.toString()}`)
+                })
+            }
+
+            // Gérer les logs stderr
+            if (child.stderr) {
+                child.stderr.on('data', (data) => {
+                    mainLog.error(`stderr: ${data.toString()}`)
+                })
+            }
+
+            // Gérer les messages du processus enfant
+            child.on('message', (message) => {
+                mainLog.info('Message from child:', message)
+                if (typeof message === 'object' && message !== null) {
+                    if ('type' in message) {
+                        switch (message.type) {
+                            case 'progress':
+                                mainLog.debug(`Progress: ${message.data}`)
+                                break
+                            case 'error':
+                                mainLog.error(
+                                    `Error from child: ${message.data}`
+                                )
+                                if (!hasExited) {
+                                    hasExited = true
+                                    reject(
+                                        new Error(
+                                            `Process error: ${message.data}`
+                                        )
+                                    )
+                                }
+                                break
+                            case 'complete':
+                                mainLog.info(`Complete: ${message.data}`)
+                                if (!hasExited) {
+                                    hasExited = true
+                                    resolve()
+                                }
+                                break
+                            default:
+                                mainLog.warn(`Unknown message type: ${message}`)
+                        }
+                    }
+                }
+            })
+
+            // Gérer la fin du processus
+            child.on('exit', (code: number) => {
+                mainLog.log(`Child process exited with code ${code}`)
+
+                // Supprimer le fichier temporaire
+                try {
+                    if (fs.existsSync(tempFilePath)) {
+                        fs.unlinkSync(tempFilePath)
+                        mainLog.debug('Temporary file deleted')
+                    } else {
+                        mainLog.warn(
+                            'Temporary file does not exist, nothing to delete'
+                        )
+                    }
+                } catch (error) {
+                    mainLog.error('Error deleting temporary file:', error)
+                }
+
+                if (!hasExited) {
+                    hasExited = true
+                    if (code === 0) {
+                        mainLog.log('Process completed successfully')
+                        resolve()
+                    } else {
+                        const error = new Error(
+                            `Process exited with code ${code}`
+                        )
+                        mainLog.error('Process failed:', error)
+                        reject(error)
+                    }
+                }
+            })
+
+            // Gérer le démarrage du processus
+            child.on('spawn', () => {
+                mainLog.log('Child process spawned successfully')
+            })
+        })
+        // try {
+        //     // gérer l'ouverture dans le navigateur is simple
+        //     if (isSimple) {
+        //         const url = path.join(
+        //             workDir,
+        //             `generic.report.html`
+        //         )
+        //         console.log('url', url)
+        //         shell.openExternal(url, {
+        //             activate: true,
+        //         })
+        //     }
+        // } catch (error) {
+        //     console.error(
+        //         'Error opening browser:',
+        //         error
+        //     )
+        //     _sendMessageToFrontLog(
+        //         'Error',
+        //         `Error opening browser: ${error}`
+        //     )
+        //     mainLog.log(
+        //         `Error opening browser: ${error}`
+        //     )
+        // }
         return 'mesure done'
     } catch (error) {
-        mainLog.error('Error in _runCollect', error)
+        mainLog.error('Error in _runDirectCollect', error)
+        throw error
     }
 }
 

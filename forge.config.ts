@@ -28,6 +28,7 @@ const config: ForgeConfig = {
         extraResource: [
             './src/extraResources/scripts',
             './src/extraResources/md',
+            './src/extraResources/courses',
             './src/locales',
             './node_modules/puppeteer',
         ],

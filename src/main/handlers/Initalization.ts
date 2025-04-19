@@ -56,12 +56,13 @@ export const initialization = async (
     event: IpcMainEvent | IpcMainInvokeEvent,
     forceInitialisation = false
 ) => {
-    const checkNode = true
+    const checkNode = false
     const getHomeDir = true
-    const getNpmDir = true
-    const checkCanInstall = true
-    const installCustomPlugin = true
-    const installPuppeteer = true
+    const getNpmDir = false
+    const checkCanInstall = false
+    const installCustomPlugin = false
+    const installPuppeteer = false
+    const forceAppReady = true
     const mainLog = getMainLog().scope('main/initialization')
     const updatePlugin = async () => {
         mainLog.log(`8.3 Plugin installation ...`)
@@ -413,7 +414,8 @@ export const initialization = async (
         }
         // #region END
         const appReady = new ConfigData('appReady')
-        if (readInitalizedDatas(initializedDatas)) {
+        const isReady = forceAppReady || readInitalizedDatas(initializedDatas)
+        if (isReady) {
             // TODO
             store.set(storeConstants.APP_INSTALLED_ONCE, true)
             appReady.result = true

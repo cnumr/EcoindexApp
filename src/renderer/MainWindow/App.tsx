@@ -155,7 +155,7 @@ function TheApp() {
      * Increment function to handle the waiting popin.
      */
     const increment = (force = false) => {
-        const STEPS = 7
+        const STEPS = 1
         initReloadButton(false)
         loadingScreen = loadingScreen + 1
         setProgress(loadingScreen * (100 / STEPS))

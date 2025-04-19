@@ -29,7 +29,28 @@ export const rules: Required<ModuleOptions>['rules'] = [
         },
     },
     {
+        test: /\.js$/,
+        exclude: /(node_modules|\.webpack)/,
+        use: {
+            loader: 'babel-loader',
+            options: {
+                presets: ['@babel/preset-env'],
+                sourceType: 'unambiguous',
+            },
+        },
+    },
+    {
         test: /\.svg$/,
         use: ['@svgr/webpack', 'url-loader'],
+    },
+    {
+        test: /\.m?js/,
+        resolve: {
+            fullySpecified: false,
+        },
+    },
+    {
+        test: /\.json$/,
+        type: 'json',
     },
 ]
