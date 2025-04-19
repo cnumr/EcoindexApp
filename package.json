@@ -2,7 +2,6 @@
     "name": "ecoindex-app",
     "displayName": "EcoindexApp",
     "productName": "EcoindexApp",
-    "type": "commonjs",
     "private": true,
     "version": "0.3.0",
     "description": "An application to measures the ecological impact of a website with LightHouse and Ecoindex.",
