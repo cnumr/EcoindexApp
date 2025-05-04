@@ -25,6 +25,19 @@ export const initPuppeteerBrowserIsInstalled = async (
     try {
         await new Promise<void>((resolve, reject) => {
             mainLog.debug('Starting utility process...')
+            /*
+            config['filePath'] = [
+            `${
+                process.env['WEBPACK_SERVE'] === 'true'
+                    ? __dirname
+                    : process.resourcesPath
+            }/scripts/${os.platform()}/${config['actionCMDFile']}`.replace(
+                /\//gm,
+                path.sep
+            ),
+        ]
+            
+            */
             const child = utilityProcess.fork(
                 path.join(
                     __dirname,

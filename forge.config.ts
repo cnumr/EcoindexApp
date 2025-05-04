@@ -21,7 +21,7 @@ const config: ForgeConfig = {
             process.platform === 'linux' ? 'ecoindex-app' : 'EcoindexApp',
         appBundleId: 'io.greenit.ecoindex-ligthouse',
         appCategoryType: 'public.app-category.developer-tools',
-        appCopyright: 'Copyright 2024-2030 Green IT',
+        appCopyright: 'Copyright 2024-2030 Association Green IT',
         darwinDarkModeSupport: true,
         asar: true,
         icon: path.resolve(__dirname, 'assets', 'app-ico'),
@@ -29,11 +29,12 @@ const config: ForgeConfig = {
             './src/extraResources/scripts',
             './src/extraResources/md',
             './src/extraResources/courses',
+            './src/extraResources/browser',
             './src/locales',
             './node_modules/puppeteer',
         ],
         win32metadata: {
-            CompanyName: 'Green IT',
+            CompanyName: 'Association Green IT',
             OriginalFilename: 'Ecoindex',
         },
         osxSign: {

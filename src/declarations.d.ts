@@ -7,9 +7,6 @@ declare module 'src/shared/tailwind-helper' {
 }
 declare module '*.md'
 
-declare module 'lighthouse-plugin-ecoindex-courses/run'
-declare module 'lighthouse-plugin-ecoindex-core/install-browser'
-
 // declare module '*.css';
 // declare module '*.png';
 // declare module '*.jpg';

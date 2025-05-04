@@ -15,10 +15,5 @@ export const mainConfig: Configuration = {
     plugins,
     resolve: {
         extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
-        // Ajout de fallbacks pour les modules Node.js
-        fallback: {
-            path: require.resolve('path-browserify'),
-            fs: false,
-        },
     },
 }
