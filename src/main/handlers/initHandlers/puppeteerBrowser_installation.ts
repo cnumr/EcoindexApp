@@ -1,9 +1,12 @@
-import { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
+import { IpcMainEvent, IpcMainInvokeEvent, utilityProcess } from 'electron'
 
 import { ConfigData } from '../../../class/ConfigData'
+import { _sendMessageToFrontConsole } from '../../utils/SendMessageToFrontConsole'
+import { _sendMessageToFrontLog } from '../../utils/SendMessageToFrontLog'
 import { channels } from '../../../shared/constants'
 import { getMainLog } from '../../main'
 import { getMainWindow } from '../../memory'
+import path from 'path'
 
 // import { installMandatoryBrowser } from 'lighthouse-plugin-ecoindex-core/install-browser'
 
@@ -21,31 +24,129 @@ export const initPuppeteerBrowserInstallation = async (
     const mainLog = getMainLog().scope(
         'main/initialization/initPuppeteerBrowserInstallation'
     )
-    try {
-        const toReturned = new ConfigData('puppeteer_browser_installation')
-        // const { default: installMandatoryBrowser } = await import(
-        //     'lighthouse-plugin-ecoindex-core/install-browser'
-        // )
-        const installMandatoryBrowser: any = null
-        const browserInstalled = await installMandatoryBrowser()
-        // const browserInstalled = await installMandatoryBrowser()
-        return new Promise<ConfigData>((resolve) => {
-            if (browserInstalled) {
-                toReturned.result = true
-                toReturned.message = `puppeteer and browsers are installed`
-                getMainWindow().webContents.send(
-                    channels.HOST_INFORMATIONS_BACK,
-                    toReturned
-                )
-                return resolve(toReturned)
-            } else {
-                toReturned.error = `puppeteer and browsers can't be installed`
-                toReturned.message = `puppeteer and browsers can't be installed`
+    const toReturned = new ConfigData('puppeteer_browser_installation')
 
-                return resolve(toReturned)
+    try {
+        await new Promise<void>((resolve, reject) => {
+            mainLog.debug('Starting utility process...')
+            const child = utilityProcess.fork(
+                path.join(
+                    __dirname,
+                    '..',
+                    '..',
+                    'src',
+                    'extraResources',
+                    'browser',
+                    'install.mjs'
+                ),
+                ['test'],
+                {
+                    stdio: ['ignore', 'pipe', 'pipe'],
+                }
+            )
+            let hasExited = false
+
+            // Gérer les logs stdout
+            if (child.stdout) {
+                child.stdout.on('data', (data) => {
+                    const all = /\n/g
+                    const first = /^\n/
+                    // Only remove the last newline characters (\n)
+                    const last = /\n$/
+                    // Only all the last newlines (\n)
+                    const all_last = /\n+$/
+                    const _data = data.toString().replace(all_last, '')
+                    mainLog.debug(_data)
+                    _sendMessageToFrontLog(_data)
+                    _sendMessageToFrontConsole(_data)
+                })
             }
+
+            // Gérer les logs stderr
+            if (child.stderr) {
+                child.stderr.on('data', (data) => {
+                    mainLog.error(`stderr: ${data.toString()}`)
+                })
+            }
+
+            // Gérer les messages du processus enfant
+            child.on('message', (message) => {
+                mainLog.info('Message from child:', message)
+                if (typeof message === 'object' && message !== null) {
+                    if ('type' in message) {
+                        switch (message.type) {
+                            case 'progress':
+                                mainLog.debug(`Progress: ${message.data}`)
+                                break
+                            case 'error':
+                                mainLog.error(
+                                    `Error from child: ${message.data}`
+                                )
+                                if (!hasExited) {
+                                    hasExited = true
+                                    reject(
+                                        new Error(
+                                            `Process error: ${message.data}`
+                                        )
+                                    )
+                                }
+                                break
+                            case 'complete':
+                                mainLog.info(`Complete: ${message.data}`)
+                                toReturned.result = true
+                                toReturned.message = `puppeteer and browsers are installed`
+                                getMainWindow().webContents.send(
+                                    channels.HOST_INFORMATIONS_BACK,
+                                    toReturned
+                                )
+                                if (!hasExited) {
+                                    hasExited = true
+                                    resolve()
+                                }
+                                break
+                            default:
+                                mainLog.warn(`Unknown message type: ${message}`)
+                        }
+                    }
+                }
+            })
+
+            // Gérer la fin du processus
+            child.on('exit', (code: number) => {
+                mainLog.log(`Child process exited with code ${code}`)
+                if (!hasExited) {
+                    hasExited = true
+                    if (code === 0) {
+                        mainLog.log('Process completed successfully')
+                        resolve()
+                    } else {
+                        const error = new Error(
+                            `Process exited with code ${code}`
+                        )
+                        mainLog.error('Process failed:', error)
+                        toReturned.error = `puppeteer and browsers can't be installed 🚫`
+                        toReturned.message = `puppeteer and browsers can't be installed 🚫`
+                        reject(error)
+                    }
+                }
+            })
+
+            // Gérer le démarrage du processus
+            child.on('spawn', () => {
+                mainLog.log('Child process spawned successfully')
+            })
+        })
+        return new Promise<ConfigData>((resolve) => {
+            getMainWindow().webContents.send(
+                channels.HOST_INFORMATIONS_BACK,
+                toReturned
+            )
+            resolve(toReturned)
         })
     } catch (error) {
-        mainLog.error(`Error on initPuppeteerBrowserInstallation 🚫`, error)
+        mainLog.error('Error on initPuppeteerBrowserInstallation 🚫', error)
+        toReturned.error = `Error on initPuppeteerBrowserInstallation 🚫`
+        toReturned.message = `Error on initPuppeteerBrowserInstallation 🚫`
+        throw error
     }
 }

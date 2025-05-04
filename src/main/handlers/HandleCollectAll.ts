@@ -2,6 +2,7 @@ import { ChildProcess, spawn } from 'child_process'
 import { IpcMainEvent, shell, utilityProcess } from 'electron'
 import { getNodeDir, getNpmDir, getWorkDir, isDev } from '../memory'
 
+import type { CliFlags } from 'lighthouse-plugin-ecoindex-courses/dist/types'
 import { Readable } from 'stream'
 import { _debugLogs } from '../utils/MultiDebugLogs'
 import { _echoReadable } from '../utils/EchoReadable'
@@ -82,35 +83,82 @@ class ComplexeCollectDatas extends CollectDatas {
     jsonFile: string
 }
 
+class CollectDatas_V2 {
+    collectType: `simple` | `complexe`
+    command: CliFlags
+    listAllAudits: false
+}
+
+class SimpleCollectDatas_V2 extends CollectDatas_V2 {
+    declare collectType: 'simple'
+}
+class ComplexeCollectDatas_V2 extends CollectDatas_V2 {
+    declare collectType: 'complexe'
+}
+
 function _prepareDatas(
     collectType: `simple` | `complexe`,
-    output: string[],
+    output: ('statement' | 'json' | 'html')[],
     input: string | ISimpleUrlInput[]
-): ComplexeCollectDatas | SimpleCollectDatas {
+): ComplexeCollectDatas_V2 | SimpleCollectDatas_V2 {
     const _workDir = getWorkDir() as string
     if (!_workDir || _workDir === '') {
         throw new Error('Work dir not found')
     }
+    const date = new Date().toISOString().split('.')[0].replace(/:/g, '-')
+    const default_categories: (
+        | 'lighthouse-plugin-ecoindex-core'
+        | 'accessibility'
+        | 'best-practices'
+        | 'performance'
+        | 'seo'
+    )[] = ['lighthouse-plugin-ecoindex-core', 'accessibility']
     if (collectType === 'simple') {
-        const collectDatas: SimpleCollectDatas = {
-            collectType,
-            outputPath: _workDir,
-            output,
+        const command: CliFlags = {
+            generationDate: date,
             url: (input as ISimpleUrlInput[]).map((url) => {
                 return url.value
             }),
-            listAllAudits: false,
-            generationDate: new Date().toISOString(),
+            'output-path': '',
+            exportPath: path.join(_workDir, date),
+            output: output,
+            'audit-category': default_categories,
         }
-        return collectDatas
-    } else {
-        const collectDatas: ComplexeCollectDatas = {
+        const ouput: SimpleCollectDatas_V2 = {
             collectType,
-            outputPath: _workDir,
-            output,
-            jsonFile: input as string,
+            command,
             listAllAudits: false,
+        }
+        return ouput
+        // const collectDatas: SimpleCollectDatas = {
+        //     collectType,
+        //     outputPath: _workDir,
+        //     output,
+        //     url: (input as ISimpleUrlInput[]).map((url) => {
+        //         return url.value
+        //     }),
+        //     listAllAudits: false,
+        //     generationDate: new Date().toISOString(),
+        // }
+        // return collectDatas
+    } else {
+        const command: CliFlags = {
             generationDate: new Date().toISOString(),
+            'output-path': '',
+            exportPath: path.join(_workDir, date),
+            output: output,
+            'json-file': input as string,
+            'audit-category': default_categories,
+        }
+        const collectDatas: ComplexeCollectDatas_V2 = {
+            collectType,
+            command,
+            listAllAudits: false,
+            // outputPath: _workDir,
+            // output,
+            // jsonFile: input as string,
+            // listAllAudits: false,
+            // generationDate: new Date().toISOString(),
         }
         return collectDatas
     }
@@ -217,16 +265,13 @@ async function _runCollect(
 }
 
 async function _runDirectCollect(
-    command: SimpleCollectDatas | ComplexeCollectDatas,
+    command: SimpleCollectDatas_V2 | ComplexeCollectDatas_V2,
     event: IpcMainEvent,
     isSimple = false
 ) {
     const mainLog = getMainLog().scope('main/runDirectCollect')
     try {
-        const workDir = path
-            .join(command.outputPath, command.generationDate)
-            .split('.')[0]
-            .replace(/:/g, '-')
+        const workDir = command.command.exportPath
         mainLog.log('Work directory:', workDir)
 
         const tempFilePath = path.join(workDir, 'command-data.json')
@@ -240,13 +285,7 @@ async function _runDirectCollect(
 
         // Écrire les données dans le fichier
         mainLog.log('Writing command data to file')
-        const cliFlags = {
-            url: ['https://www.ecoindex.fr/', 'https://novagaia.fr/'],
-            output: ['json', 'html'],
-            exportPath: workDir,
-            generationDate: command.generationDate,
-        }
-        fs.writeFileSync(tempFilePath, JSON.stringify(cliFlags))
+        fs.writeFileSync(tempFilePath, JSON.stringify(command.command))
         mainLog.log('Command data written to:', tempFilePath)
 
         // Vérifier que le fichier existe

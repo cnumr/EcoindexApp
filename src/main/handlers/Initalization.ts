@@ -61,7 +61,7 @@ export const initialization = async (
     const getNpmDir = false
     const checkCanInstall = false
     const installCustomPlugin = false
-    const installPuppeteer = false
+    const installPuppeteer = true
     const forceAppReady = true
     const mainLog = getMainLog().scope('main/initialization')
     const updatePlugin = async () => {
@@ -293,11 +293,17 @@ export const initialization = async (
                     await initPuppeteerBrowserInstallation(event)
                 // #region Puppeteer Browser Verification
                 if (getPuppeteerBrowserInstallationReturned.result !== null) {
+                    // mainLog.log('Waiting 10 seconds before verification...')
+                    // await new Promise((resolve) => setTimeout(resolve, 10000))
                     mainLog.log(
                         `7.b Verification Puppeteer installed after installation ...`
                     )
                     getPuppeteerBrowserIsInstalledReturned =
                         await initPuppeteerBrowserIsInstalled(event)
+                    mainLog.log(
+                        `$$$$$$$$$$`,
+                        getPuppeteerBrowserIsInstalledReturned
+                    )
                     initializedDatas.initPuppeteerBrowserIsInstalled =
                         getPuppeteerBrowserIsInstalledReturned.result !== null
                 }
