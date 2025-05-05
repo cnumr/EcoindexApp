@@ -10,17 +10,17 @@ La gestion du cache du navigateur garantit des mesures **réalistes**.
 
 Avec cette application, vous obtiendrez :
 
--   **Mesures simples** :
-    -   Un rapport HTML Lighthouse avec l'écoindex et ses bonnes pratiques.
--   **Mesures de parcours** :
-    -   Les rapports de Lighthouse en HTML ou JSON avec l'ecoindex, ses bonnes pratiques et la génération de la déclaration environnementale, pré-remplie.
-    -   Un fichier de configuration, enregistré dans le dossier des mesures, vous permettra de relancer les mesures autant de fois que vous le souhaitez, et d'obtenir ainsi une tendance de la performance environnementale de ce site / de cette unité fonctionnelle.
+- **Mesures simples** :
+    - Un rapport HTML Lighthouse avec l'écoindex et ses bonnes pratiques.
+- **Mesures de parcours** :
+    - Les rapports de Lighthouse en HTML ou JSON avec l'ecoindex, ses bonnes pratiques et la génération de la déclaration environnementale, pré-remplie.
+    - Un fichier de configuration, enregistré dans le dossier des mesures, vous permettra de relancer les mesures autant de fois que vous le souhaitez, et d'obtenir ainsi une tendance de la performance environnementale de ce site / de cette unité fonctionnelle.
 
 ## Information importante
 
 Cette application nécessite des modules complémentaires qui ne doivent être installés que la première fois :
 
--   NodeJS (le moteur de l'application) ;
--   Plugin Lighthouse ecoindex, qui pilote la mesure.
+- NodeJS (le moteur de l'application) ;
+- Plugin Lighthouse ecoindex, qui pilote la mesure.
 
 **Ne vous inquiétez pas, nous vous guiderons pas à pas 🙏**

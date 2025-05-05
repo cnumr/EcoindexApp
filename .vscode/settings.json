@@ -1,6 +1,4 @@
 {
     "prettier.prettierPath": "./node_modules/prettier",
-    "i18n-ally.localesPaths": [
-        "src/locales"
-    ]
+    "i18n-ally.localesPaths": ["src/locales"]
 }

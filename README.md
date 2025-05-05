@@ -7,11 +7,11 @@ vous trouverez la version adaptée à votre ordinateur :
 
 <details><summary>Plus d'informations sur le téléchargement.</summary>
 
--   **Linux**: ecoindex-app\_`{version}`\_amd64.deb
--   **Linux**: ecoindex-app-`{version}`-1.x86_64.rpm
--   **Windows** ecoindex-app-`{version}`-win32-x64-setup.exe
--   **Mac (M1)**: EcoindexApp-`{version}`-arm64.dmg
--   **Mac (Intel)**: EcoindexApp-`{version}`-x64.dmg
+- **Linux**: ecoindex-app\_`{version}`\_amd64.deb
+- **Linux**: ecoindex-app-`{version}`-1.x86_64.rpm
+- **Windows** ecoindex-app-`{version}`-win32-x64-setup.exe
+- **Mac (M1)**: EcoindexApp-`{version}`-arm64.dmg
+- **Mac (Intel)**: EcoindexApp-`{version}`-x64.dmg
 
 ---
 
@@ -31,18 +31,18 @@ La gestion du cache du navigateur garantit des mesures **réalistes**.
 
 Avec cette application, vous obtiendrez :
 
--   **Mesures simples** :
-    -   Un rapport HTML Lighthouse avec l'écoindex et ses bonnes pratiques.
--   **Mesures de parcours** :
-    -   Les rapports de Lighthouse en HTML ou JSON avec l'ecoindex, ses bonnes pratiques et la génération de la déclaration environnementale, pré-remplie.
-    -   Un fichier de configuration, enregistré dans le dossier des mesures, vous permettra de relancer les mesures autant de fois que vous le souhaitez, et d'obtenir ainsi une tendance de la performance environnementale de ce site / de cette unité fonctionnelle.
+- **Mesures simples** :
+    - Un rapport HTML Lighthouse avec l'écoindex et ses bonnes pratiques.
+- **Mesures de parcours** :
+    - Les rapports de Lighthouse en HTML ou JSON avec l'ecoindex, ses bonnes pratiques et la génération de la déclaration environnementale, pré-remplie.
+    - Un fichier de configuration, enregistré dans le dossier des mesures, vous permettra de relancer les mesures autant de fois que vous le souhaitez, et d'obtenir ainsi une tendance de la performance environnementale de ce site / de cette unité fonctionnelle.
 
 ## Information importante
 
 Cette application nécessite des modules complémentaires qui ne doivent être installés que la première fois :
 
--   NodeJS (le moteur de l'application) ;
--   Plugin Lighthouse ecoindex, qui pilote la mesure.
+- NodeJS (le moteur de l'application) ;
+- Plugin Lighthouse ecoindex, qui pilote la mesure.
 
 **Ne vous inquiétez pas, nous vous guiderons pas à pas 🙏**
 
@@ -52,6 +52,6 @@ https://cnumr.github.io/lighthouse-plugin-ecoindex/
 
 ## DEV Informations
 
--   ElectronJS / Electron Forge with `template=webpack-typescript`
--   React
--   TailwindCSS
+- ElectronJS / Electron Forge with `template=webpack-typescript`
+- React
+- TailwindCSS
