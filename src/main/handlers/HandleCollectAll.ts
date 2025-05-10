@@ -301,21 +301,30 @@ async function _runDirectCollect(
         // Créer une Promise qui se résoudra quand le processus enfant sera terminé
         await new Promise<void>((resolve, reject) => {
             mainLog.debug('Starting utility process...')
-            const child = utilityProcess.fork(
-                path.join(
-                    __dirname,
-                    '..',
-                    '..',
-                    'src',
-                    'extraResources',
-                    'courses',
-                    'index.mjs'
-                ),
-                ['test'],
-                {
-                    stdio: ['ignore', 'pipe', 'pipe'],
-                }
-            )
+
+            const pathToScript =
+                process.env['WEBPACK_SERVE'] === 'true'
+                    ? path.join(
+                          __dirname,
+                          '..',
+                          '..',
+                          'lib',
+                          'courses_index.mjs'
+                      )
+                    : path.join(
+                          process.resourcesPath,
+                          'lib.asar', // TODO: marche pas
+                          'courses_index.mjs'
+                      )
+            // pathToScript = path.join(__dirname, '..', 'scripts', 'courses_index.mjs')
+            // pathToScript = process.env['WEBPACK_SERVE'] === 'true'
+            //         ? path.join(__dirname, '..', 'scripts', 'courses_index.mjs')
+            //         : path.join(
+            //             'app.asar', 'scripts', 'courses_index.mjs'
+            //           )
+            const child = utilityProcess.fork(pathToScript, ['test'], {
+                stdio: ['ignore', 'pipe', 'pipe'],
+            })
 
             let hasExited = false
 

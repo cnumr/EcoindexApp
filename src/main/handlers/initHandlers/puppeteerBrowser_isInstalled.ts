@@ -25,34 +25,29 @@ export const initPuppeteerBrowserIsInstalled = async (
     try {
         await new Promise<void>((resolve, reject) => {
             mainLog.debug('Starting utility process...')
-            /*
-            config['filePath'] = [
-            `${
+            const pathToScript =
                 process.env['WEBPACK_SERVE'] === 'true'
-                    ? __dirname
-                    : process.resourcesPath
-            }/scripts/${os.platform()}/${config['actionCMDFile']}`.replace(
-                /\//gm,
-                path.sep
-            ),
-        ]
-            
-            */
-            const child = utilityProcess.fork(
-                path.join(
-                    __dirname,
-                    '..',
-                    '..',
-                    'src',
-                    'extraResources',
-                    'browser',
-                    'isInstalled.mjs'
-                ),
-                ['test'],
-                {
-                    stdio: ['ignore', 'pipe', 'pipe'],
-                }
-            )
+                    ? path.join(
+                          __dirname,
+                          '..',
+                          '..',
+                          'lib',
+                          'browser_isInstalled.mjs'
+                      )
+                    : path.join(
+                          process.resourcesPath,
+                          'lib.asar',
+                          'browser_isInstalled.mjs'
+                      )
+            // pathToScript = path.join(__dirname, '..', '..', 'scripts', 'browser_isInstalled.ts')
+            // pathToScript = process.env['WEBPACK_SERVE'] === 'true'
+            //         ? path.join(__dirname, '..', 'scripts', 'browser_isInstalled.mjs')
+            //         : path.join(
+            //             'app.asar', 'scripts', 'browser_isInstalled.mjs'
+            //           )
+            const child = utilityProcess.fork(pathToScript, ['test'], {
+                stdio: ['ignore', 'pipe', 'pipe'],
+            })
             let hasExited = false
 
             // Gérer les logs stdout

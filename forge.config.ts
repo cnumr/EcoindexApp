@@ -26,12 +26,13 @@ const config: ForgeConfig = {
         asar: true,
         icon: path.resolve(__dirname, 'assets', 'app-ico'),
         extraResource: [
-            './src/extraResources/scripts',
+            // './src/extraResources/scripts',
             './src/extraResources/md',
-            './src/extraResources/courses',
-            './src/extraResources/browser',
             './src/locales',
-            './node_modules/puppeteer',
+            './src/extraResources/lib.asar',
+            // './src/extraResources/courses',
+            // './src/extraResources/browser',
+            // './node_modules/puppeteer',
         ],
         win32metadata: {
             CompanyName: 'Association Green IT',

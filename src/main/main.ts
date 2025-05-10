@@ -1,7 +1,7 @@
 // #region Imports
 import * as menuFactoryService from '../services/menuFactory'
 
-import { BrowserWindow, app, ipcMain } from 'electron'
+import { BrowserWindow, app, ipcMain, utilityProcess } from 'electron'
 import {
     getMainWindow,
     getWelcomeWindow,
@@ -20,6 +20,7 @@ import { LinuxUpdate } from '../class/LinuxUpdate'
 import Store from 'electron-store'
 import { channels } from '../shared/constants'
 import { convertVersion } from './utils'
+import extractAsarLib from './handlers/HandleExtractAsarLib'
 import fixPath from 'fix-path'
 import { handleIsJsonConfigFileExist } from './handlers/HandleIsJsonConfigFileExist'
 import { handleJsonReadAndReload } from './handlers/HandleJsonReadAndReload'
@@ -29,7 +30,10 @@ import { initialization } from './handlers/Initalization'
 import log from 'electron-log/main'
 import os from 'os'
 import packageJson from '../../package.json'
+import path from 'path'
 import { updateElectronApp } from 'update-electron-app'
+
+// import * as path from 'node:path'
 
 // #endregion
 // #region Intialization
@@ -100,6 +104,8 @@ if (require('electron-squirrel-startup')) {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
+    // extract ASAR file
+    // extractAsarLib()
     // simple handlers
     ipcMain.handle(channels.SIMPLE_MESURES, handleSimpleCollect)
     // json handlers

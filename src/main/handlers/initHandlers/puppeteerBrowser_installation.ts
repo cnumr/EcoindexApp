@@ -29,21 +29,29 @@ export const initPuppeteerBrowserInstallation = async (
     try {
         await new Promise<void>((resolve, reject) => {
             mainLog.debug('Starting utility process...')
-            const child = utilityProcess.fork(
-                path.join(
-                    __dirname,
-                    '..',
-                    '..',
-                    'src',
-                    'extraResources',
-                    'browser',
-                    'install.mjs'
-                ),
-                ['test'],
-                {
-                    stdio: ['ignore', 'pipe', 'pipe'],
-                }
-            )
+            const pathToScript =
+                process.env['WEBPACK_SERVE'] === 'true'
+                    ? path.join(
+                          __dirname,
+                          '..',
+                          '..',
+                          'lib',
+                          'browser_install.mjs'
+                      )
+                    : path.join(
+                          process.resourcesPath,
+                          'lib.asar',
+                          'browser_install.mjs'
+                      )
+            // pathToScript = path.join(__dirname, '..', '..', 'scripts', 'browser_install.mjs')
+            // pathToScript = process.env['WEBPACK_SERVE'] === 'true'
+            //         ? path.join(__dirname, '..', 'scripts', 'browser_isInstalled.mjs')
+            //         : path.join(
+            //             'app.asar', 'scripts', 'browser_isInstalled.mjs'
+            //           )
+            const child = utilityProcess.fork(pathToScript, ['test'], {
+                stdio: ['ignore', 'pipe', 'pipe'],
+            })
             let hasExited = false
 
             // Gérer les logs stdout

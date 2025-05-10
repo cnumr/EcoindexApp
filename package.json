@@ -33,9 +33,11 @@
     },
     "main": ".webpack/main",
     "scripts": {
-        "start": "ELECTRON_DISABLE_SECURITY_WARNINGS=true && env-cmd electron-forge start",
+        "start": "env-cmd electron-forge start",
         "package": "env-cmd electron-forge package",
+        "postinstall": "cd lib && npm ci",
         "clean:out": "rm -rf ./out/* --y",
+        "premake": "npm run asar:pack:lib",
         "make": "NODE_ENV=production && env-cmd electron-forge make",
         "make:ci": "electron-forge make",
         "make:ci:mac": "electron-forge make",
@@ -53,7 +55,8 @@
         "release:local:minor": "env-cmd release-it minor --config .local.release-it.json",
         "release:local:major": "env-cmd release-it major --config .local.release-it.json",
         "release:ci": "release-it",
-        "localize:generate": "babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'"
+        "localize:generate": "babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'",
+        "asar:pack:lib": "asar pack ./lib ./src/extraResources/lib.asar"
     },
     "devDependencies": {
         "@babel/cli": "^7.24.8",
@@ -104,7 +107,7 @@
         "fork-ts-checker-webpack-plugin": "^7.3.0",
         "html-loader": "^5.1.0",
         "node-loader": "^2.0.0",
-        "prettier": "^3.5.3",
+        "prettier": "3.5.3",
         "prettier-plugin-tailwindcss": "^0.6.11",
         "raw-loader": "^4.0.2",
         "release-it": "^17.6.0",
@@ -139,8 +142,8 @@
         "i18next": "^23.12.2",
         "i18next-node-fs-backend": "^2.1.3",
         "i18next-resources-to-backend": "^1.2.1",
-        "lighthouse": "^12.4.0",
-        "lighthouse-plugin-ecoindex-courses": "^2.0.0",
+        "lighthouse": "12.5.1",
+        "lighthouse-plugin-ecoindex-courses": "^2.0.3",
         "lucide-react": "^0.412.0",
         "native-is-elevated": "^0.7.0",
         "node-polyfill-webpack-plugin": "^4.0.0",
