@@ -1,3 +1,25 @@
+
+
+# [0.4.0-rc.0](https://github.com/cnumr/EcoindexApp/compare/0.3.0...0.4.0-rc.0) (2025-05-12)
+
+
+### Bug Fixes
+
+* change plugin version ([e548e26](https://github.com/cnumr/EcoindexApp/commit/e548e26cf47417c208d496208df23495996c44c1))
+
+
+### Features
+
+* [#16](https://github.com/cnumr/EcoindexApp/issues/16) init ([f7edab4](https://github.com/cnumr/EcoindexApp/commit/f7edab43bbf89ac23a684ce757f14193524a9476))
+* add GNU AFFERO GENERAL PUBLIC LICENSE ([b4e44d9](https://github.com/cnumr/EcoindexApp/commit/b4e44d99df7549b5afdac36cc2d6d0f0a4ed5b71))
+* ajout de la gestion de l'ouverture du rapport dans le navigateur pour le mode simple ([04a55bb](https://github.com/cnumr/EcoindexApp/commit/04a55bba71101db3e404d0e0abde1e5fc00b1fcc))
+* ça fonctionne, en mode test, il faut faire du ménage... ([dbc3166](https://github.com/cnumr/EcoindexApp/commit/dbc3166d8bab32f401e5c23720a74e97498a7277))
+* conf ok, build ok, mais ne trouve pas les .mjs dans extraResources ([3c2ac49](https://github.com/cnumr/EcoindexApp/commit/3c2ac491511160e191ce19d99780b15f19744962))
+* continue with new packages... ([1eeec1d](https://github.com/cnumr/EcoindexApp/commit/1eeec1da8767345b0cde50891009197d18553788))
+* nouvelle initialisation de l'application, utilisant le node interne d'Electron [#16](https://github.com/cnumr/EcoindexApp/issues/16) , mais ça ne build pas... ([17d005d](https://github.com/cnumr/EcoindexApp/commit/17d005dc0eef97071b3b535cbf9ed912e94c8af1))
+* suppression de logs de débogage et ajout de l'envoi de messages au front ([132087f](https://github.com/cnumr/EcoindexApp/commit/132087f166a5a8a09a902f379d4143d5292dd468))
+* works builded locally, to generate and try on normal computer. nouvelle initialisation de l'application, utilisant le node interne d'Electron [#16](https://github.com/cnumr/EcoindexApp/issues/16) ([ec510d1](https://github.com/cnumr/EcoindexApp/commit/ec510d176bd0ce92cfb6aa056500221cde1edabe))
+
 # [0.3.0](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.9...0.3.0) (2024-10-17)
 
 ### Features
