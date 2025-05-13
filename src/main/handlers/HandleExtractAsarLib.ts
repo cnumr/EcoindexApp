@@ -21,11 +21,11 @@ const extractAsarLib = async () => {
                     path.join(process.resourcesPath, 'lib.asar'),
                     libPath
                 )
+                resolve()
             } catch (error) {
                 mainLog.error(`Error extracting ASAR file`, error)
                 reject(error)
             }
-            resolve()
         })
         // try {
         //     await new Promise<void>((resolve, reject) => {
