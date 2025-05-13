@@ -9,7 +9,7 @@ import { utilityProcess } from 'electron'
 const extractAsarLib = async () => {
     const mainLog = getMainLog().scope('main/extract-asar-lib')
     const libPath = path.join(process.resourcesPath, 'lib')
-    if (fs.existsSync(libPath)) {
+    if (fs.existsSync(path.join(libPath, 'package.json'))) {
         mainLog.info(`Extract ASAR file skipped (lib folder already exists)`)
         return
     }
