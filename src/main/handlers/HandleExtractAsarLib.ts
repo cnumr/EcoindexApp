@@ -21,6 +21,7 @@ const extractAsarLib = async () => {
                     path.join(process.resourcesPath, 'lib.asar'),
                     libPath
                 )
+                mainLog.info(`Extract ASAR file completed`)
                 resolve()
             } catch (error) {
                 mainLog.error(`Error extracting ASAR file`, error)

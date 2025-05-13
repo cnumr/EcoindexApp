@@ -11,6 +11,7 @@ import {
 
 import { ConfigData } from '../../class/ConfigData'
 import Store from 'electron-store'
+import extractAsarLib from './HandleExtractAsarLib'
 import { getMainLog } from '../main'
 import { getMainWindow } from '../memory'
 import { initGetHomeDir } from './initHandlers/getHomeDir'
@@ -64,6 +65,11 @@ export const initialization = async (
     const installPuppeteer = true
     const forceAppReady = true
     const mainLog = getMainLog().scope('main/initialization')
+    // extract ASAR file
+    if (process.platform === 'win32') {
+        mainLog.info(`Extract ASAR file for Windows (hack)`)
+        await extractAsarLib()
+    }
     const updatePlugin = async () => {
         mainLog.log(`8.3 Plugin installation ...`)
         const getPluginNormalInstallationReturned =
