@@ -1,5 +1,12 @@
 
 
+# [0.4.0-rc.4](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.3...0.4.0-rc.4) (2025-05-13)
+
+
+### Bug Fixes
+
+* handle win32 difference ([6162640](https://github.com/cnumr/EcoindexApp/commit/61626405b63f98d13fe12a59b73006869183514b))
+
 # [0.4.0-rc.3](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.2...0.4.0-rc.3) (2025-05-12)
 
 # [0.4.0-rc.2](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.1...0.4.0-rc.2) (2025-05-12)
