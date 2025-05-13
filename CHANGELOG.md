@@ -1,5 +1,12 @@
 
 
+# [0.4.0-rc.6](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.5...0.4.0-rc.6) (2025-05-13)
+
+
+### Bug Fixes
+
+* correction de la promesse de résolution dans l'extraction des fichiers ASAR ([b413400](https://github.com/cnumr/EcoindexApp/commit/b41340047b484d9705dd0e7cae4c73829658ee36))
+
 # [0.4.0-rc.5](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.4...0.4.0-rc.5) (2025-05-13)
 
 # [0.4.0-rc.4](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.3...0.4.0-rc.4) (2025-05-13)
