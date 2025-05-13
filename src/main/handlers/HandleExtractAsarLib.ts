@@ -4,7 +4,6 @@ import asar from '@electron/asar'
 import fs from 'fs'
 import { getMainLog } from '../main'
 import path from 'path'
-import { utilityProcess } from 'electron'
 
 const extractAsarLib = async () => {
     const mainLog = getMainLog().scope('main/extract-asar-lib')
@@ -22,9 +21,13 @@ const extractAsarLib = async () => {
                     libPath
                 )
                 mainLog.info(`Extract ASAR file completed`)
+                _sendMessageToFrontLog(`Extract ASAR file completed`)
+                _sendMessageToFrontConsole(`Extract ASAR file completed`)
                 resolve()
             } catch (error) {
                 mainLog.error(`Error extracting ASAR file`, error)
+                _sendMessageToFrontLog(`Error extracting ASAR file`, error)
+                _sendMessageToFrontConsole(`Error extracting ASAR file`, error)
                 reject(error)
             }
         })
