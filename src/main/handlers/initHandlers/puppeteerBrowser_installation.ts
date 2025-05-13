@@ -40,7 +40,7 @@ export const initPuppeteerBrowserInstallation = async (
                       )
                     : path.join(
                           process.resourcesPath,
-                          'lib.asar',
+                          process.platform === 'win32' ? 'lib' : 'lib.asar',
                           'browser_install.mjs'
                       )
             // pathToScript = path.join(__dirname, '..', '..', 'scripts', 'browser_install.mjs')

@@ -313,7 +313,7 @@ async function _runDirectCollect(
                       )
                     : path.join(
                           process.resourcesPath,
-                          'lib.asar', // TODO: marche pas
+                          process.platform === 'win32' ? 'lib' : 'lib.asar',
                           'courses_index.mjs'
                       )
             // pathToScript = path.join(__dirname, '..', 'scripts', 'courses_index.mjs')
