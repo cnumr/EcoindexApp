@@ -1,5 +1,13 @@
 
 
+# [0.4.0-rc.7](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.6...0.4.0-rc.7) (2025-05-13)
+
+
+### Bug Fixes
+
+* réintégration de l'extraction des fichiers ASAR pour Windows dans le processus d'initialisation ([34edcff](https://github.com/cnumr/EcoindexApp/commit/34edcff0129733b3c09d867afa1cf78b7b47d133))
+* vérification de l'existence du fichier package.json dans le dossier lib avant l'extraction des fichiers ASAR ([8e25272](https://github.com/cnumr/EcoindexApp/commit/8e252725ac95494f899eda92e4028af799037648))
+
 # [0.4.0-rc.6](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.5...0.4.0-rc.6) (2025-05-13)
 
 
