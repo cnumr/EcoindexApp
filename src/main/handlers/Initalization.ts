@@ -64,12 +64,8 @@ export const initialization = async (
     const installCustomPlugin = false
     const installPuppeteer = true
     const forceAppReady = true
+    const isWin32 = process.platform === 'win32'
     const mainLog = getMainLog().scope('main/initialization')
-    // extract ASAR file
-    if (process.platform === 'win32') {
-        mainLog.info(`Extract ASAR file for Windows (hack)`)
-        await extractAsarLib()
-    }
     const updatePlugin = async () => {
         mainLog.log(`8.3 Plugin installation ...`)
         const getPluginNormalInstallationReturned =
@@ -93,6 +89,10 @@ export const initialization = async (
     const initializedDatas: initializedDatas = {}
     try {
         mainLog.log(`Initialization start...`)
+        // extract ASAR file
+        if (isWin32) {
+            await extractAsarLib()
+        }
         // #region Check First launch
         // eslint-disable-next-line no-constant-condition
         if (false) {
