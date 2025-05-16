@@ -166,5 +166,24 @@
     "🧩 JSON reload": "🧩 Rechargement JSON",
     "🧩 JSON save": "🧩 Sauvegarde JSON",
     "🧩 JSON save and collect": "🧩 Sauvegarde et collecte JSON",
-    "🧩 Simple collect": "🧩 Collecte simple"
+    "🧩 Simple collect": "🧩 Collecte simple",
+    "initialization": {
+        "title": "Démarrage de l'application",
+        "started": "Vérifications...",
+        "windows": {
+            "unpacking": "Extraction des fichiers (cela peut prendre quelques secondes et faire freezé l'application)..."
+        },
+        "homeDir-workDir": "Recherche du dossier de travail",
+        "dir": {
+            "home": "Recherche du dossier utilisateur...",
+            "work": "Recherche du dossier de travail..."
+        },
+        "browser-puppeteer": {
+            "isInstalled": "Vérification si le navigateur interne est déjà installé...",
+            "installation": "Installation du navigateur interne",
+            "verification": "Vérification de la bonne installation du navigateur interne...",
+            "error": "L'installation du navigateur à retourné une erreur. L'application ne peut pas démarrer 🚫"
+        },
+        "finished": "Installation terminée avec succès 🎉"
+    }
 }

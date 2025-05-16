@@ -21,6 +21,10 @@ contextBridge.exposeInMainWorld('initialisationAPI', {
         ipcRenderer.on(channels.INITIALIZATION_DATAS, (_event, value) =>
             callback(value)
         ),
+    sendInitializationMessages: (callback: any) =>
+        ipcRenderer.on(channels.INITIALIZATION_MESSAGES, (_event, message) =>
+            callback(message)
+        ),
 })
 contextBridge.exposeInMainWorld('electronAPI', {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

@@ -214,7 +214,7 @@ const i18nInit = () => {
 
 // #region Windows creation
 export const createHelloWindow = () => {
-    if (!hasShowWelcomeWindow()) {
+    if (!hasShowWelcomeWindow() || process.env['WEBPACK_SERVE'] === 'true') {
         const displayHello = `displayHello.${convertVersion(packageJson.version)}`
         setWelcomeWindow(
             new BrowserWindow({

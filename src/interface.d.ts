@@ -47,6 +47,7 @@ export interface IInitalization {
     initializeApplication: (forceInitialisation: boolean) => Promise<boolean>
     // Main → Front
     sendConfigDatasToFront: (callback) => ConfigData
+    sendInitializationMessages: (callback) => InitializationMessages
 }
 
 declare global {

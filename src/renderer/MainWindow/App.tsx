@@ -452,6 +452,12 @@ function TheApp() {
          */
         launchInitialization(false)
 
+        window.initialisationAPI.sendInitializationMessages(
+            (message: InitalizationMessage) => {
+                frontLog.debug(`sendInitializationMessages`, message)
+            }
+        )
+
         /**
          * Add "listeners" for initialisationAPI.sendConfigDatasToFront()
          */

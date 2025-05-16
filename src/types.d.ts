@@ -12,3 +12,10 @@ type ResultMessage = {
     actualVersion?: string
     targetVersion?: string
 }
+
+type InitalizationMessage = {
+    type: 'initalization'
+    modalType: 'started' | 'error' | 'completed'
+    title: string
+    message: string
+}
