@@ -10,7 +10,6 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@electron/asar": "3.4.1",
         "lighthouse": "12.5.1",
         "lighthouse-plugin-ecoindex-core": "2.0.3",
         "lighthouse-plugin-ecoindex-courses": "2.0.3"
