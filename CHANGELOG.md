@@ -1,5 +1,20 @@
 
 
+# [0.4.0-rc.8](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.7...0.4.0-rc.8) (2025-05-17)
+
+
+### Bug Fixes
+
+* ajout d'un message de log pour l'extraction des fichiers ASAR sur Windows ([5abbabb](https://github.com/cnumr/EcoindexApp/commit/5abbabbbe60f16bfa7b7f67e665894218541b3d1))
+* ajout de messages de log et de console pour le suivi de l'extraction des fichiers ASAR ([73268d8](https://github.com/cnumr/EcoindexApp/commit/73268d8af42d4b9ef42a4a690bf4f7b578965a0b))
+* réintégration de l'extraction des fichiers ASAR pour Windows avec une vérification de la plateforme ([6cf8281](https://github.com/cnumr/EcoindexApp/commit/6cf828184b0f9c9b627b8f40983fbef3cf1364f1))
+
+
+### Features
+
+* ajout de la gestion des messages d'initialisation pour améliorer le suivi du processus d'initialisation de l'application ([db6a0c7](https://github.com/cnumr/EcoindexApp/commit/db6a0c7a2708920a1261845927790407fb44da60))
+* finalisation du nouveau chargement (menage à faire) ([a89e0d4](https://github.com/cnumr/EcoindexApp/commit/a89e0d444a96cde33ca9edddb2093581e7c12e28))
+
 # [0.4.0-rc.7](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.6...0.4.0-rc.7) (2025-05-13)
 
 
