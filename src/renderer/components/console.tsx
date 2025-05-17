@@ -12,30 +12,20 @@ interface ILayout {
     id?: string
     appReady?: boolean
     isFirstStart?: boolean
-    isNodeInstalled?: boolean
-    isLighthouseEcoindexPluginInstalled?: boolean
     isPuppeteerBrowserInstalled?: boolean
-    isNodeVersionOK?: boolean
     workDir?: string
     homeDir?: string
-    npmDir?: string
-    puppeteerBrowserInstalled?: string
-    userCanWrite?: boolean
+    puppeteerBrowserInstalledVersion?: string
 }
 export const ConsoleApp: FC<ILayout> = ({
     datasFromHost,
     id,
     appReady,
     isFirstStart,
-    isNodeInstalled,
-    isLighthouseEcoindexPluginInstalled,
     isPuppeteerBrowserInstalled,
-    isNodeVersionOK,
     workDir,
     homeDir,
-    npmDir,
-    puppeteerBrowserInstalled,
-    userCanWrite,
+    puppeteerBrowserInstalledVersion,
 }) => {
     const copyToClipBoard = () => {
         navigator.clipboard.writeText(JSON.stringify(datasFromHost, null, 2))
@@ -105,56 +95,21 @@ export const ConsoleApp: FC<ILayout> = ({
                             isFirstStart: {isFirstStart ? 'true' : 'false'}
                         </div>
                     )}
-                    {isNodeInstalled && (
-                        <div>
-                            isNodeInstalled:{' '}
-                            {isNodeInstalled ? 'true' : 'false'}
-                        </div>
-                    )}
-                    {isLighthouseEcoindexPluginInstalled && (
-                        <div>
-                            isLighthouseEcoindexPluginInstalled:{' '}
-                            {isLighthouseEcoindexPluginInstalled
-                                ? 'true'
-                                : 'false'}
-                        </div>
-                    )}
                     {isPuppeteerBrowserInstalled && (
                         <div>
                             isPuppeteerBrowserInstalled:{' '}
                             {isPuppeteerBrowserInstalled ? 'true' : 'false'}
                         </div>
                     )}
-                    {isNodeVersionOK && (
-                        <div>
-                            isNodeVersionOK:{' '}
-                            {isNodeVersionOK ? 'true' : 'false'}
-                        </div>
-                    )}
                     {workDir && <div>workDir: {workDir}</div>}
                     {homeDir && <div>homeDir: {homeDir}</div>}
-                    {npmDir && <div>npmDir: {npmDir}</div>}
-                    {puppeteerBrowserInstalled && (
-                        <div>PuppeteerBrowser: {puppeteerBrowserInstalled}</div>
-                    )}
-                    {userCanWrite && (
+                    {puppeteerBrowserInstalledVersion && (
                         <div>
-                            userCanWrite: {userCanWrite ? 'true' : 'false'}
+                            PuppeteerBrowser: {puppeteerBrowserInstalledVersion}
                         </div>
                     )}
                 </div>
             </div>
         </details>
-        // <Card className="w-full border-primary">
-        //     <CardHeader>
-        //         <CardTitle>Console</CardTitle>
-        //         <CardDescription>
-        //             Here you cans see what is happenning hunder the hood...
-        //         </CardDescription>
-        //     </CardHeader>
-        //     <CardContent className="flex flex-col gap-4">
-
-        //     </CardContent>
-        // </Card>
     )
 }

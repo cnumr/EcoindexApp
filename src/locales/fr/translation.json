@@ -184,6 +184,7 @@
             "verification": "Vérification de la bonne installation du navigateur interne...",
             "error": "L'installation du navigateur à retourné une erreur. L'application ne peut pas démarrer 🚫"
         },
-        "finished": "Installation terminée avec succès 🎉"
+        "finished": "Installation terminée avec succès 🎉",
+        "title-error": "L'installation est en erreur !"
     }
 }

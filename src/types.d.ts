@@ -1,3 +1,5 @@
+import { InitalizationData } from './class/InitalizationData'
+
 type ISimpleUrlInput = {
     value: string
 }
@@ -14,8 +16,9 @@ type ResultMessage = {
 }
 
 type InitalizationMessage = {
-    type: 'initalization'
+    type: 'message' | 'data'
     modalType: 'started' | 'error' | 'completed'
     title: string
     message: string
+    data?: InitalizationData
 }

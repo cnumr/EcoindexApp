@@ -5,12 +5,12 @@ import {
     CardHeader,
     CardTitle,
 } from '../ui/card'
+import { InitalizationMessage, InputField } from '../../types'
 import { Route, MemoryRouter as Router, Routes } from 'react-router-dom'
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs'
 import { store as storeConstants, utils } from '../../shared/constants'
 import { useCallback, useEffect, useState } from 'react'
 
-import { AlertBox } from '../components/Alert'
 import { Bug } from 'lucide-react'
 import { Button } from '@/renderer/ui/button'
 import { ConfigData } from '../../class/ConfigData'
@@ -18,7 +18,9 @@ import { ConsoleApp } from '../components/console'
 import { DarkModeSwitcher } from '../components/dark-mode-switcher'
 import { Footer } from '../components/footer'
 import { Header } from '../components/Header'
+import { InformationPopin } from '../components/information-popin'
 import { InitErrorAlerts } from '../components/initialization-error-alerts'
+import { InitalizationData } from '../../class/InitalizationData'
 import { Input } from '../ui/input'
 import { JsonPanMesure } from '../components/json-pan'
 import { LinuxUpdate } from '../../class/LinuxUpdate'
@@ -40,33 +42,32 @@ function TheApp() {
     // #region useState, useTranslation
     // const [language, setLanguage] = useState('en')
     const [progress, setProgress] = useState(0)
-    const [initializing, setInitializing] = useState(false)
     const [isJsonFromDisk, setIsJsonFromDisk] = useState(false)
-    const [nodeVersion, setNodeVersion] = useState('')
     const [workDir, setWorkDir] = useState('loading...')
     const [homeDir, setHomeDir] = useState('loading...')
-    const [npmDir, setNpmDir] = useState('loading...')
     const [appReady, setAppReady] = useState(false)
     const [datasFromHost, setDatasFromHost] = useState({})
     const [displayPopin, setDisplayPopin] = useState(false)
-    const [popinText, setPopinText] = useState('Loading... 0/4')
-    const [pluginVersion, setPluginVersion] = useState('')
-    const [isNodeInstalled, setIsNodeInstalled] = useState(false)
-    const [isNodeVersionOK, setIsNodeVersionOK] = useState(false)
+    const [popinText, setPopinText] = useState('')
     const [isFirstStart, setIsFirstStart] = useState(true)
-    const [userCanWrite, setUserCanWrite] = useState(true)
     const [isPuppeteerBrowserInstalled, setIsPuppeteerBrowserInstalled] =
         useState(false)
-    const [puppeteerBrowserInstalled, setPuppeteerBrowserInstalled] =
-        useState('loading...')
     const [
-        isLighthouseEcoindexPluginInstalled,
-        setIsLighthouseEcoindexPluginInstalled,
-    ] = useState(false)
+        puppeteerBrowserInstalledVersion,
+        setPuppeteerBrowserInstalledVersion,
+    ] = useState('loading...')
 
     const [displayReloadButton, setDisplayReloadButton] = useState(false)
+    // #region displayInformationPopin
+    const [displayInformationPopin, setDisplayInformationPopin] =
+        useState(false)
+    const [informationPopinTitle, setInformationPopinTitle] = useState('')
+    const [informationPopinMessage, setInformationPopinMessage] = useState('')
+    const [informationPopinIsAlert, setInformationPopinIsAlert] =
+        useState(false)
+    const [showInformationSpinner, setShowInformationSpinner] = useState(true)
+    // #endregion
 
-    let loadingScreen = 0
     const [urlsList, setUrlsList] = useState<InputField[]>([
         { value: 'https://www.ecoindex.fr/' },
         { value: 'https://www.ecoindex.fr/a-propos/' },
@@ -151,30 +152,6 @@ function TheApp() {
         }
     }
 
-    /**
-     * Increment function to handle the waiting popin.
-     */
-    const increment = (force = false) => {
-        const STEPS = 1
-        initReloadButton(false)
-        loadingScreen = loadingScreen + 1
-        setProgress(loadingScreen * (100 / STEPS))
-        frontLog.log(`Verify configuration step ${loadingScreen}/${STEPS}`)
-        setPopinText(`${t('Loading...')} ${loadingScreen}/${STEPS}`)
-        if (loadingScreen === STEPS || force) {
-            initReloadButton(true)
-            frontLog.log(`All initialization datas readed! 👀`)
-            setDisplayPopin(false)
-            const _n: any = {}
-            _n.body = t('Application succefully loaded.\nWelcome 👋')
-            _n.subtitle = t('You can now start measures')
-            _n.priority = 'critical'
-            showNotification('', _n)
-            setDisplayReloadButton(false)
-        } else {
-            setAppReady(false)
-        }
-    }
     // #endregion
 
     // #region handlers
@@ -333,10 +310,11 @@ function TheApp() {
      */
     const launchInitialization = async (forceInitialisation: boolean) => {
         frontLog.debug(`initializeApplication start 🚀`)
-        setDisplayPopin(true)
-        setInitializing(true)
-        setDisplayReloadButton(false)
-        initReloadButton()
+        // setDisplayPopin(true)
+        // setDisplayInformationPopin(true)
+        // setInitializing(true)
+        // setDisplayReloadButton(false)
+        // initReloadButton()
         if (
             forceInitialisation ||
             (await window.store.get(storeConstants.APP_INSTALLED_ONCE, false))
@@ -346,7 +324,7 @@ function TheApp() {
             await window.initialisationAPI.initializeApplication(
                 forceInitialisation
             )
-        setInitializing(false)
+        // setInitializing(false)
         frontLog.debug(
             `initializeApplication ended with ${result ? 'OK 👍' : 'KO 🚫'} status.`
         )
@@ -453,121 +431,47 @@ function TheApp() {
         launchInitialization(false)
 
         window.initialisationAPI.sendInitializationMessages(
-            (message: InitalizationMessage) => {
+            async (message: InitalizationMessage) => {
                 frontLog.debug(`sendInitializationMessages`, message)
-            }
-        )
 
-        /**
-         * Add "listeners" for initialisationAPI.sendConfigDatasToFront()
-         */
-        window.initialisationAPI.sendConfigDatasToFront(
-            (configData: ConfigData) => {
-                frontLog.debug(`sendConfigDatasToFront`, configData)
-                // if (configData.error) {
-                //     frontLog.error(configData)
-                //     if (process.env['WEBPACK_SERVE'] === 'true') {
-                //         window.alert(
-                //             `0. ${configData.type} : ${configData.message ? configData.message : configData.error}`
-                //         )
-                //     }
-                // }
-                switch (configData.type) {
-                    case ConfigData.WORKDIR:
-                        setWorkDir(configData.result as string)
-                        increment()
-                        break
-                    case ConfigData.HOMEDIR:
-                        setHomeDir(configData.result as string)
-                        increment()
-                        break
-                    case ConfigData.NODE_INSTALLED:
-                        setIsNodeInstalled(configData.result as boolean)
-                        increment()
-                        break
-                    case ConfigData.NODE_VERSION_IS_OK:
-                        setIsNodeVersionOK(configData.result as boolean)
-                        setNodeVersion(configData.message)
-                        increment()
-                        break
-                    case ConfigData.PLUGIN_INSTALLED:
-                        setIsLighthouseEcoindexPluginInstalled(
-                            configData.result as boolean
-                        )
-                        increment()
-                        break
-                    case ConfigData.PLUGIN_VERSION:
-                        setPluginVersion(configData.result as string)
-                        increment()
-                        break
-                    case ConfigData.NPMDIR:
-                        setNpmDir(configData.result as string)
-                        break
-                    case ConfigData.PUPPETEER_BROWSER_INSTALLED:
-                        setIsPuppeteerBrowserInstalled(
-                            configData.result !== null
-                        )
-                        setPuppeteerBrowserInstalled(
-                            configData.result as string
-                        )
-                        increment()
-                        break
-                    case ConfigData.APP_READY:
-                        setAppReady(configData.result as boolean)
-                        increment(true)
-                        break
-                    case ConfigData.APP_CAN_NOT_BE_LAUNCHED:
-                        frontLog.log(
-                            `Init Error detected ${configData.errorType}`
-                        )
-                        setDisplayPopin(false)
-                        switch (configData.errorType) {
-                            case ConfigData.ERROR_TYPE_FIRST_INSTALL:
-                                setIsFirstStart(true)
-                                break
-                            case ConfigData.ERROR_TYPE_NO_NODE:
-                                setIsNodeInstalled(false)
-                                break
-                            case ConfigData.ERROR_TYPE_NO_WRITE_ACCESS:
-                                setUserCanWrite(false)
-                                break
-                            case ConfigData.ERROR_TYPE_CANT_FIX_USER_RIGHTS:
-                                setUserCanWrite(false)
-                                break
-                            case ConfigData.ERROR_TYPE_BROWSER_NOT_INSTALLED:
-                                setIsPuppeteerBrowserInstalled(false)
-                                break
-                            case ConfigData.ERROR_TYPE_NODE_VERSION_ERROR:
-                                setIsNodeVersionOK(false)
-                                break
-                            case ConfigData.ERROR_TYPE_NO_NPM_DIR:
-                                setNpmDir(null)
-                                break
+                if (message.type === 'data') {
+                    switch (message.data?.type) {
+                        case InitalizationData.WORKDIR:
+                            setWorkDir(message.data.result as string)
+                            break
+                        case InitalizationData.HOMEDIR:
+                            setHomeDir(message.data.result as string)
+                            break
+                        case InitalizationData.APP_READY:
+                            setAppReady(message.data.result as boolean)
+                            break
+                        case InitalizationData.PUPPETEER_BROWSER_INSTALLED:
+                            setIsPuppeteerBrowserInstalled(
+                                message.data.result as boolean
+                            )
+                            setPuppeteerBrowserInstalledVersion(
+                                message.data.result as string
+                            )
+                            break
+                        case InitalizationData.APP_CAN_NOT_BE_LAUNCHED:
+                            setInformationPopinTitle(`${message.title}`)
+                            setInformationPopinMessage(message.message)
+                            break
+                    }
+                } else {
+                    setInformationPopinTitle(message.title)
+                    setInformationPopinMessage(message.message)
+                }
 
-                            default:
-                                // if (configData.errorType !== undefined) {
-                                //     window.alert(
-                                //         `1. ConfigData.errorType=${configData.errorType} not handle in App.tsx`
-                                //     )
-                                // } else {
-                                //     frontLog.error(
-                                //         `ConfigData.errorType=${configData.errorType} not handle in App.tsx`
-                                //     )
-                                // }
-                                break
-                        }
-                        break
-
-                    default:
-                    // if (configData.type) {
-                    //     window.alert(
-                    //         `2. ConfigData.type=${configData.type} not handle in App.tsx`
-                    //     )
-                    // } else {
-                    //     frontLog.error(
-                    //         `ConfigData.type=${configData.type} not handle in App.tsx`
-                    //     )
-                    // }
+                if (message.modalType === 'started') {
+                    setDisplayInformationPopin(true)
+                } else if (message.modalType === 'completed') {
+                    await _sleep(2000)
+                    setDisplayInformationPopin(false)
+                } else if (message.modalType === 'error') {
+                    setDisplayInformationPopin(true)
+                    setShowInformationSpinner(false)
+                    setInformationPopinIsAlert(true)
                 }
             }
         )
@@ -711,28 +615,30 @@ function TheApp() {
                         datasFromHost={datasFromHost}
                         appReady={appReady}
                         isFirstStart={isFirstStart}
-                        isNodeInstalled={isNodeInstalled}
-                        isLighthouseEcoindexPluginInstalled={
-                            isLighthouseEcoindexPluginInstalled
-                        }
                         isPuppeteerBrowserInstalled={
                             isPuppeteerBrowserInstalled
                         }
-                        isNodeVersionOK={isNodeVersionOK}
                         workDir={workDir}
                         homeDir={homeDir}
-                        npmDir={npmDir}
-                        puppeteerBrowserInstalled={puppeteerBrowserInstalled}
-                        userCanWrite={userCanWrite}
+                        puppeteerBrowserInstalledVersion={
+                            puppeteerBrowserInstalledVersion
+                        }
                     />
                 </div>
                 <Footer
-                    nodeVersion={nodeVersion}
-                    pluginVersion={pluginVersion}
                     appVersion={packageJson.version}
                     repoUrl={packageJson.homepage}
                 />
             </main>
+            <InformationPopin
+                id="informationPopin"
+                display={displayInformationPopin}
+                title={informationPopinTitle}
+                showSpinner={showInformationSpinner}
+                isAlert={informationPopinIsAlert}
+            >
+                <span>{informationPopinMessage}</span>
+            </InformationPopin>
             {displayPopin && (
                 <PopinLoading
                     id="loadingPopin"
