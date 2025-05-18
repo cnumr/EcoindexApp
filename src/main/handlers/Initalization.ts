@@ -45,13 +45,13 @@ export const initialization = async (
     forceInitialisation = false
 ) => {
     const forceAppReady = true
-    const isWin32 = process.platform === 'win32'
+    const isDarwin = process.platform !== 'darwin'
     const mainLog = getMainLog().scope('main/initialization')
     const initializedDatas: initializedDatas = {}
 
     mainLog.info(`forceInitialisation`, forceInitialisation)
     try {
-        const steps = isWin32 ? 8 : 7
+        const steps = isDarwin ? 7 : 8
         let currentStep = 1
         mainLog.log(`Initialization start...`)
         getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
@@ -64,7 +64,7 @@ export const initialization = async (
         await new Promise((resolve) => setTimeout(resolve, 5000))
 
         // #region Extraction pour windows
-        if (isWin32) {
+        if (!isDarwin) {
             getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
                 type: 'message',
                 modalType: 'started',
