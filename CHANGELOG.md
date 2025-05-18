@@ -1,5 +1,18 @@
 
 
+# [0.4.0-rc.9](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.8...0.4.0-rc.9) (2025-05-18)
+
+
+### Bug Fixes
+
+* remplacement de 'os.platform()' par 'process.platform' pour une vérification correcte de la plateforme dans le code principal ([3d25bcf](https://github.com/cnumr/EcoindexApp/commit/3d25bcf365a6a5c675eb24533287eb7c228d5553))
+
+
+### Features
+
+* amélioration de l'affichage des messages d'information avec des styles conditionnels ([f7bad68](https://github.com/cnumr/EcoindexApp/commit/f7bad6855fd6c934e822e01e4ce033652bbc1bee))
+* correction de la vérification de la plateforme pour l'initialisation, en remplaçant 'win32' par 'darwin' ([6e7ec0f](https://github.com/cnumr/EcoindexApp/commit/6e7ec0f58a5a12dafae53b846f14b3f18fbb075e))
+
 # [0.4.0-rc.8](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.7...0.4.0-rc.8) (2025-05-17)
 
 
