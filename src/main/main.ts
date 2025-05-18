@@ -56,7 +56,7 @@ log.info(
 )
 
 // #region update app
-if (os.platform() !== 'linux') {
+if (process.platform !== 'linux') {
     updateElectronApp({
         updateInterval: '1 hour',
         logger: updateLog,
@@ -79,7 +79,7 @@ declare const HELLO_WINDOW_PRELOAD_WEBPACK_ENTRY: string
 const _runfixPath = () => {
     if (isDev()) mainLog.debug(`RUN fixPath and shellEnv`)
     fixPath()
-    if (os.platform() === 'darwin') {
+    if (process.platform === 'darwin') {
         if (isDev()) mainLog.debug(`darwin`)
         const { shell } = os.userInfo()
         if (isDev()) mainLog.debug(`shell`, shell)
@@ -283,7 +283,7 @@ const createMainWindow = (): void => {
         }
     }
 
-    if (os.platform() === 'linux') {
+    if (process.platform === 'linux') {
         checkLinuxUpdater()
     }
     // Open the DevTools.
