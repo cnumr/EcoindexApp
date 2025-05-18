@@ -163,18 +163,18 @@ export const darwinTemplate = (
                             await shell.openPath(`${logFile}`)
                         },
                     },
-                    {
-                        label: `${_i18n.t('Open splash window...')}`,
-                        click: async () => {
-                            store.set(
-                                `displayHello.${convertVersion(pkg.version)}`,
-                                false
-                            )
-                            setHasShowedWelcomeWindow(false)
-                            await createHelloWindow()
-                            // await getWelcomeWindow().show()
-                        },
-                    },
+                    // {
+                    //     label: `${_i18n.t('Open splash window...')}`,
+                    //     click: async () => {
+                    //         store.set(
+                    //             `displayHello.${convertVersion(pkg.version)}`,
+                    //             false
+                    //         )
+                    //         setHasShowedWelcomeWindow(false)
+                    //         await createHelloWindow()
+                    //         // await getWelcomeWindow().show()
+                    //     },
+                    // },
                 ],
             },
             // {

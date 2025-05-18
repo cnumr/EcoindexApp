@@ -119,12 +119,12 @@ export const otherTemplate = (
                             await shell.openPath(`${logFile}`)
                         },
                     },
-                    {
-                        label: `${_i18n.t('Open splash window...')}`,
-                        click: async () => {
-                            await getWelcomeWindow().show()
-                        },
-                    },
+                    // {
+                    //     label: `${_i18n.t('Open splash window...')}`,
+                    //     click: async () => {
+                    //         await getWelcomeWindow().show()
+                    //     },
+                    // },
                 ],
             },
         ]

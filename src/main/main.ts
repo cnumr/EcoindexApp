@@ -178,12 +178,12 @@ const _changeLanguage = (lng: string) => {
                 channels.CHANGE_LANGUAGE_TO_FRONT,
                 lng
             )
-        i18n.isInitialized &&
-            !getWelcomeWindow().isDestroyed() &&
-            getWelcomeWindow().webContents.send(
-                channels.CHANGE_LANGUAGE_TO_FRONT,
-                lng
-            )
+        // i18n.isInitialized &&
+        //     !getWelcomeWindow().isDestroyed() &&
+        //     getWelcomeWindow().webContents.send(
+        //         channels.CHANGE_LANGUAGE_TO_FRONT,
+        //         lng
+        //     )
         i18n.isInitialized &&
             menuFactoryService.buildMenu(app, getMainWindow(), i18n)
     } catch (error) {
@@ -256,7 +256,7 @@ const createMainWindow = (): void => {
     // and load the index.html of the app.
     getMainWindow().loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
 
-    createHelloWindow()
+    // createHelloWindow()
 
     i18nInit()
 
