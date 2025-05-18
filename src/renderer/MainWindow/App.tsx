@@ -31,6 +31,7 @@ import { SimplePanMesure } from '../components/simple-pan'
 import { SimpleTooltip } from '../components/simple-tooltip'
 import { TabsContent } from '@radix-ui/react-tabs'
 import { TypographyP } from '../ui/typography/TypographyP'
+import { cn } from '../lib/utils'
 import i18nResources from '../../configs/i18nResources'
 import log from 'electron-log/renderer'
 import packageJson from '../../../package.json'
@@ -637,7 +638,16 @@ function TheApp() {
                 showSpinner={showInformationSpinner}
                 isAlert={informationPopinIsAlert}
             >
-                <span>{informationPopinMessage}</span>
+                <span
+                    className={cn(
+                        'text-sm',
+                        !informationPopinIsAlert
+                            ? 'italic'
+                            : 'font-bold !text-red-500'
+                    )}
+                >
+                    {informationPopinMessage}
+                </span>
             </InformationPopin>
             {displayPopin && (
                 <PopinLoading
