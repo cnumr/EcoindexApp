@@ -33,6 +33,7 @@
     },
     "main": ".webpack/main",
     "scripts": {
+        "test": "echo 'No tests yet'",
         "start": "env-cmd electron-forge start",
         "package": "env-cmd electron-forge package",
         "postinstall": "cd lib && npm ci",
@@ -56,7 +57,8 @@
         "release:local:major": "env-cmd release-it major --config .local.release-it.json",
         "release:ci": "release-it",
         "localize:generate": "babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'",
-        "asar:pack:lib": "asar pack ./lib ./src/extraResources/lib.asar"
+        "asar:pack:lib": "asar pack ./lib ./src/extraResources/lib.asar",
+        "prepare": "husky"
     },
     "devDependencies": {
         "@babel/cli": "^7.24.8",
@@ -66,6 +68,8 @@
         "@babel/preset-flow": "^7.24.7",
         "@babel/preset-react": "^7.24.7",
         "@babel/preset-typescript": "^7.24.7",
+        "@commitlint/cli": "^19.8.1",
+        "@commitlint/config-conventional": "^19.8.1",
         "@ecocode/eslint-plugin": "^1.5.0",
         "@electron-forge/cli": "^7.4.0",
         "@electron-forge/maker-deb": "^7.4.0",
@@ -106,8 +110,9 @@
         "eslint-plugin-react-hooks": "^4.6.2",
         "fork-ts-checker-webpack-plugin": "^7.3.0",
         "html-loader": "^5.1.0",
+        "lint-staged": "^16.0.0",
         "node-loader": "^2.0.0",
-        "prettier": "3.5.3",
+        "prettier": "^3.5.3",
         "prettier-plugin-tailwindcss": "^0.6.11",
         "raw-loader": "^4.0.2",
         "release-it": "^17.6.0",
@@ -139,6 +144,7 @@
         "electron-squirrel-startup": "^1.0.1",
         "electron-store": "^8.2.0",
         "fix-path": "^4.0.0",
+        "husky": "^9.1.7",
         "i18next": "^23.12.2",
         "i18next-node-fs-backend": "^2.1.3",
         "i18next-resources-to-backend": "^1.2.1",
