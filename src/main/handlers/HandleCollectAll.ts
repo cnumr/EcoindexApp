@@ -112,7 +112,13 @@ function _prepareDatas(
         | 'best-practices'
         | 'performance'
         | 'seo'
-    )[] = ['lighthouse-plugin-ecoindex-core', 'accessibility']
+    )[] = [
+        'best-practices',
+        'performance',
+        'seo',
+        'lighthouse-plugin-ecoindex-core',
+        'accessibility',
+    ]
     if (collectType === 'simple') {
         const command: CliFlags = {
             generationDate: date,
