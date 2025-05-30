@@ -7,6 +7,7 @@ import Store from 'electron-store'
 import extractAsarLib from './HandleExtractAsarLib'
 import { getMainLog } from '../main'
 import { getMainWindow } from '../memory'
+import { handleSplashScreen } from './HandleSplashScreen'
 import i18n from '../../configs/i18next.config'
 import { initGetHomeDir } from './initHandlers/getHomeDir'
 import { initGetWorkDir } from './initHandlers/getWorkDir'
@@ -240,6 +241,7 @@ export const initialization = async (
                     result: true,
                 },
             } as InitalizationMessage)
+            handleSplashScreen(null, 'normal')
             return true
         }
         return false

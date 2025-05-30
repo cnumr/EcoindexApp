@@ -99,3 +99,11 @@ contextBridge.exposeInMainWorld('store', {
         ipcRenderer.invoke('store-get', key, defaultValue),
     delete: (key: string) => ipcRenderer.invoke('store-delete', key),
 })
+
+contextBridge.exposeInMainWorld('interactionAPI', {
+    // Main → Front
+    displaySplashScreen: (callback: any) =>
+        ipcRenderer.on(channels.DISPLAY_SPLASH_SCREEN, (_event, message) =>
+            callback(message)
+        ),
+})

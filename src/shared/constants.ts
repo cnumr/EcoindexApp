@@ -40,6 +40,7 @@ const constants: IConstants = {
         INSTALL_PUPPETEER_BROWSER: 'install-puppeteer-browser',
         SHOW_HIDE_WELCOME_WINDOW: 'show-hide-welcome-window',
         ALERT_LINUX_UPDATE: 'alert-linux-update',
+        DISPLAY_SPLASH_SCREEN: 'display-splash-screen',
     },
     scripts: {
         GET_NODE: 'get-node',

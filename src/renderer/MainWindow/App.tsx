@@ -29,6 +29,7 @@ import { PopinLoading } from '../components/loading-popin'
 import { ReloadIcon } from '@radix-ui/react-icons'
 import { SimplePanMesure } from '../components/simple-pan'
 import { SimpleTooltip } from '../components/simple-tooltip'
+import { SplashScreen } from '../components/splash-screen'
 import { TabsContent } from '@radix-ui/react-tabs'
 import { TypographyP } from '../ui/typography/TypographyP'
 import { cn } from '../lib/utils'
@@ -49,6 +50,7 @@ function TheApp() {
     const [appReady, setAppReady] = useState(false)
     const [datasFromHost, setDatasFromHost] = useState({})
     const [displayPopin, setDisplayPopin] = useState(false)
+    const [displaySplashScreen, setDisplaySplashScreen] = useState(false)
     const [popinText, setPopinText] = useState('')
     const [isFirstStart, setIsFirstStart] = useState(true)
     const [isPuppeteerBrowserInstalled, setIsPuppeteerBrowserInstalled] =
@@ -129,6 +131,12 @@ function TheApp() {
         )[0] as unknown as HTMLBodyElement
         body.style.overflowY = block ? 'hidden' : 'auto'
     }
+
+    useEffect(() => {
+        window.interactionAPI.displaySplashScreen((visibility = true) => {
+            blockScrolling(visibility)
+        })
+    }, [])
 
     /**
      * Show/Hide waiting popin during process.
@@ -500,137 +508,139 @@ function TheApp() {
     // #region JSX
 
     return (
-        <div className="container relative">
-            <DarkModeSwitcher
-                title={t('Dark mode switch')}
-                className="absolute left-2 top-2 z-20 flex gap-2"
-            />
-            <SimpleTooltip
-                tooltipContent={
-                    <p>
-                        {t(
-                            'Copy application informations to clipboard.<br />Send theim to developper at renaud@greenit.fr.'
-                        )}
-                    </p>
-                }
-            >
-                <Button
-                    variant="secondary"
-                    size="sm"
-                    className="absolute right-2 top-2 z-20"
-                    onClick={copyToClipBoard}
-                >
-                    <Bug className="mr-2 size-4" />
-                    {t('Debug')}
-                </Button>
-            </SimpleTooltip>
-            <main className="flex h-screen flex-col justify-between gap-4 p-4">
-                <div className="flex flex-col items-center gap-4">
-                    <Header />
-                    <InitErrorAlerts
-                        datasFromHost={datasFromHost}
-                        launchInitialization={launchInitialization}
-                    />
-                    {!appReady && <MySkeleton />}
-                    {appReady && (
-                        <>
-                            <Card className="w-full border-primary">
-                                <CardHeader>
-                                    <CardTitle>
-                                        {t('1. Select ouput folder')}
-                                    </CardTitle>
-                                    <CardDescription>
-                                        {t(
-                                            'Specify where to execute the measures.'
-                                        )}
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="flex w-full items-center gap-2">
-                                        <Input
-                                            id="filePath"
-                                            value={workDir}
-                                            type="text"
-                                            readOnly
-                                        />
-                                        <Button
-                                            type="button"
-                                            id="btn-file"
-                                            disabled={!appReady}
-                                            onClick={selectWorkingFolder}
-                                        >
-                                            {t('Browse')}
-                                        </Button>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                            <TypographyP className={`w-full`}>
-                                {t(
-                                    'Choose the type of measure you want to do.'
-                                )}
-                            </TypographyP>
-                            <Tabs
-                                defaultValue="simple-mesure"
-                                className="w-full"
-                            >
-                                <TabsList className="mb-4 grid w-full grid-cols-2">
-                                    <TabsTrigger value="simple-mesure">
-                                        {t('Url(s) Measure (Simple mode)')}
-                                    </TabsTrigger>
-                                    <TabsTrigger value="json-mesure">
-                                        {t('Courses Measure (Full mode)')}
-                                    </TabsTrigger>
-                                </TabsList>
-                                <TabsContent value="simple-mesure">
-                                    <SimplePanMesure
-                                        appReady={appReady}
-                                        language={i18nResources.language}
-                                        simpleMesures={runSimpleMesures}
-                                        urlsList={urlsList}
-                                        setUrlsList={setUrlsList}
-                                        className="border-primary"
-                                    />
-                                </TabsContent>
-                                <TabsContent value="json-mesure">
-                                    <JsonPanMesure
-                                        appReady={appReady}
-                                        isJsonFromDisk={isJsonFromDisk}
-                                        language={i18nResources.language}
-                                        jsonDatas={jsonDatas}
-                                        setJsonDatas={setJsonDatas}
-                                        mesure={() =>
-                                            runJsonSaveAndCollect(true)
-                                        }
-                                        reload={runJsonReadAndReload}
-                                        save={runJsonSaveAndCollect}
-                                        notify={handlerJsonNotify}
-                                        className="border-primary"
-                                    />
-                                </TabsContent>
-                            </Tabs>
-                        </>
-                    )}
-                    {/* display here the echoReadable line */}
-                    <ConsoleApp
-                        id="echo"
-                        datasFromHost={datasFromHost}
-                        appReady={appReady}
-                        isFirstStart={isFirstStart}
-                        isPuppeteerBrowserInstalled={
-                            isPuppeteerBrowserInstalled
-                        }
-                        workDir={workDir}
-                        homeDir={homeDir}
-                        puppeteerBrowserInstalledVersion={
-                            puppeteerBrowserInstalledVersion
-                        }
-                    />
-                </div>
-                <Footer
-                    appVersion={packageJson.version}
-                    repoUrl={packageJson.homepage}
+        <>
+            <div className="container relative">
+                <DarkModeSwitcher
+                    title={t('Dark mode switch')}
+                    className="absolute left-2 top-2 z-20 flex gap-2"
                 />
-            </main>
+                <SimpleTooltip
+                    tooltipContent={
+                        <p>
+                            {t(
+                                'Copy application informations to clipboard.<br />Send theim to developper at renaud@greenit.fr.'
+                            )}
+                        </p>
+                    }
+                >
+                    <Button
+                        variant="secondary"
+                        size="sm"
+                        className="absolute right-2 top-2 z-20"
+                        onClick={copyToClipBoard}
+                    >
+                        <Bug className="mr-2 size-4" />
+                        {t('Debug')}
+                    </Button>
+                </SimpleTooltip>
+                <main className="flex h-screen flex-col justify-between gap-4 p-4">
+                    <div className="flex flex-col items-center gap-4">
+                        <Header />
+                        <InitErrorAlerts
+                            datasFromHost={datasFromHost}
+                            launchInitialization={launchInitialization}
+                        />
+                        {!appReady && <MySkeleton />}
+                        {appReady && (
+                            <>
+                                <Card className="w-full border-primary">
+                                    <CardHeader>
+                                        <CardTitle>
+                                            {t('1. Select ouput folder')}
+                                        </CardTitle>
+                                        <CardDescription>
+                                            {t(
+                                                'Specify where to execute the measures.'
+                                            )}
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="flex w-full items-center gap-2">
+                                            <Input
+                                                id="filePath"
+                                                value={workDir}
+                                                type="text"
+                                                readOnly
+                                            />
+                                            <Button
+                                                type="button"
+                                                id="btn-file"
+                                                disabled={!appReady}
+                                                onClick={selectWorkingFolder}
+                                            >
+                                                {t('Browse')}
+                                            </Button>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                                <TypographyP className={`w-full`}>
+                                    {t(
+                                        'Choose the type of measure you want to do.'
+                                    )}
+                                </TypographyP>
+                                <Tabs
+                                    defaultValue="simple-mesure"
+                                    className="w-full"
+                                >
+                                    <TabsList className="mb-4 grid w-full grid-cols-2">
+                                        <TabsTrigger value="simple-mesure">
+                                            {t('Url(s) Measure (Simple mode)')}
+                                        </TabsTrigger>
+                                        <TabsTrigger value="json-mesure">
+                                            {t('Courses Measure (Full mode)')}
+                                        </TabsTrigger>
+                                    </TabsList>
+                                    <TabsContent value="simple-mesure">
+                                        <SimplePanMesure
+                                            appReady={appReady}
+                                            language={i18nResources.language}
+                                            simpleMesures={runSimpleMesures}
+                                            urlsList={urlsList}
+                                            setUrlsList={setUrlsList}
+                                            className="border-primary"
+                                        />
+                                    </TabsContent>
+                                    <TabsContent value="json-mesure">
+                                        <JsonPanMesure
+                                            appReady={appReady}
+                                            isJsonFromDisk={isJsonFromDisk}
+                                            language={i18nResources.language}
+                                            jsonDatas={jsonDatas}
+                                            setJsonDatas={setJsonDatas}
+                                            mesure={() =>
+                                                runJsonSaveAndCollect(true)
+                                            }
+                                            reload={runJsonReadAndReload}
+                                            save={runJsonSaveAndCollect}
+                                            notify={handlerJsonNotify}
+                                            className="border-primary"
+                                        />
+                                    </TabsContent>
+                                </Tabs>
+                            </>
+                        )}
+                        {/* display here the echoReadable line */}
+                        <ConsoleApp
+                            id="echo"
+                            datasFromHost={datasFromHost}
+                            appReady={appReady}
+                            isFirstStart={isFirstStart}
+                            isPuppeteerBrowserInstalled={
+                                isPuppeteerBrowserInstalled
+                            }
+                            workDir={workDir}
+                            homeDir={homeDir}
+                            puppeteerBrowserInstalledVersion={
+                                puppeteerBrowserInstalledVersion
+                            }
+                        />
+                    </div>
+                    <Footer
+                        appVersion={packageJson.version}
+                        repoUrl={packageJson.homepage}
+                    />
+                </main>
+            </div>
             <InformationPopin
                 id="informationPopin"
                 display={displayInformationPopin}
@@ -675,7 +685,12 @@ function TheApp() {
                     </div>
                 </PopinLoading>
             )}
-        </div>
+            <SplashScreen
+                id="splash-screen"
+                language={i18nResources.language}
+                onClose={() => blockScrolling(false)}
+            />
+        </>
     )
 }
 

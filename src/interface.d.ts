@@ -12,6 +12,19 @@ export interface IStoreAPI {
     get: (key: string, defaultValue?: any) => Promise<string>
     delete: (key: string) => Promise<void>
 }
+
+export interface ILogAPI {
+    // TODO
+    // Front → Main
+    sendLogToMain: (callback) => string
+    // Main → Front
+    sendLogToFront: (callback) => string
+}
+
+export interface IInteractionAPI {
+    displaySplashScreen: (callback) => string
+}
+
 export interface IElectronAPI {
     // i18nextElectronBackend: any
     // Main → Front
@@ -78,5 +91,6 @@ declare global {
         electronAPI: IElectronAPI
         store: IStoreAPI
         initialisationAPI: IInitalization
+        interactionAPI: IInteractionAPI
     }
 }
