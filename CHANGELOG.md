@@ -1,5 +1,13 @@
 
 
+# [0.4.0-rc.10](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.9...0.4.0-rc.10) (2025-05-30)
+
+
+### Features
+
+* ajout de l'API de journalisation et d'interaction, mise à jour de l'interface et intégration de l'écran de démarrage ([56b3988](https://github.com/cnumr/EcoindexApp/commit/56b39884d8ee9e8ffdf42fdfd7e276ae20daa6e8))
+* ajout de nouvelles catégories dans la fonction _prepareDatas pour une collecte plus complète ([961432a](https://github.com/cnumr/EcoindexApp/commit/961432a2d2412f873ea94a5762802effb9bf1855))
+
 # [0.4.0-rc.9](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.8...0.4.0-rc.9) (2025-05-18)
 
 
