@@ -46,7 +46,7 @@ export const initialization = async (
     forceInitialisation = false
 ) => {
     const forceAppReady = true
-    const isDarwin = process.platform !== 'darwin'
+    const isDarwin = process.platform === 'darwin'
     const mainLog = getMainLog().scope('main/initialization')
     const initializedDatas: initializedDatas = {}
 
