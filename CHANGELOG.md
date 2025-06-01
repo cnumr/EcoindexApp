@@ -1,5 +1,17 @@
 
 
+# [0.4.0-rc.12](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.11...0.4.0-rc.12) (2025-06-01)
+
+
+### Bug Fixes
+
+* wrong plateform test ([8439bf7](https://github.com/cnumr/EcoindexApp/commit/8439bf727e0399779c730dd21776d70395312b8a))
+
+
+### Features
+
+* add audit selector on json measure ([bd53fbd](https://github.com/cnumr/EcoindexApp/commit/bd53fbd086807b5a30989709ffe28b18dff8c504))
+
 # [0.4.0-rc.11](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.10...0.4.0-rc.11) (2025-06-01)
 
 # [0.4.0-rc.10](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.9...0.4.0-rc.10) (2025-05-30)
