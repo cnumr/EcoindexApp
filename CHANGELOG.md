@@ -1,5 +1,7 @@
 
 
+# [0.4.0-rc.11](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.10...0.4.0-rc.11) (2025-06-01)
+
 # [0.4.0-rc.10](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.9...0.4.0-rc.10) (2025-05-30)
 
 
