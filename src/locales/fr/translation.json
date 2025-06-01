@@ -186,5 +186,23 @@
         },
         "finished": "Installation terminée avec succès 🎉",
         "title-error": "L'installation est en erreur !"
+    },
+    "splash": {
+        "hello": "EcoindexApp"
+    },
+    "common": {
+        "audit": {
+            "audit-category": {
+                "title": "Choisissez les audits que vous souhaitez réaliser",
+                "seo": "SEO",
+                "performance": "Performance",
+                "accessibility": "Accessibilité",
+                "best-practices": "Bonnes pratiques",
+                "lighthouse-plugin-ecoindex-core": "Ecoindex",
+                "ecoindex-core": {
+                    "mandatory": "(obligatoire)"
+                }
+            }
+        }
     }
 }

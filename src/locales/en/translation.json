@@ -185,5 +185,23 @@
             "unpacking": "Extraction of files (this can take a few seconds and do freeze the application) ..."
         },
         "started": "Checks ..."
+    },
+    "splash": {
+        "hello": "EcondexApp"
+    },
+    "common": {
+        "audit": {
+            "audit-category": {
+                "title": "Choose the audits you want to make",
+                "seo": "SEO",
+                "performance": "Performance",
+                "accessibility": "Accessibility",
+                "best-practices": "Best practices",
+                "lighthouse-plugin-ecoindex-core": "Ecoindex",
+                "ecoindex-core": {
+                    "mandatory": "(mandatory)"
+                }
+            }
+        }
     }
 }

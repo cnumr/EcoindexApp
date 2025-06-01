@@ -52,7 +52,9 @@ export const SplashScreen = ({
             <div className="max-w-screen absolute grid h-full max-h-screen w-full place-content-center">
                 <div className="relative m-16 flex flex-col items-center gap-2 overflow-y-auto rounded-md border border-primary bg-background px-4 py-3 shadow-lg shadow-primary/50">
                     <div className="mb-4 w-full">
-                        <h1>{t('splash.hello')}</h1>
+                        <h1>
+                            {t('splash.hello')} v{pkg.version}
+                        </h1>
                     </div>
                     <div
                         className={cn(

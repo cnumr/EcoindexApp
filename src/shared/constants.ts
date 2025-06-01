@@ -60,6 +60,13 @@ const constants: IConstants = {
                 'x-men': 'wolverine',
                 Authorization: 'Basic c3BpZTpFaXBzRXJnb1N1bTQyJA==',
             },
+            'audit-category': [
+                'performance',
+                'seo',
+                'accessibility',
+                'best-practices',
+                'lighthouse-plugin-ecoindex-core',
+            ],
             output: ['html', 'json'],
             'user-agent': 'insights',
             'output-name': 'ecoindex',
