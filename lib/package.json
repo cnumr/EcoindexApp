@@ -11,8 +11,8 @@
     "license": "ISC",
     "dependencies": {
         "lighthouse": "12.5.1",
-        "lighthouse-plugin-ecoindex-core": "2.0.3",
-        "lighthouse-plugin-ecoindex-courses": "2.0.3"
+        "lighthouse-plugin-ecoindex-core": "^6.0.0-next.5",
+        "lighthouse-plugin-ecoindex-courses": "^6.0.0-next.5"
     },
     "peerDependencies": {
         "lighthouse": "12.5.1"
