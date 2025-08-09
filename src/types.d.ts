@@ -21,4 +21,6 @@ type InitalizationMessage = {
     title: string
     message: string
     data?: InitalizationData
+    step?: number
+    steps?: number
 }

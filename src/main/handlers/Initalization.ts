@@ -63,6 +63,8 @@ export const initialization = async (
             modalType: 'started',
             title: `${i18n.t('initialization.title')}`,
             message: `${i18n.t('initialization.started')}`,
+            step: currentStep,
+            steps: steps,
         })
         // attendre 5 secondes
         await new Promise((resolve) => setTimeout(resolve, 5000))
@@ -73,6 +75,8 @@ export const initialization = async (
             modalType: 'started',
             title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
             message: `${i18n.t('initialization.node.check')}`,
+            step: currentStep,
+            steps: steps,
         })
         mainLog.log(`${currentStep}. Check Node...`)
         const checkNodeReturned = await initIsNodeInstalled(event)
@@ -94,6 +98,8 @@ export const initialization = async (
             modalType: 'started',
             title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
             message: `${i18n.t('initialization.node.version')}`,
+            step: currentStep,
+            steps: steps,
         })
         mainLog.log(`${currentStep}. Check Node Version...`)
         const checkNodeVersionReturned = await initIsNodeNodeVersionOK(event)
@@ -117,6 +123,8 @@ export const initialization = async (
                 modalType: 'started',
                 title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
                 message: `${i18n.t('initialization.windows.unpacking')}`,
+                step: currentStep,
+                steps: steps,
             })
             await extractAsarLib()
             currentStep++
@@ -128,6 +136,8 @@ export const initialization = async (
             modalType: 'started',
             title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
             message: `${i18n.t('initialization.dir.home')}`,
+            step: currentStep,
+            steps: steps,
         })
 
         mainLog.log(`${currentStep}. Get User HomeDir...`)
@@ -151,6 +161,8 @@ export const initialization = async (
             modalType: 'started',
             title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
             message: `${i18n.t('initialization.dir.work')}`,
+            step: currentStep,
+            steps: steps,
         })
         mainLog.log(
             `${currentStep}. Get Last used WorkDir or fallback in User HomeDir ...`
@@ -173,6 +185,8 @@ export const initialization = async (
             modalType: 'started',
             title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
             message: `${i18n.t('initialization.browser-puppeteer.isInstalled')}`,
+            step: currentStep,
+            steps: steps,
         })
         mainLog.log(`${currentStep}. Is a Puppeteer Browser installed ...`)
         let getPuppeteerBrowserIsInstalledReturned =
@@ -195,6 +209,8 @@ export const initialization = async (
                 modalType: 'started',
                 title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
                 message: `${i18n.t('initialization.browser-puppeteer.installation')}`,
+                step: currentStep,
+                steps: steps,
             })
             mainLog.log(
                 `${currentStep}.a Puppeteer Browser need to be installed ...`
@@ -214,6 +230,8 @@ export const initialization = async (
                         modalType: 'started',
                         title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
                         message: `${i18n.t('initialization.browser-puppeteer.verification')}`,
+                        step: currentStep,
+                        steps: steps,
                     }
                 )
                 mainLog.log(
