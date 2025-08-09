@@ -184,7 +184,11 @@
         "windows": {
             "unpacking": "Extraction of files (this can take a few seconds and do freeze the application) ..."
         },
-        "started": "Checks ..."
+        "started": "Checks ...",
+        "node": {
+            "check": "Verification of the presence of nodejs on the computer",
+            "version": "Checking the Nodejs version on the computer"
+        }
     },
     "splash": {
         "hello": "EcondexApp"

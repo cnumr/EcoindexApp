@@ -185,7 +185,11 @@
             "error": "L'installation du navigateur à retourné une erreur. L'application ne peut pas démarrer 🚫"
         },
         "finished": "Installation terminée avec succès 🎉",
-        "title-error": "L'installation est en erreur !"
+        "title-error": "L'installation est en erreur !",
+        "node": {
+            "check": "Vérification de la présence de NodeJS sur l'ordinateur",
+            "version": "Vérification de la version de NodeJS présente sur l'ordinateur"
+        }
     },
     "splash": {
         "hello": "EcoindexApp"
