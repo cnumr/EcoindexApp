@@ -4,9 +4,8 @@ import { getMainWindow, setNodeDir } from '../../memory'
 import { ConfigData } from '../../../class/ConfigData'
 import Store from 'electron-store'
 import { channels } from '../../../shared/constants'
-import { exec } from 'child_process'
 import { getMainLog } from '../../main'
-import os from 'node:os'
+import { resolveNodeBinary } from '../../utils-node'
 
 const store = new Store()
 
@@ -22,30 +21,22 @@ export const initIsNodeInstalled = async (
     const mainLog = getMainLog().scope(
         'main/initialization/initIsNodeInstalled'
     )
-    mainLog.debug(process.env.PATH)
+    // mainLog.debug(process.env.PATH)
     const toReturned = new ConfigData('node_installed')
-    return new Promise<ConfigData>((resolve) => {
-        const cmd = os.platform() === 'win32' ? `where node` : `which node`
-        exec(cmd, (error, stdout, stderr) => {
-            if (error) {
-                mainLog.error(error)
-                toReturned.error = toReturned.message = `Node can't be detected`
-                return resolve(toReturned)
-            }
-            if (stderr) mainLog.debug(`stderr: ${stderr}`)
-            if (stdout) {
-                const returned: string = stdout.trim()
-                mainLog.debug(`Node path: ${returned}`)
-                toReturned.result = true
-                toReturned.message = `Node is Installed in ${returned}`
-                setNodeDir(returned)
-                store.set(`nodeDir`, returned)
-                getMainWindow().webContents.send(
-                    channels.HOST_INFORMATIONS_BACK,
-                    toReturned
-                )
-                return resolve(toReturned)
-            }
-        })
-    })
+    const nodePath = await resolveNodeBinary()
+    if (!nodePath) {
+        toReturned.result = false
+        toReturned.error = toReturned.message = `Node can't be detected`
+        return toReturned
+    }
+    mainLog.debug(`Node path: ${nodePath}`)
+    toReturned.result = true
+    toReturned.message = `Node is Installed in ${nodePath}`
+    setNodeDir(nodePath)
+    store.set(`nodeDir`, nodePath)
+    getMainWindow().webContents.send(
+        channels.HOST_INFORMATIONS_BACK,
+        toReturned
+    )
+    return toReturned
 }

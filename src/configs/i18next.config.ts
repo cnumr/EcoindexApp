@@ -34,8 +34,9 @@ try {
         interpolation: {
             escapeValue: false,
         },
-        saveMissing: true,
-        saveMissingTo: 'all',
+        // Avoid writing missing keys to disk at runtime to prevent callback errors
+        saveMissing: false,
+        // saveMissingTo: 'all',
         fallbackLng: config.fallbackLng,
         whitelist: config.languages,
         react: {

@@ -76,13 +76,25 @@ declare const HELLO_WINDOW_PRELOAD_WEBPACK_ENTRY: string
 /**
  * Helpers, Fix Path
  */
-const _runfixPath = () => {
+const _runfixPath = async () => {
     if (isDev()) mainLog.debug(`RUN fixPath and shellEnv`)
     fixPath()
     if (process.platform === 'darwin') {
         if (isDev()) mainLog.debug(`darwin`)
         const { shell } = os.userInfo()
         if (isDev()) mainLog.debug(`shell`, shell)
+        try {
+            const { default: shellEnv } = await import('shell-env')
+            const env: Record<string, string> = await (
+                shellEnv as unknown as () => Promise<Record<string, string>>
+            )()
+            if (env && env.PATH) {
+                process.env.PATH = env.PATH
+                if (isDev()) mainLog.debug(`PATH normalized`, process.env.PATH)
+            }
+        } catch (error) {
+            if (isDev()) mainLog.debug(`shellEnv error`, error)
+        }
     } else {
         if (isDev()) mainLog.debug(`win32`)
         if (isDev()) mainLog.debug(`shell`, `cmd.exe`)
@@ -120,13 +132,16 @@ app.on('ready', async () => {
         handleIsJsonConfigFileExist
     )
 
-    ipcMain.handle('store-set', (event, key: string, value: any) => {
+    ipcMain.handle('store-set', (event, key: string, value: unknown) => {
         store.set(key, value)
     })
 
-    ipcMain.handle('store-get', (event, key: string, defaultValue?: any) => {
-        return store.get(key, defaultValue)
-    })
+    ipcMain.handle(
+        'store-get',
+        (event, key: string, defaultValue?: unknown) => {
+            return store.get(key, defaultValue)
+        }
+    )
 
     ipcMain.handle('store-delete', (event, key: string) => {
         store.delete(key)
@@ -193,7 +208,7 @@ const _changeLanguage = (lng: string) => {
 
 const i18nInit = () => {
     try {
-        i18n.on('loaded', (loaded) => {
+        i18n.on('loaded', () => {
             try {
                 i18n.changeLanguage('en')
                 i18n.off('loaded')
