@@ -84,10 +84,14 @@ const _runfixPath = async () => {
         const { shell } = os.userInfo()
         if (isDev()) mainLog.debug(`shell`, shell)
         try {
-            const { default: shellEnv } = await import('shell-env')
-            const env: Record<string, string> = await (
-                shellEnv as unknown as () => Promise<Record<string, string>>
-            )()
+            const mod = await import('shell-env')
+            const candidate: any = (mod as any).default ?? (mod as any)
+            let env: Record<string, string> | null = null
+            if (typeof candidate === 'function') {
+                env = await candidate()
+            } else if (candidate && typeof candidate.sync === 'function') {
+                env = candidate.sync()
+            }
             if (env && env.PATH) {
                 process.env.PATH = env.PATH
                 if (isDev()) mainLog.debug(`PATH normalized`, process.env.PATH)
