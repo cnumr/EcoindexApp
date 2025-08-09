@@ -26,7 +26,7 @@ export const initIsNodeNodeVersionOK = async (
         const cmd = `node -v`
         exec(cmd, (error, stdout, stderr) => {
             if (error) {
-                mainLog.error(`exec error: ${error}`)
+                mainLog.error(error)
                 toReturned.error =
                     toReturned.message = `Node version can't be detected`
                 return resolve(toReturned)

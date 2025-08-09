@@ -11,6 +11,8 @@ import { handleSplashScreen } from './HandleSplashScreen'
 import i18n from '../../configs/i18next.config'
 import { initGetHomeDir } from './initHandlers/getHomeDir'
 import { initGetWorkDir } from './initHandlers/getWorkDir'
+import { initIsNodeInstalled } from './initHandlers/IsNodeInstalled'
+import { initIsNodeNodeVersionOK } from './initHandlers/isNodeVersionOK'
 import { initPuppeteerBrowserInstallation } from './initHandlers/puppeteerBrowser_installation'
 import { initPuppeteerBrowserIsInstalled } from './initHandlers/puppeteerBrowser_isInstalled'
 
@@ -52,7 +54,8 @@ export const initialization = async (
 
     mainLog.info(`forceInitialisation`, forceInitialisation)
     try {
-        const steps = isDarwin ? 7 : 8
+        const nbsteps = 9
+        const steps = isDarwin ? nbsteps : nbsteps + 1
         let currentStep = 1
         mainLog.log(`Initialization start...`)
         getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
@@ -63,6 +66,49 @@ export const initialization = async (
         })
         // attendre 5 secondes
         await new Promise((resolve) => setTimeout(resolve, 5000))
+
+        // #region Check Node
+        getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+            type: 'message',
+            modalType: 'started',
+            title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
+            message: `${i18n.t('initialization.node.check')}`,
+        })
+        mainLog.log(`${currentStep}. Check Node...`)
+        const checkNodeReturned = await initIsNodeInstalled(event)
+        initializedDatas.initIsNodeInstalled =
+            checkNodeReturned.result as boolean
+        mainLog.log(checkNodeReturned)
+        getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+            type: 'data',
+            data: {
+                type: InitalizationData.NODE_INSTALLED,
+                result: checkNodeReturned.result,
+            },
+        })
+        currentStep++
+        // #endregion
+        // #region Check Node Version
+        getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+            type: 'message',
+            modalType: 'started',
+            title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
+            message: `${i18n.t('initialization.node.version')}`,
+        })
+        mainLog.log(`${currentStep}. Check Node Version...`)
+        const checkNodeVersionReturned = await initIsNodeNodeVersionOK(event)
+        initializedDatas.initIsNodeNodeVersionOK =
+            checkNodeVersionReturned.result as boolean
+        mainLog.log(checkNodeVersionReturned)
+        getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+            type: 'data',
+            data: {
+                type: InitalizationData.NODE_VERSION_OK,
+                result: checkNodeVersionReturned.result,
+            },
+        })
+        currentStep++
+        // #endregion
 
         // #region Extraction pour windows
         if (!isDarwin) {

@@ -1,5 +1,5 @@
 import { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
-import { getMainWindow, getTryNode, setNodeDir, setTryNode } from '../../memory'
+import { getMainWindow, setNodeDir } from '../../memory'
 
 import { ConfigData } from '../../../class/ConfigData'
 import Store from 'electron-store'
@@ -22,12 +22,13 @@ export const initIsNodeInstalled = async (
     const mainLog = getMainLog().scope(
         'main/initialization/initIsNodeInstalled'
     )
+    mainLog.debug(process.env.PATH)
     const toReturned = new ConfigData('node_installed')
     return new Promise<ConfigData>((resolve) => {
         const cmd = os.platform() === 'win32' ? `where node` : `which node`
         exec(cmd, (error, stdout, stderr) => {
             if (error) {
-                mainLog.error(`exec error: ${error}`)
+                mainLog.error(error)
                 toReturned.error = toReturned.message = `Node can't be detected`
                 return resolve(toReturned)
             }

@@ -52,7 +52,7 @@ const constants: IConstants = {
         UPDATED_PLUGIN: 'update-plugin',
     },
     utils: {
-        LOWER_NODE_VERSION: 18,
+        LOWER_NODE_VERSION: 20,
         JSON_FILE_NAME: 'input-file.json',
         DEFAULT_JSON_DATA: {
             'extra-header': {

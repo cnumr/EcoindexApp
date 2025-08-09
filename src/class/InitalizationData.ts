@@ -13,6 +13,8 @@ export class InitalizationData {
     static PUPPETEER_BROWSER_INSTALLED = 'puppeteer_browser_installed'
     static PUPPETEER_BROWSER_INSTALLATION = 'puppeteer_browser_installation'
     static APP_CAN_NOT_BE_LAUNCHED = 'app_can_not_be_launched'
+    static NODE_INSTALLED = 'node_installed'
+    static NODE_VERSION_OK = 'node_version_ok'
     type: InitalizationDataType
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     result: any
