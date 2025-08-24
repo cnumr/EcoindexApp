@@ -188,7 +188,17 @@
         "title-error": "L'installation est en erreur !",
         "node": {
             "check": "Vérification de la présence de NodeJS sur l'ordinateur",
-            "version": "Vérification de la version de NodeJS présente sur l'ordinateur"
+            "version": "Vérification de la version de NodeJS présente sur l'ordinateur",
+            "install": {
+                "Label": "Lien de téléchargement"
+            },
+            "error": {
+                "notinstalled": "NodeJS n'est pas installé sur votre ordinateur !",
+                "wrongversion": "Votre version de NodeJS est obsolète"
+            }
+        },
+        "fatal": {
+            "error": "🚫 Erreur fatale !"
         }
     },
     "splash": {

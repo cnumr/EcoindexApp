@@ -1,5 +1,9 @@
 import { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
-import { channels, store as storeConstants } from '../../shared/constants'
+import {
+    channels,
+    store as storeConstants,
+    utils,
+} from '../../shared/constants'
 
 import { InitalizationData } from '../../class/InitalizationData'
 import { InitalizationMessage } from '@/types'
@@ -83,6 +87,20 @@ export const initialization = async (
         initializedDatas.initIsNodeInstalled =
             checkNodeReturned.result as boolean
         mainLog.log(checkNodeReturned)
+        if (!initializedDatas.initIsNodeInstalled) {
+            getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+                type: 'message',
+                modalType: 'error',
+                title: `${i18n.t('initialization.fatal.error')}`,
+                message: `${i18n.t('initialization.node.error.notinstalled')}`,
+                errorLink: {
+                    label: `${i18n.t('initialization.node.install.Label')}`,
+                    url: utils.DOWNLOAD_NODE_LINK,
+                },
+                data: {},
+            })
+            return false
+        }
         getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
             type: 'data',
             data: {
@@ -106,6 +124,20 @@ export const initialization = async (
         initializedDatas.initIsNodeNodeVersionOK =
             checkNodeVersionReturned.result as boolean
         mainLog.log(checkNodeVersionReturned)
+        if (!initializedDatas.initIsNodeNodeVersionOK) {
+            getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+                type: 'message',
+                modalType: 'error',
+                title: `${i18n.t('initialization.fatal.error')}`,
+                message: `${i18n.t('initialization.node.error.wrongversion')} (min. ≥${utils.LOWER_NODE_VERSION})`,
+                errorLink: {
+                    label: `${i18n.t('initialization.node.install.Label')}`,
+                    url: utils.DOWNLOAD_NODE_LINK,
+                },
+                data: {},
+            })
+            return false
+        }
         getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
             type: 'data',
             data: {

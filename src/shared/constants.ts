@@ -6,6 +6,7 @@ type IConstants = {
         JSON_FILE_NAME: string
         DEFAULT_JSON_DATA: IJsonMesureData
         LOWER_NODE_VERSION: number
+        DOWNLOAD_NODE_LINK: string
     }
 }
 const constants: IConstants = {
@@ -53,6 +54,7 @@ const constants: IConstants = {
     },
     utils: {
         LOWER_NODE_VERSION: 20,
+        DOWNLOAD_NODE_LINK: 'https://nodejs.org/en/download/',
         JSON_FILE_NAME: 'input-file.json',
         DEFAULT_JSON_DATA: {
             'extra-header': {

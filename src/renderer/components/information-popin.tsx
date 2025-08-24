@@ -15,6 +15,10 @@ export interface ILayout {
     showProgress?: boolean
     footer?: ReactNode
     isAlert?: boolean
+    errorLink?: {
+        label: string
+        url: string
+    }
 }
 export const InformationPopin: FC<ILayout> = ({
     id,
@@ -26,6 +30,7 @@ export const InformationPopin: FC<ILayout> = ({
     showSpinner = false,
     showProgress = false,
     footer,
+    errorLink,
     isAlert = false,
 }) => {
     return (
@@ -58,7 +63,7 @@ export const InformationPopin: FC<ILayout> = ({
                             )}
                         </div>
                     </div>
-                    <div className="flex items-start">{children}</div>
+                    <div className="flex flex-col items-center">{children}</div>
                     {showProgress && (
                         <div className="flex items-center">
                             <Progress value={progress} className="h-2 w-full" />

@@ -187,7 +187,17 @@
         "started": "Checks ...",
         "node": {
             "check": "Verification of the presence of nodejs on the computer",
-            "version": "Checking the Nodejs version on the computer"
+            "version": "Checking the Nodejs version on the computer",
+            "install": {
+                "Label": "Download link"
+            },
+            "error": {
+                "notinstalled": "NodeJS is not installed on your computer!",
+                "wrongversion": "Your version of Nodejs is obsolete"
+            }
+        },
+        "fatal": {
+            "error": "🚫 fatal error!"
         }
     },
     "splash": {

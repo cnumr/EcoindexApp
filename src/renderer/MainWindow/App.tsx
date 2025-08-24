@@ -65,6 +65,10 @@ function TheApp() {
     const [displayInformationPopin, setDisplayInformationPopin] =
         useState(false)
     const [informationPopinTitle, setInformationPopinTitle] = useState('')
+    const [informationPopinErrorLink, setInformationPopinErrorLink] = useState({
+        label: '',
+        url: '',
+    })
     const [informationPopinMessage, setInformationPopinMessage] = useState('')
     const [informationPopinIsAlert, setInformationPopinIsAlert] =
         useState(false)
@@ -470,6 +474,7 @@ function TheApp() {
                 } else {
                     setInformationPopinTitle(message.title)
                     setInformationPopinMessage(message.message)
+                    setInformationPopinErrorLink(message?.errorLink)
                 }
 
                 if (message.modalType === 'started') {
@@ -647,6 +652,7 @@ function TheApp() {
                 title={informationPopinTitle}
                 showSpinner={showInformationSpinner}
                 isAlert={informationPopinIsAlert}
+                errorLink={informationPopinErrorLink}
             >
                 <span
                     className={cn(
@@ -658,6 +664,16 @@ function TheApp() {
                 >
                     {informationPopinMessage}
                 </span>
+                {informationPopinErrorLink &&
+                    informationPopinErrorLink.label !== '' && (
+                        <a
+                            className="underline"
+                            target="_blank"
+                            href={informationPopinErrorLink.url}
+                        >
+                            {informationPopinErrorLink.label}
+                        </a>
+                    )}
             </InformationPopin>
             {displayPopin && (
                 <PopinLoading

@@ -23,4 +23,8 @@ type InitalizationMessage = {
     data?: InitalizationData
     step?: number
     steps?: number
+    errorLink?: {
+        label: string
+        url: string
+    }
 }
