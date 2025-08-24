@@ -1,7 +1,8 @@
 // #region Imports
 import * as menuFactoryService from '../services/menuFactory'
 
-import { BrowserWindow, app, ipcMain } from 'electron'
+import { BrowserWindow, WebContentsView, app, ipcMain } from 'electron'
+import { channels, utils } from '../shared/constants'
 import {
     getMainWindow,
     getWelcomeWindow,
@@ -18,7 +19,6 @@ import {
 
 import { LinuxUpdate } from '../class/LinuxUpdate'
 import Store from 'electron-store'
-import { channels } from '../shared/constants'
 import { convertVersion } from './utils'
 import fixPath from 'fix-path'
 import { handleIsJsonConfigFileExist } from './handlers/HandleIsJsonConfigFileExist'
@@ -307,6 +307,20 @@ const createMainWindow = (): void => {
     }
     // Open the DevTools.
     // mainWindow.webContents.openDevTools({ mode: 'detach' })
+
+    getMainWindow().webContents.setWindowOpenHandler(({ url }) => {
+        if (url === utils.DOWNLOAD_NODE_LINK) {
+            return {
+                action: 'allow',
+                overrideBrowserWindowOptions: {
+                    width: 950,
+                    height: 750,
+                    fullscreenable: false,
+                },
+            }
+        }
+        return { action: 'deny' }
+    })
 }
 
 // #endregion
