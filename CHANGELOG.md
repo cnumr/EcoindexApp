@@ -1,5 +1,20 @@
 
 
+# [0.4.0-rc.13](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.12...0.4.0-rc.13) (2025-08-24)
+
+
+### Bug Fixes
+
+* amélioration de l'importation de shell-env pour gérer les environnements de manière plus robuste ([346610e](https://github.com/cnumr/EcoindexApp/commit/346610ed270c5438a172ed103256db38692aff95))
+
+
+### Features
+
+* ajout d'un gestionnaire d'ouverture de fenêtre pour les téléchargements dans la fenêtre principale ([683e1d1](https://github.com/cnumr/EcoindexApp/commit/683e1d1fa47205e2f66694b3284ebc1d992c7967))
+* ajout de la gestion des erreurs de NodeJS avec des liens de téléchargement dans les messages d'initialisation et les popins d'information ([5cc8d15](https://github.com/cnumr/EcoindexApp/commit/5cc8d15bf3656add89a65265225cbc2521fbb753))
+* ajout de la vérification de NodeJS dans les traductions en anglais et en français ([f07162a](https://github.com/cnumr/EcoindexApp/commit/f07162ad1855afbd1d6936301a4a24b2ea7bd059))
+* ajout des propriétés 'step' et 'steps' dans le message d'initialisation pour un suivi plus précis des étapes ([5361b85](https://github.com/cnumr/EcoindexApp/commit/5361b8593f8e804d9fd4059a3f12fb17b758748e))
+
 # [0.4.0-rc.12](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.11...0.4.0-rc.12) (2025-06-01)
 
 
