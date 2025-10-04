@@ -119,6 +119,7 @@ function _prepareDatas(
         'lighthouse-plugin-ecoindex-core',
         'accessibility',
     ]
+
     if (collectType === 'simple') {
         const command: CliFlags = {
             generationDate: date,
@@ -129,6 +130,7 @@ function _prepareDatas(
             exportPath: path.join(_workDir, date),
             output: output,
             'audit-category': default_categories,
+            // 'puppeteer-script': null,
         }
         const ouput: SimpleCollectDatas_V2 = {
             collectType,
@@ -155,6 +157,7 @@ function _prepareDatas(
             output: output,
             'json-file': input as string,
             'audit-category': default_categories,
+            // 'puppeteer-script': null,
         }
         const collectDatas: ComplexeCollectDatas_V2 = {
             collectType,
@@ -396,19 +399,23 @@ async function _runDirectCollect(
             // Gérer la fin du processus
             child.on('exit', (code: number) => {
                 mainLog.log(`Child process exited with code ${code}`)
-
-                // Supprimer le fichier temporaire
-                try {
-                    if (fs.existsSync(tempFilePath)) {
-                        fs.unlinkSync(tempFilePath)
-                        mainLog.debug('Temporary file deleted')
-                    } else {
-                        mainLog.warn(
-                            'Temporary file does not exist, nothing to delete'
-                        )
+                if (code === 0) {
+                    // Supprimer le fichier temporaire
+                    try {
+                        if (fs.existsSync(tempFilePath)) {
+                            fs.unlinkSync(tempFilePath)
+                            mainLog.debug('Temporary file deleted')
+                        } else {
+                            mainLog.warn(
+                                'Temporary file does not exist, nothing to delete'
+                            )
+                        }
+                    } catch (error) {
+                        mainLog.error('Error deleting temporary file:', error)
                     }
-                } catch (error) {
-                    mainLog.error('Error deleting temporary file:', error)
+                } else {
+                    mainLog.error('Process failed:', error)
+                    reject(error)
                 }
 
                 // gérer l'ouverture dans l'explorateur de fichiers is simple
@@ -602,7 +609,11 @@ export const handleJsonSaveAndCollect = async (
             if (isDev()) mainLog.debug('Json measure start...')
 
             // prepare common collect
-            const collectDatas = _prepareDatas(`complexe`, null, jsonFilePath)
+            const collectDatas = _prepareDatas(
+                `complexe`,
+                jsonDatas.output as ('statement' | 'json' | 'html')[],
+                jsonFilePath
+            )
             // const {
             //     command,
             //     nodeDir,
