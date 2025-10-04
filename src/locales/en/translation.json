@@ -16,7 +16,6 @@
     "Add an URL": "Add an URL",
     "Application Update": "Application Update",
     "Application succefully loaded.\nWelcome 👋": "Application successfully loaded.\nWelcome 👋",
-    "Application version:": "Application version:",
     "Are you shure to want create report(s) in your default folder?": "Are you shure to want create report(s) in your default folder?",
     "Are you shure to want create report(s) in your default folder?\n\rDestination: {{homeDir}}": "Are you shure to want create report(s) in your default folder?\n\rDestination: {{homeDir}}",
     "Browse": "Browse",
@@ -217,5 +216,7 @@
                 }
             }
         }
-    }
+    },
+    "Application version": "Application version:",
+    "Plugin version": "Écoindex plugins v:"
 }

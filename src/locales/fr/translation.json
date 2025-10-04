@@ -218,5 +218,7 @@
                 }
             }
         }
-    }
+    },
+    "Plugin version": "Écoindex plugins v:",
+    "Application version": "Version de l'application:"
 }

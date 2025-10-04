@@ -641,8 +641,13 @@ function TheApp() {
                         />
                     </div>
                     <Footer
-                        appVersion={packageJson.version}
-                        repoUrl={packageJson.homepage}
+                        appVersion={packageJson?.version}
+                        repoUrl={packageJson?.homepage}
+                        coursesVersion={
+                            packageJson?.dependencies[
+                                'lighthouse-plugin-ecoindex-courses'
+                            ] || 'undefined'
+                        }
                     />
                 </main>
             </div>
