@@ -67,6 +67,7 @@ declare global {
     export interface IJsonMesureData {
         'extra-header': object | null
         output: string[]
+        'puppeteer-script'?: string
         'audit-category': string[]
         'output-path'?: string
         'user-agent'?: string
