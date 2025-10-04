@@ -1,5 +1,19 @@
 
 
+# [0.4.0](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.13...0.4.0) (2025-10-04)
+
+
+### Bug Fixes
+
+* amélioration de la gestion des erreurs lors de la suppression des fichiers temporaires et mise à jour de la préparation des données pour la collecte complexe ([75dfabf](https://github.com/cnumr/EcoindexApp/commit/75dfabfe3d721ebc46dd96625d896aa5324c2831))
+* mise à jour de l'agent utilisateur dans les constantes pour une meilleure compatibilité ([9e365f3](https://github.com/cnumr/EcoindexApp/commit/9e365f3c0a6a8dd89d0deb6f47ba381198e256c3))
+
+
+### Features
+
+* ajout de la propriété 'puppeteer-script' à l'interface IJsonMesureData ([966e52e](https://github.com/cnumr/EcoindexApp/commit/966e52e78aa632a53a8eb456c7b34701c0dcbcc7))
+* ajout de la version du plugin ecoindex dans le pied de page de l'application ([8a2cf39](https://github.com/cnumr/EcoindexApp/commit/8a2cf3927b312af85701aa7a035e529138b2545b))
+
 # [0.4.0-rc.13](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.12...0.4.0-rc.13) (2025-08-24)
 
 
