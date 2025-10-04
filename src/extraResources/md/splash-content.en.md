@@ -1,11 +1,11 @@
 _Vous pouvez changer la langue de l'application dans le menu `Langue`._
 
-This desktop application lets you perform measurements like on [econindex.fr](https://econindex.fr) , but also get Google's lighthouse measurements, in a single report, with no limitation on measurements. 🎉
+This desktop application lets you perform measurements like on [ecoindex.fr](https://ecoindex.fr) , but also get Google's lighthouse measurements, in a single report, with no limitation on measurements. 🎉
 
 ## Key information
 
 You can either measure **a series of URLs**, or **entire visit courses**.
-This version of ecoindex provides stable and consistent measurements as with [econindex.fr](https://econindex.fr) or [ecoindex-cli](https://github.com/cnumr/ecoindex_python_fullstack/blob/main/projects/ecoindex_cli/README.md).  
+This version of ecoindex provides stable and consistent measurements as with [ecoindex.fr](https://ecoindex.fr) or [ecoindex-cli](https://github.com/cnumr/ecoindex_python_fullstack/blob/main/projects/ecoindex_cli/README.md).  
 Browser cache management guarantees **realistic** measurements.
 
 With this application, you'll get:

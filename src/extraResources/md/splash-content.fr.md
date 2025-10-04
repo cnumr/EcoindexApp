@@ -1,11 +1,11 @@
 _You can change the application language in the menu, `Language`._
 
-Cette application de bureau vous permet d'effectuer des mesures comme sur le site [econindex.fr](https://econindex.fr) , mais aussi d'avoir les mesures de lighthouse de Google, dans un seul et même rapport, sans limitation de mesures. 🎉
+Cette application de bureau vous permet d'effectuer des mesures comme sur le site [ecoindex.fr](https://ecoindex.fr) , mais aussi d'avoir les mesures de lighthouse de Google, dans un seul et même rapport, sans limitation de mesures. 🎉
 
 ## Informations clés
 
 Vous pouvez soit mesurer **une série d'URLs**, ou des **parcours de visite entiers**.
-Cette version d'ecoindex fournit des mesures stables et cohérentes comme avec [econindex.fr](https://econindex.fr) ou [ecoindex-cli](https://github.com/cnumr/ecoindex_python_fullstack/blob/main/projects/ecoindex_cli/README.md).  
+Cette version d'ecoindex fournit des mesures stables et cohérentes comme avec [ecoindex.fr](https://ecoindex.fr) ou [ecoindex-cli](https://github.com/cnumr/ecoindex_python_fullstack/blob/main/projects/ecoindex_cli/README.md).  
 La gestion du cache du navigateur garantit des mesures **réalistes**.
 
 Avec cette application, vous obtiendrez :
