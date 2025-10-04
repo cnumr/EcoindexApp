@@ -70,7 +70,7 @@ const constants: IConstants = {
                 'lighthouse-plugin-ecoindex-core',
             ],
             output: ['html', 'json'],
-            'user-agent': 'insights',
+            'user-agent': 'random',
             'output-name': 'ecoindex',
             courses: [
                 {
