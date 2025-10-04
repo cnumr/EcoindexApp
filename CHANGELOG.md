@@ -1,5 +1,12 @@
 
 
+## [0.4.1](https://github.com/cnumr/EcoindexApp/compare/0.4.0...0.4.1) (2025-10-04)
+
+
+### Bug Fixes
+
+* correction des liens vers ecoindex.fr dans le contenu de démarrage en anglais et en français ([2269e38](https://github.com/cnumr/EcoindexApp/commit/2269e38ebbdb00f26dce3076bf1e33804c9dc2ed))
+
 # [0.4.0](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.13...0.4.0) (2025-10-04)
 
 
