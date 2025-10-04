@@ -3,6 +3,8 @@ import { getMainLog } from '../main'
 
 /**
  * Helpers, Launch Multi Debug
+ * - Send message to front log — _sendMessageToFrontLog
+ * - Send message to `main.log` — mainLog.debug
  * @param message any
  * @param optionalParams any
  */

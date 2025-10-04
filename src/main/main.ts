@@ -1,7 +1,8 @@
 // #region Imports
 import * as menuFactoryService from '../services/menuFactory'
 
-import { BrowserWindow, app, ipcMain } from 'electron'
+import { BrowserWindow, WebContentsView, app, ipcMain } from 'electron'
+import { channels, utils } from '../shared/constants'
 import {
     getMainWindow,
     getWelcomeWindow,
@@ -18,7 +19,6 @@ import {
 
 import { LinuxUpdate } from '../class/LinuxUpdate'
 import Store from 'electron-store'
-import { channels } from '../shared/constants'
 import { convertVersion } from './utils'
 import fixPath from 'fix-path'
 import { handleIsJsonConfigFileExist } from './handlers/HandleIsJsonConfigFileExist'
@@ -30,6 +30,8 @@ import log from 'electron-log/main'
 import os from 'os'
 import packageJson from '../../package.json'
 import { updateElectronApp } from 'update-electron-app'
+
+// import * as path from 'node:path'
 
 // #endregion
 // #region Intialization
@@ -54,7 +56,7 @@ log.info(
 )
 
 // #region update app
-if (os.platform() !== 'linux') {
+if (process.platform !== 'linux') {
     updateElectronApp({
         updateInterval: '1 hour',
         logger: updateLog,
@@ -74,13 +76,29 @@ declare const HELLO_WINDOW_PRELOAD_WEBPACK_ENTRY: string
 /**
  * Helpers, Fix Path
  */
-const _runfixPath = () => {
+const _runfixPath = async () => {
     if (isDev()) mainLog.debug(`RUN fixPath and shellEnv`)
     fixPath()
-    if (os.platform() === 'darwin') {
+    if (process.platform === 'darwin') {
         if (isDev()) mainLog.debug(`darwin`)
         const { shell } = os.userInfo()
         if (isDev()) mainLog.debug(`shell`, shell)
+        try {
+            const mod = await import('shell-env')
+            const candidate: any = (mod as any).default ?? (mod as any)
+            let env: Record<string, string> | null = null
+            if (typeof candidate === 'function') {
+                env = await candidate()
+            } else if (candidate && typeof candidate.sync === 'function') {
+                env = candidate.sync()
+            }
+            if (env && env.PATH) {
+                process.env.PATH = env.PATH
+                if (isDev()) mainLog.debug(`PATH normalized`, process.env.PATH)
+            }
+        } catch (error) {
+            if (isDev()) mainLog.debug(`shellEnv error`, error)
+        }
     } else {
         if (isDev()) mainLog.debug(`win32`)
         if (isDev()) mainLog.debug(`shell`, `cmd.exe`)
@@ -99,7 +117,7 @@ if (require('electron-squirrel-startup')) {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', () => {
+app.on('ready', async () => {
     // simple handlers
     ipcMain.handle(channels.SIMPLE_MESURES, handleSimpleCollect)
     // json handlers
@@ -118,13 +136,16 @@ app.on('ready', () => {
         handleIsJsonConfigFileExist
     )
 
-    ipcMain.handle('store-set', (event, key: string, value: any) => {
+    ipcMain.handle('store-set', (event, key: string, value: unknown) => {
         store.set(key, value)
     })
 
-    ipcMain.handle('store-get', (event, key: string, defaultValue?: any) => {
-        return store.get(key, defaultValue)
-    })
+    ipcMain.handle(
+        'store-get',
+        (event, key: string, defaultValue?: unknown) => {
+            return store.get(key, defaultValue)
+        }
+    )
 
     ipcMain.handle('store-delete', (event, key: string) => {
         store.delete(key)
@@ -176,12 +197,12 @@ const _changeLanguage = (lng: string) => {
                 channels.CHANGE_LANGUAGE_TO_FRONT,
                 lng
             )
-        i18n.isInitialized &&
-            !getWelcomeWindow().isDestroyed() &&
-            getWelcomeWindow().webContents.send(
-                channels.CHANGE_LANGUAGE_TO_FRONT,
-                lng
-            )
+        // i18n.isInitialized &&
+        //     !getWelcomeWindow().isDestroyed() &&
+        //     getWelcomeWindow().webContents.send(
+        //         channels.CHANGE_LANGUAGE_TO_FRONT,
+        //         lng
+        //     )
         i18n.isInitialized &&
             menuFactoryService.buildMenu(app, getMainWindow(), i18n)
     } catch (error) {
@@ -191,7 +212,7 @@ const _changeLanguage = (lng: string) => {
 
 const i18nInit = () => {
     try {
-        i18n.on('loaded', (loaded) => {
+        i18n.on('loaded', () => {
             try {
                 i18n.changeLanguage('en')
                 i18n.off('loaded')
@@ -212,7 +233,7 @@ const i18nInit = () => {
 
 // #region Windows creation
 export const createHelloWindow = () => {
-    if (!hasShowWelcomeWindow()) {
+    if (!hasShowWelcomeWindow() || process.env['WEBPACK_SERVE'] === 'true') {
         const displayHello = `displayHello.${convertVersion(packageJson.version)}`
         setWelcomeWindow(
             new BrowserWindow({
@@ -254,7 +275,7 @@ const createMainWindow = (): void => {
     // and load the index.html of the app.
     getMainWindow().loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
 
-    createHelloWindow()
+    // createHelloWindow()
 
     i18nInit()
 
@@ -281,11 +302,25 @@ const createMainWindow = (): void => {
         }
     }
 
-    if (os.platform() === 'linux') {
+    if (process.platform === 'linux') {
         checkLinuxUpdater()
     }
     // Open the DevTools.
     // mainWindow.webContents.openDevTools({ mode: 'detach' })
+
+    getMainWindow().webContents.setWindowOpenHandler(({ url }) => {
+        if (url === utils.DOWNLOAD_NODE_LINK) {
+            return {
+                action: 'allow',
+                overrideBrowserWindowOptions: {
+                    width: 950,
+                    height: 750,
+                    fullscreenable: false,
+                },
+            }
+        }
+        return { action: 'deny' }
+    })
 }
 
 // #endregion

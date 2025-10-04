@@ -5,12 +5,12 @@ import {
     CardHeader,
     CardTitle,
 } from '../ui/card'
+import { InitalizationMessage, InputField } from '../../types'
 import { Route, MemoryRouter as Router, Routes } from 'react-router-dom'
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs'
 import { store as storeConstants, utils } from '../../shared/constants'
 import { useCallback, useEffect, useState } from 'react'
 
-import { AlertBox } from '../components/Alert'
 import { Bug } from 'lucide-react'
 import { Button } from '@/renderer/ui/button'
 import { ConfigData } from '../../class/ConfigData'
@@ -18,7 +18,9 @@ import { ConsoleApp } from '../components/console'
 import { DarkModeSwitcher } from '../components/dark-mode-switcher'
 import { Footer } from '../components/footer'
 import { Header } from '../components/Header'
+import { InformationPopin } from '../components/information-popin'
 import { InitErrorAlerts } from '../components/initialization-error-alerts'
+import { InitalizationData } from '../../class/InitalizationData'
 import { Input } from '../ui/input'
 import { JsonPanMesure } from '../components/json-pan'
 import { LinuxUpdate } from '../../class/LinuxUpdate'
@@ -27,8 +29,10 @@ import { PopinLoading } from '../components/loading-popin'
 import { ReloadIcon } from '@radix-ui/react-icons'
 import { SimplePanMesure } from '../components/simple-pan'
 import { SimpleTooltip } from '../components/simple-tooltip'
+import { SplashScreen } from '../components/splash-screen'
 import { TabsContent } from '@radix-ui/react-tabs'
 import { TypographyP } from '../ui/typography/TypographyP'
+import { cn } from '../lib/utils'
 import i18nResources from '../../configs/i18nResources'
 import log from 'electron-log/renderer'
 import packageJson from '../../../package.json'
@@ -40,33 +44,37 @@ function TheApp() {
     // #region useState, useTranslation
     // const [language, setLanguage] = useState('en')
     const [progress, setProgress] = useState(0)
-    const [initializing, setInitializing] = useState(false)
     const [isJsonFromDisk, setIsJsonFromDisk] = useState(false)
-    const [nodeVersion, setNodeVersion] = useState('')
     const [workDir, setWorkDir] = useState('loading...')
     const [homeDir, setHomeDir] = useState('loading...')
-    const [npmDir, setNpmDir] = useState('loading...')
     const [appReady, setAppReady] = useState(false)
     const [datasFromHost, setDatasFromHost] = useState({})
     const [displayPopin, setDisplayPopin] = useState(false)
-    const [popinText, setPopinText] = useState('Loading... 0/4')
-    const [pluginVersion, setPluginVersion] = useState('')
-    const [isNodeInstalled, setIsNodeInstalled] = useState(false)
-    const [isNodeVersionOK, setIsNodeVersionOK] = useState(false)
+    const [displaySplashScreen, setDisplaySplashScreen] = useState(false)
+    const [popinText, setPopinText] = useState('')
     const [isFirstStart, setIsFirstStart] = useState(true)
-    const [userCanWrite, setUserCanWrite] = useState(true)
     const [isPuppeteerBrowserInstalled, setIsPuppeteerBrowserInstalled] =
         useState(false)
-    const [puppeteerBrowserInstalled, setPuppeteerBrowserInstalled] =
-        useState('loading...')
     const [
-        isLighthouseEcoindexPluginInstalled,
-        setIsLighthouseEcoindexPluginInstalled,
-    ] = useState(false)
+        puppeteerBrowserInstalledVersion,
+        setPuppeteerBrowserInstalledVersion,
+    ] = useState('loading...')
 
     const [displayReloadButton, setDisplayReloadButton] = useState(false)
+    // #region displayInformationPopin
+    const [displayInformationPopin, setDisplayInformationPopin] =
+        useState(false)
+    const [informationPopinTitle, setInformationPopinTitle] = useState('')
+    const [informationPopinErrorLink, setInformationPopinErrorLink] = useState({
+        label: '',
+        url: '',
+    })
+    const [informationPopinMessage, setInformationPopinMessage] = useState('')
+    const [informationPopinIsAlert, setInformationPopinIsAlert] =
+        useState(false)
+    const [showInformationSpinner, setShowInformationSpinner] = useState(true)
+    // #endregion
 
-    let loadingScreen = 0
     const [urlsList, setUrlsList] = useState<InputField[]>([
         { value: 'https://www.ecoindex.fr/' },
         { value: 'https://www.ecoindex.fr/a-propos/' },
@@ -128,6 +136,12 @@ function TheApp() {
         body.style.overflowY = block ? 'hidden' : 'auto'
     }
 
+    useEffect(() => {
+        window.interactionAPI.displaySplashScreen((visibility = true) => {
+            blockScrolling(visibility)
+        })
+    }, [])
+
     /**
      * Show/Hide waiting popin during process.
      * @param value string | boolean
@@ -151,30 +165,6 @@ function TheApp() {
         }
     }
 
-    /**
-     * Increment function to handle the waiting popin.
-     */
-    const increment = (force = false) => {
-        const STEPS = 7
-        initReloadButton(false)
-        loadingScreen = loadingScreen + 1
-        setProgress(loadingScreen * (100 / STEPS))
-        frontLog.log(`Verify configuration step ${loadingScreen}/${STEPS}`)
-        setPopinText(`${t('Loading...')} ${loadingScreen}/${STEPS}`)
-        if (loadingScreen === STEPS || force) {
-            initReloadButton(true)
-            frontLog.log(`All initialization datas readed! 👀`)
-            setDisplayPopin(false)
-            const _n: any = {}
-            _n.body = t('Application succefully loaded.\nWelcome 👋')
-            _n.subtitle = t('You can now start measures')
-            _n.priority = 'critical'
-            showNotification('', _n)
-            setDisplayReloadButton(false)
-        } else {
-            setAppReady(false)
-        }
-    }
     // #endregion
 
     // #region handlers
@@ -333,10 +323,11 @@ function TheApp() {
      */
     const launchInitialization = async (forceInitialisation: boolean) => {
         frontLog.debug(`initializeApplication start 🚀`)
-        setDisplayPopin(true)
-        setInitializing(true)
-        setDisplayReloadButton(false)
-        initReloadButton()
+        // setDisplayPopin(true)
+        // setDisplayInformationPopin(true)
+        // setInitializing(true)
+        // setDisplayReloadButton(false)
+        // initReloadButton()
         if (
             forceInitialisation ||
             (await window.store.get(storeConstants.APP_INSTALLED_ONCE, false))
@@ -346,7 +337,7 @@ function TheApp() {
             await window.initialisationAPI.initializeApplication(
                 forceInitialisation
             )
-        setInitializing(false)
+        // setInitializing(false)
         frontLog.debug(
             `initializeApplication ended with ${result ? 'OK 👍' : 'KO 🚫'} status.`
         )
@@ -452,116 +443,49 @@ function TheApp() {
          */
         launchInitialization(false)
 
-        /**
-         * Add "listeners" for initialisationAPI.sendConfigDatasToFront()
-         */
-        window.initialisationAPI.sendConfigDatasToFront(
-            (configData: ConfigData) => {
-                frontLog.debug(`sendConfigDatasToFront`, configData)
-                // if (configData.error) {
-                //     frontLog.error(configData)
-                //     if (process.env['WEBPACK_SERVE'] === 'true') {
-                //         window.alert(
-                //             `0. ${configData.type} : ${configData.message ? configData.message : configData.error}`
-                //         )
-                //     }
-                // }
-                switch (configData.type) {
-                    case ConfigData.WORKDIR:
-                        setWorkDir(configData.result as string)
-                        increment()
-                        break
-                    case ConfigData.HOMEDIR:
-                        setHomeDir(configData.result as string)
-                        increment()
-                        break
-                    case ConfigData.NODE_INSTALLED:
-                        setIsNodeInstalled(configData.result as boolean)
-                        increment()
-                        break
-                    case ConfigData.NODE_VERSION_IS_OK:
-                        setIsNodeVersionOK(configData.result as boolean)
-                        setNodeVersion(configData.message)
-                        increment()
-                        break
-                    case ConfigData.PLUGIN_INSTALLED:
-                        setIsLighthouseEcoindexPluginInstalled(
-                            configData.result as boolean
-                        )
-                        increment()
-                        break
-                    case ConfigData.PLUGIN_VERSION:
-                        setPluginVersion(configData.result as string)
-                        increment()
-                        break
-                    case ConfigData.NPMDIR:
-                        setNpmDir(configData.result as string)
-                        break
-                    case ConfigData.PUPPETEER_BROWSER_INSTALLED:
-                        setIsPuppeteerBrowserInstalled(
-                            configData.result !== null
-                        )
-                        setPuppeteerBrowserInstalled(
-                            configData.result as string
-                        )
-                        increment()
-                        break
-                    case ConfigData.APP_READY:
-                        setAppReady(configData.result as boolean)
-                        increment(true)
-                        break
-                    case ConfigData.APP_CAN_NOT_BE_LAUNCHED:
-                        frontLog.log(
-                            `Init Error detected ${configData.errorType}`
-                        )
-                        setDisplayPopin(false)
-                        switch (configData.errorType) {
-                            case ConfigData.ERROR_TYPE_FIRST_INSTALL:
-                                setIsFirstStart(true)
-                                break
-                            case ConfigData.ERROR_TYPE_NO_NODE:
-                                setIsNodeInstalled(false)
-                                break
-                            case ConfigData.ERROR_TYPE_NO_WRITE_ACCESS:
-                                setUserCanWrite(false)
-                                break
-                            case ConfigData.ERROR_TYPE_CANT_FIX_USER_RIGHTS:
-                                setUserCanWrite(false)
-                                break
-                            case ConfigData.ERROR_TYPE_BROWSER_NOT_INSTALLED:
-                                setIsPuppeteerBrowserInstalled(false)
-                                break
-                            case ConfigData.ERROR_TYPE_NODE_VERSION_ERROR:
-                                setIsNodeVersionOK(false)
-                                break
-                            case ConfigData.ERROR_TYPE_NO_NPM_DIR:
-                                setNpmDir(null)
-                                break
+        window.initialisationAPI.sendInitializationMessages(
+            async (message: InitalizationMessage) => {
+                frontLog.debug(`sendInitializationMessages`, message)
 
-                            default:
-                                // if (configData.errorType !== undefined) {
-                                //     window.alert(
-                                //         `1. ConfigData.errorType=${configData.errorType} not handle in App.tsx`
-                                //     )
-                                // } else {
-                                //     frontLog.error(
-                                //         `ConfigData.errorType=${configData.errorType} not handle in App.tsx`
-                                //     )
-                                // }
-                                break
-                        }
-                        break
+                if (message.type === 'data') {
+                    switch (message.data?.type) {
+                        case InitalizationData.WORKDIR:
+                            setWorkDir(message.data.result as string)
+                            break
+                        case InitalizationData.HOMEDIR:
+                            setHomeDir(message.data.result as string)
+                            break
+                        case InitalizationData.APP_READY:
+                            setAppReady(message.data.result as boolean)
+                            break
+                        case InitalizationData.PUPPETEER_BROWSER_INSTALLED:
+                            setIsPuppeteerBrowserInstalled(
+                                message.data.result as boolean
+                            )
+                            setPuppeteerBrowserInstalledVersion(
+                                message.data.result as string
+                            )
+                            break
+                        case InitalizationData.APP_CAN_NOT_BE_LAUNCHED:
+                            setInformationPopinTitle(`${message.title}`)
+                            setInformationPopinMessage(message.message)
+                            break
+                    }
+                } else {
+                    setInformationPopinTitle(message.title)
+                    setInformationPopinMessage(message.message)
+                    setInformationPopinErrorLink(message?.errorLink)
+                }
 
-                    default:
-                    // if (configData.type) {
-                    //     window.alert(
-                    //         `2. ConfigData.type=${configData.type} not handle in App.tsx`
-                    //     )
-                    // } else {
-                    //     frontLog.error(
-                    //         `ConfigData.type=${configData.type} not handle in App.tsx`
-                    //     )
-                    // }
+                if (message.modalType === 'started') {
+                    setDisplayInformationPopin(true)
+                } else if (message.modalType === 'completed') {
+                    await _sleep(2000)
+                    setDisplayInformationPopin(false)
+                } else if (message.modalType === 'error') {
+                    setDisplayInformationPopin(true)
+                    setShowInformationSpinner(false)
+                    setInformationPopinIsAlert(true)
                 }
             }
         )
@@ -589,144 +513,173 @@ function TheApp() {
     // #region JSX
 
     return (
-        <div className="container relative">
-            <DarkModeSwitcher
-                title={t('Dark mode switch')}
-                className="absolute left-2 top-2 z-20 flex gap-2"
-            />
-            <SimpleTooltip
-                tooltipContent={
-                    <p>
-                        {t(
-                            'Copy application informations to clipboard.<br />Send theim to developper at renaud@greenit.fr.'
-                        )}
-                    </p>
-                }
-            >
-                <Button
-                    variant="secondary"
-                    size="sm"
-                    className="absolute right-2 top-2 z-20"
-                    onClick={copyToClipBoard}
-                >
-                    <Bug className="mr-2 size-4" />
-                    {t('Debug')}
-                </Button>
-            </SimpleTooltip>
-            <main className="flex h-screen flex-col justify-between gap-4 p-4">
-                <div className="flex flex-col items-center gap-4">
-                    <Header />
-                    <InitErrorAlerts
-                        datasFromHost={datasFromHost}
-                        launchInitialization={launchInitialization}
-                    />
-                    {!appReady && <MySkeleton />}
-                    {appReady && (
-                        <>
-                            <Card className="w-full border-primary">
-                                <CardHeader>
-                                    <CardTitle>
-                                        {t('1. Select ouput folder')}
-                                    </CardTitle>
-                                    <CardDescription>
-                                        {t(
-                                            'Specify where to execute the measures.'
-                                        )}
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="flex w-full items-center gap-2">
-                                        <Input
-                                            id="filePath"
-                                            value={workDir}
-                                            type="text"
-                                            readOnly
-                                        />
-                                        <Button
-                                            type="button"
-                                            id="btn-file"
-                                            disabled={!appReady}
-                                            onClick={selectWorkingFolder}
-                                        >
-                                            {t('Browse')}
-                                        </Button>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                            <TypographyP className={`w-full`}>
-                                {t(
-                                    'Choose the type of measure you want to do.'
-                                )}
-                            </TypographyP>
-                            <Tabs
-                                defaultValue="simple-mesure"
-                                className="w-full"
-                            >
-                                <TabsList className="mb-4 grid w-full grid-cols-2">
-                                    <TabsTrigger value="simple-mesure">
-                                        {t('Url(s) Measure (Simple mode)')}
-                                    </TabsTrigger>
-                                    <TabsTrigger value="json-mesure">
-                                        {t('Courses Measure (Full mode)')}
-                                    </TabsTrigger>
-                                </TabsList>
-                                <TabsContent value="simple-mesure">
-                                    <SimplePanMesure
-                                        appReady={appReady}
-                                        language={i18nResources.language}
-                                        simpleMesures={runSimpleMesures}
-                                        urlsList={urlsList}
-                                        setUrlsList={setUrlsList}
-                                        className="border-primary"
-                                    />
-                                </TabsContent>
-                                <TabsContent value="json-mesure">
-                                    <JsonPanMesure
-                                        appReady={appReady}
-                                        isJsonFromDisk={isJsonFromDisk}
-                                        language={i18nResources.language}
-                                        jsonDatas={jsonDatas}
-                                        setJsonDatas={setJsonDatas}
-                                        mesure={() =>
-                                            runJsonSaveAndCollect(true)
-                                        }
-                                        reload={runJsonReadAndReload}
-                                        save={runJsonSaveAndCollect}
-                                        notify={handlerJsonNotify}
-                                        className="border-primary"
-                                    />
-                                </TabsContent>
-                            </Tabs>
-                        </>
-                    )}
-                    {/* display here the echoReadable line */}
-                    <ConsoleApp
-                        id="echo"
-                        datasFromHost={datasFromHost}
-                        appReady={appReady}
-                        isFirstStart={isFirstStart}
-                        isNodeInstalled={isNodeInstalled}
-                        isLighthouseEcoindexPluginInstalled={
-                            isLighthouseEcoindexPluginInstalled
-                        }
-                        isPuppeteerBrowserInstalled={
-                            isPuppeteerBrowserInstalled
-                        }
-                        isNodeVersionOK={isNodeVersionOK}
-                        workDir={workDir}
-                        homeDir={homeDir}
-                        npmDir={npmDir}
-                        puppeteerBrowserInstalled={puppeteerBrowserInstalled}
-                        userCanWrite={userCanWrite}
-                    />
-                </div>
-                <Footer
-                    nodeVersion={nodeVersion}
-                    pluginVersion={pluginVersion}
-                    appVersion={packageJson.version}
-                    repoUrl={packageJson.homepage}
+        <>
+            <div className="container relative">
+                <DarkModeSwitcher
+                    title={t('Dark mode switch')}
+                    className="absolute left-2 top-2 z-20 flex gap-2"
                 />
-            </main>
+                <SimpleTooltip
+                    tooltipContent={
+                        <p>
+                            {t(
+                                'Copy application informations to clipboard.<br />Send theim to developper at renaud@greenit.fr.'
+                            )}
+                        </p>
+                    }
+                >
+                    <Button
+                        variant="secondary"
+                        size="sm"
+                        className="absolute right-2 top-2 z-20"
+                        onClick={copyToClipBoard}
+                    >
+                        <Bug className="mr-2 size-4" />
+                        {t('Debug')}
+                    </Button>
+                </SimpleTooltip>
+                <main className="flex h-screen flex-col justify-between gap-4 p-4">
+                    <div className="flex flex-col items-center gap-4">
+                        <Header />
+                        <InitErrorAlerts
+                            datasFromHost={datasFromHost}
+                            launchInitialization={launchInitialization}
+                        />
+                        {!appReady && <MySkeleton />}
+                        {appReady && (
+                            <>
+                                <Card className="w-full border-primary">
+                                    <CardHeader>
+                                        <CardTitle>
+                                            {t('1. Select ouput folder')}
+                                        </CardTitle>
+                                        <CardDescription>
+                                            {t(
+                                                'Specify where to execute the measures.'
+                                            )}
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="flex w-full items-center gap-2">
+                                            <Input
+                                                id="filePath"
+                                                value={workDir}
+                                                type="text"
+                                                readOnly
+                                            />
+                                            <Button
+                                                type="button"
+                                                id="btn-file"
+                                                disabled={!appReady}
+                                                onClick={selectWorkingFolder}
+                                            >
+                                                {t('Browse')}
+                                            </Button>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                                <TypographyP className={`w-full`}>
+                                    {t(
+                                        'Choose the type of measure you want to do.'
+                                    )}
+                                </TypographyP>
+                                <Tabs
+                                    defaultValue="simple-mesure"
+                                    className="w-full"
+                                >
+                                    <TabsList className="mb-4 grid w-full grid-cols-2">
+                                        <TabsTrigger value="simple-mesure">
+                                            {t('Url(s) Measure (Simple mode)')}
+                                        </TabsTrigger>
+                                        <TabsTrigger value="json-mesure">
+                                            {t('Courses Measure (Full mode)')}
+                                        </TabsTrigger>
+                                    </TabsList>
+                                    <TabsContent value="simple-mesure">
+                                        <SimplePanMesure
+                                            appReady={appReady}
+                                            language={i18nResources.language}
+                                            simpleMesures={runSimpleMesures}
+                                            urlsList={urlsList}
+                                            setUrlsList={setUrlsList}
+                                            className="border-primary"
+                                        />
+                                    </TabsContent>
+                                    <TabsContent value="json-mesure">
+                                        <JsonPanMesure
+                                            appReady={appReady}
+                                            isJsonFromDisk={isJsonFromDisk}
+                                            language={i18nResources.language}
+                                            jsonDatas={jsonDatas}
+                                            setJsonDatas={setJsonDatas}
+                                            mesure={() =>
+                                                runJsonSaveAndCollect(true)
+                                            }
+                                            reload={runJsonReadAndReload}
+                                            save={runJsonSaveAndCollect}
+                                            notify={handlerJsonNotify}
+                                            className="border-primary"
+                                        />
+                                    </TabsContent>
+                                </Tabs>
+                            </>
+                        )}
+                        {/* display here the echoReadable line */}
+                        <ConsoleApp
+                            id="echo"
+                            datasFromHost={datasFromHost}
+                            appReady={appReady}
+                            isFirstStart={isFirstStart}
+                            isPuppeteerBrowserInstalled={
+                                isPuppeteerBrowserInstalled
+                            }
+                            workDir={workDir}
+                            homeDir={homeDir}
+                            puppeteerBrowserInstalledVersion={
+                                puppeteerBrowserInstalledVersion
+                            }
+                        />
+                    </div>
+                    <Footer
+                        appVersion={packageJson?.version}
+                        repoUrl={packageJson?.homepage}
+                        coursesVersion={
+                            packageJson?.dependencies[
+                                'lighthouse-plugin-ecoindex-courses'
+                            ] || 'undefined'
+                        }
+                    />
+                </main>
+            </div>
+            <InformationPopin
+                id="informationPopin"
+                display={displayInformationPopin}
+                title={informationPopinTitle}
+                showSpinner={showInformationSpinner}
+                isAlert={informationPopinIsAlert}
+                errorLink={informationPopinErrorLink}
+            >
+                <span
+                    className={cn(
+                        'text-sm',
+                        !informationPopinIsAlert
+                            ? 'italic'
+                            : 'font-bold !text-red-500'
+                    )}
+                >
+                    {informationPopinMessage}
+                </span>
+                {informationPopinErrorLink &&
+                    informationPopinErrorLink.label !== '' && (
+                        <a
+                            className="underline"
+                            target="_blank"
+                            href={informationPopinErrorLink.url}
+                        >
+                            {informationPopinErrorLink.label}
+                        </a>
+                    )}
+            </InformationPopin>
             {displayPopin && (
                 <PopinLoading
                     id="loadingPopin"
@@ -753,7 +706,12 @@ function TheApp() {
                     </div>
                 </PopinLoading>
             )}
-        </div>
+            <SplashScreen
+                id="splash-screen"
+                language={i18nResources.language}
+                onClose={() => blockScrolling(false)}
+            />
+        </>
     )
 }
 

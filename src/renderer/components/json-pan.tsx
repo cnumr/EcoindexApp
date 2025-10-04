@@ -107,12 +107,7 @@ export const JsonPanMesure: FC<ILayout> = ({
         ) => {
             frontLog.debug('updateGeneric', type, id, name, value, _c)
             if (_c === -1) {
-                if (name !== 'output') {
-                    setJsonDatas?.({
-                        ...jsonDatas,
-                        [id]: value,
-                    })
-                } else {
+                if (name === 'output') {
                     frontLog.debug(`is output`)
                     if (e) {
                         const _jsonDatas = {
@@ -128,6 +123,27 @@ export const JsonPanMesure: FC<ILayout> = ({
                             ),
                         })
                     }
+                } else if (name === 'audit-category') {
+                    frontLog.debug(`is audit-category`)
+                    if (e) {
+                        const _jsonDatas = {
+                            ...jsonDatas,
+                        }
+                        _jsonDatas['audit-category'].push(id)
+                        setJsonDatas?.(_jsonDatas)
+                    } else {
+                        setJsonDatas?.({
+                            ...jsonDatas,
+                            'audit-category': jsonDatas[
+                                'audit-category'
+                            ].filter((val) => val !== id),
+                        })
+                    }
+                } else {
+                    setJsonDatas?.({
+                        ...jsonDatas,
+                        [id]: value,
+                    })
                 }
             } else {
                 setJsonDatas?.({
@@ -218,6 +234,14 @@ export const JsonPanMesure: FC<ILayout> = ({
         event: React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) => {
         // frontLog.debug('handlerOnSave', event.target)
+        const auditCategory: string[] = jsonDatas['audit-category']
+        if (!auditCategory.includes('lighthouse-plugin-ecoindex-core')) {
+            auditCategory.push('lighthouse-plugin-ecoindex-core')
+        }
+        setJsonDatas({
+            ...jsonDatas,
+            'audit-category': auditCategory,
+        })
         save()
         setUpdated(false)
     }
@@ -290,50 +314,163 @@ export const JsonPanMesure: FC<ILayout> = ({
                         <legend className="mandatory">
                             {t('Choose the reports you want to generate')}
                         </legend>
-                        <div>
-                            <Switch
-                                id="html"
-                                name="output"
-                                checked={jsonDatas?.output.includes('html')}
-                                onCheckedChange={(e) => {
-                                    handlerOnChange(-1, e, 'html', 'output')
-                                }}
-                            />
-                            <label htmlFor="html">HTML</label>
+                        <div className="!grid grid-cols-2 gap-2">
+                            <div>
+                                <Switch
+                                    id="html"
+                                    name="output"
+                                    checked={jsonDatas?.output.includes('html')}
+                                    onCheckedChange={(e) => {
+                                        handlerOnChange(-1, e, 'html', 'output')
+                                    }}
+                                />
+                                <label htmlFor="html">HTML</label>
+                            </div>
+                            <div>
+                                <Switch
+                                    id="json"
+                                    name="output"
+                                    checked={jsonDatas?.output.includes('json')}
+                                    onCheckedChange={(e) => {
+                                        handlerOnChange(-1, e, 'json', 'output')
+                                    }}
+                                />
+                                <label htmlFor="json">JSON</label>
+                            </div>
+                            <div>
+                                <Switch
+                                    id="statement"
+                                    name="output"
+                                    checked={jsonDatas?.output.includes(
+                                        'statement'
+                                    )}
+                                    onCheckedChange={(e) => {
+                                        handlerOnChange(
+                                            -1,
+                                            e,
+                                            'statement',
+                                            'output'
+                                        )
+                                    }}
+                                />
+                                <label htmlFor="statement">
+                                    {t('Statement')}{' '}
+                                    <em className="text-xs">
+                                        {t('(JSON output mandatory)')}
+                                    </em>
+                                </label>
+                            </div>
                         </div>
-                        <div>
-                            <Switch
-                                id="json"
-                                name="output"
-                                checked={jsonDatas?.output.includes('json')}
-                                onCheckedChange={(e) => {
-                                    handlerOnChange(-1, e, 'json', 'output')
-                                }}
-                            />
-                            <label htmlFor="json">JSON</label>
-                        </div>
-                        <div>
-                            <Switch
-                                id="statement"
-                                name="output"
-                                checked={jsonDatas?.output.includes(
-                                    'statement'
-                                )}
-                                onCheckedChange={(e) => {
-                                    handlerOnChange(
-                                        -1,
-                                        e,
-                                        'statement',
-                                        'output'
-                                    )
-                                }}
-                            />
-                            <label htmlFor="statement">
-                                {t('Statement')}{' '}
-                                <em className="text-xs">
-                                    {t('(JSON output mandatory)')}
-                                </em>
-                            </label>
+                    </fieldset>
+                    <fieldset>
+                        <legend className="mandatory">
+                            {t('common.audit.audit-category.title')}
+                        </legend>
+                        <div className="!grid grid-cols-2 gap-2">
+                            <div>
+                                <Switch
+                                    id="seo"
+                                    name="audit-category"
+                                    checked={jsonDatas?.[
+                                        'audit-category'
+                                    ].includes('seo')}
+                                    onCheckedChange={(e) => {
+                                        handlerOnChange(
+                                            -1,
+                                            e,
+                                            'seo',
+                                            'audit-category'
+                                        )
+                                    }}
+                                />
+                                <label htmlFor="seo">
+                                    {t('common.audit.audit-category.seo')}
+                                </label>
+                            </div>
+                            <div>
+                                <Switch
+                                    id="performance"
+                                    name="audit-category"
+                                    checked={jsonDatas?.[
+                                        'audit-category'
+                                    ].includes('performance')}
+                                    onCheckedChange={(e) => {
+                                        handlerOnChange(
+                                            -1,
+                                            e,
+                                            'performance',
+                                            'audit-category'
+                                        )
+                                    }}
+                                />
+                                <label htmlFor="performance">
+                                    {t(
+                                        'common.audit.audit-category.performance'
+                                    )}
+                                </label>
+                            </div>
+                            <div>
+                                <Switch
+                                    id="accessibility"
+                                    name="audit-category"
+                                    checked={jsonDatas?.[
+                                        'audit-category'
+                                    ].includes('accessibility')}
+                                    onCheckedChange={(e) => {
+                                        handlerOnChange(
+                                            -1,
+                                            e,
+                                            'accessibility',
+                                            'audit-category'
+                                        )
+                                    }}
+                                />
+                                <label htmlFor="accessibility">
+                                    {t(
+                                        'common.audit.audit-category.accessibility'
+                                    )}
+                                </label>
+                            </div>
+                            <div>
+                                <Switch
+                                    id="best-practices"
+                                    name="audit-category"
+                                    checked={jsonDatas?.[
+                                        'audit-category'
+                                    ].includes('best-practices')}
+                                    onCheckedChange={(e) => {
+                                        handlerOnChange(
+                                            -1,
+                                            e,
+                                            'best-practices',
+                                            'audit-category'
+                                        )
+                                    }}
+                                />
+                                <label htmlFor="best-practices">
+                                    {t(
+                                        'common.audit.audit-category.best-practices'
+                                    )}
+                                </label>
+                            </div>
+                            <div>
+                                <Switch
+                                    id="lighthouse-plugin-ecoindex-core"
+                                    name="audit-category"
+                                    checked={true}
+                                    disabled={true}
+                                />
+                                <label htmlFor="lighthouse-plugin-ecoindex-core">
+                                    {t(
+                                        'common.audit.audit-category.lighthouse-plugin-ecoindex-core'
+                                    )}{' '}
+                                    <em className="text-xs">
+                                        {t(
+                                            'common.audit.audit-category.ecoindex-core.mandatory'
+                                        )}
+                                    </em>
+                                </label>
+                            </div>
                         </div>
                     </fieldset>
                     <fieldset>

@@ -66,8 +66,8 @@
     "First launch": "Premier lancement",
     "Force reload": "Rechargement Forcé",
     "Full Screen": "Plein écran",
-    "Generates Html reports in seleted dir.": "Génération des rapports HTML dans le dossier séléctioné.",
-    "Generates reports files in seleted dir.": "Génération des rapports dans le dossier séléctioné.",
+    "Generates Html reports in seleted dir.": "Génération des rapports HTML dans le dossier sélectionné.",
+    "Generates reports files in seleted dir.": "Génération des rapports dans le dossier sélectionné.",
     "Header to add cookies, Authentication...": "Header pour ajouter des Cookies, Authenification...",
     "Help": "Aide",
     "Hide App": "Masquer l'application",
@@ -166,5 +166,59 @@
     "🧩 JSON reload": "🧩 Rechargement JSON",
     "🧩 JSON save": "🧩 Sauvegarde JSON",
     "🧩 JSON save and collect": "🧩 Sauvegarde et collecte JSON",
-    "🧩 Simple collect": "🧩 Collecte simple"
+    "🧩 Simple collect": "🧩 Collecte simple",
+    "initialization": {
+        "title": "Démarrage de l'application",
+        "started": "Vérifications...",
+        "windows": {
+            "unpacking": "Extraction des fichiers (cela peut prendre quelques secondes et faire freezé l'application)..."
+        },
+        "homeDir-workDir": "Recherche du dossier de travail",
+        "dir": {
+            "home": "Recherche du dossier utilisateur...",
+            "work": "Recherche du dossier de travail..."
+        },
+        "browser-puppeteer": {
+            "isInstalled": "Vérification si le navigateur interne est déjà installé...",
+            "installation": "Installation du navigateur interne",
+            "verification": "Vérification de la bonne installation du navigateur interne...",
+            "error": "L'installation du navigateur à retourné une erreur. L'application ne peut pas démarrer 🚫"
+        },
+        "finished": "Installation terminée avec succès 🎉",
+        "title-error": "L'installation est en erreur !",
+        "node": {
+            "check": "Vérification de la présence de NodeJS sur l'ordinateur",
+            "version": "Vérification de la version de NodeJS présente sur l'ordinateur",
+            "install": {
+                "Label": "Lien de téléchargement"
+            },
+            "error": {
+                "notinstalled": "NodeJS n'est pas installé sur votre ordinateur !",
+                "wrongversion": "Votre version de NodeJS est obsolète"
+            }
+        },
+        "fatal": {
+            "error": "🚫 Erreur fatale !"
+        }
+    },
+    "splash": {
+        "hello": "EcoindexApp"
+    },
+    "common": {
+        "audit": {
+            "audit-category": {
+                "title": "Choisissez les audits que vous souhaitez réaliser",
+                "seo": "SEO",
+                "performance": "Performance",
+                "accessibility": "Accessibilité",
+                "best-practices": "Bonnes pratiques",
+                "lighthouse-plugin-ecoindex-core": "Ecoindex",
+                "ecoindex-core": {
+                    "mandatory": "(obligatoire)"
+                }
+            }
+        }
+    },
+    "Plugin version": "Écoindex plugins v:",
+    "Application version": "Version de l'application:"
 }

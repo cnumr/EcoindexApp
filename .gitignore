@@ -93,3 +93,7 @@ typings/
 
 # Electron-Forge
 out/
+
+src/extraResources/lib.asar
+
+**/keep-*.*

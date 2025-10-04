@@ -16,7 +16,6 @@
     "Add an URL": "Add an URL",
     "Application Update": "Application Update",
     "Application succefully loaded.\nWelcome 👋": "Application successfully loaded.\nWelcome 👋",
-    "Application version:": "Application version:",
     "Are you shure to want create report(s) in your default folder?": "Are you shure to want create report(s) in your default folder?",
     "Are you shure to want create report(s) in your default folder?\n\rDestination: {{homeDir}}": "Are you shure to want create report(s) in your default folder?\n\rDestination: {{homeDir}}",
     "Browse": "Browse",
@@ -166,5 +165,58 @@
     "🧩 JSON reload": "🧩 JSON reload",
     "🧩 JSON save": "🧩 JSON save",
     "🧩 JSON save and collect": "🧩 JSON save and collect",
-    "🧩 Simple collect": "🧩 Simple collect"
+    "🧩 Simple collect": "🧩 Simple collect",
+    "initialization": {
+        "title": "Application start",
+        "title-error": "The installation is in error!",
+        "browser-puppeteer": {
+            "error": "The installation of the browser has returned an error. \nThe application cannot start 🚫",
+            "verification": "Check the right installation of the internal browser ...",
+            "installation": "Installation of the internal browser",
+            "isInstalled": "Check if the internal browser is already installed ..."
+        },
+        "finished": "Installation successfully completed 🎉",
+        "dir": {
+            "work": "Search for the work folder ...",
+            "home": "Search for the user folder ..."
+        },
+        "windows": {
+            "unpacking": "Extraction of files (this can take a few seconds and do freeze the application) ..."
+        },
+        "started": "Checks ...",
+        "node": {
+            "check": "Verification of the presence of nodejs on the computer",
+            "version": "Checking the Nodejs version on the computer",
+            "install": {
+                "Label": "Download link"
+            },
+            "error": {
+                "notinstalled": "NodeJS is not installed on your computer!",
+                "wrongversion": "Your version of Nodejs is obsolete"
+            }
+        },
+        "fatal": {
+            "error": "🚫 fatal error!"
+        }
+    },
+    "splash": {
+        "hello": "EcondexApp"
+    },
+    "common": {
+        "audit": {
+            "audit-category": {
+                "title": "Choose the audits you want to make",
+                "seo": "SEO",
+                "performance": "Performance",
+                "accessibility": "Accessibility",
+                "best-practices": "Best practices",
+                "lighthouse-plugin-ecoindex-core": "Ecoindex",
+                "ecoindex-core": {
+                    "mandatory": "(mandatory)"
+                }
+            }
+        }
+    },
+    "Application version": "Application version:",
+    "Plugin version": "Écoindex plugins v:"
 }

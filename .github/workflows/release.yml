@@ -44,7 +44,7 @@ jobs:
                   python3 -m pip install setuptools --break-system-packages
                   npm i -g appdmg
             - name: Cache node modules
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               with:
                   path: 'node_modules'
                   key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}
@@ -86,7 +86,9 @@ jobs:
                   APPLE_APPLICATION_CERT: ${{ secrets.APPLE_APPLICATION_CERT }}
                   KEY_PASSWORD: ${{ secrets.APPLE_APPLICATION_CERT_PASSWORD }}
                   DEBUG: '@electron/osx-sign,electron-forge:*'
-              run: npm run make:ci
+              run: |
+                  npm run premake
+                  npm run make:ci
             - name: Make mac app
               if: matrix.os.image == 'macos-13' || matrix.os.image == 'macos-14'
               env:
@@ -97,7 +99,9 @@ jobs:
                   APPLE_APPLICATION_CERT: ${{ secrets.APPLE_APPLICATION_CERT }}
                   KEY_PASSWORD: ${{ secrets.APPLE_APPLICATION_CERT_PASSWORD }}
                   DEBUG: '@electron/osx-sign,electron-forge:*'
-              run: npm run make:ci:mac
+              run: |
+                  npm run premake
+                  npm run make:ci:mac
             - name: Generate Release.txt
               run: echo ${{ github.sha }} > Release.txt
             - name: package.json info

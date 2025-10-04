@@ -6,6 +6,7 @@ type IConstants = {
         JSON_FILE_NAME: string
         DEFAULT_JSON_DATA: IJsonMesureData
         LOWER_NODE_VERSION: number
+        DOWNLOAD_NODE_LINK: string
     }
 }
 const constants: IConstants = {
@@ -15,6 +16,7 @@ const constants: IConstants = {
     channels: {
         INITIALIZATION_APP: 'initialization-app',
         INITIALIZATION_DATAS: 'initialization-datas',
+        INITIALIZATION_MESSAGES: 'initialization-messages',
         ASYNCHRONOUS_LOG: 'asynchronous-log',
         SIMPLE_MESURES: 'simple-mesures',
         JSON_MESURES: 'json-mesures',
@@ -39,6 +41,7 @@ const constants: IConstants = {
         INSTALL_PUPPETEER_BROWSER: 'install-puppeteer-browser',
         SHOW_HIDE_WELCOME_WINDOW: 'show-hide-welcome-window',
         ALERT_LINUX_UPDATE: 'alert-linux-update',
+        DISPLAY_SPLASH_SCREEN: 'display-splash-screen',
     },
     scripts: {
         GET_NODE: 'get-node',
@@ -50,7 +53,8 @@ const constants: IConstants = {
         UPDATED_PLUGIN: 'update-plugin',
     },
     utils: {
-        LOWER_NODE_VERSION: 18,
+        LOWER_NODE_VERSION: 20,
+        DOWNLOAD_NODE_LINK: 'https://nodejs.org/en/download/',
         JSON_FILE_NAME: 'input-file.json',
         DEFAULT_JSON_DATA: {
             'extra-header': {
@@ -58,8 +62,15 @@ const constants: IConstants = {
                 'x-men': 'wolverine',
                 Authorization: 'Basic c3BpZTpFaXBzRXJnb1N1bTQyJA==',
             },
+            'audit-category': [
+                'performance',
+                'seo',
+                'accessibility',
+                'best-practices',
+                'lighthouse-plugin-ecoindex-core',
+            ],
             output: ['html', 'json'],
-            'user-agent': 'insights',
+            'user-agent': 'random',
             'output-name': 'ecoindex',
             courses: [
                 {

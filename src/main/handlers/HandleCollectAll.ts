@@ -1,12 +1,17 @@
 import { ChildProcess, spawn } from 'child_process'
-import { IpcMainEvent, shell } from 'electron'
+import { IpcMainEvent, shell, utilityProcess } from 'electron'
 import { getNodeDir, getNpmDir, getWorkDir, isDev } from '../memory'
 
+import type { CliFlags } from 'lighthouse-plugin-ecoindex-courses/dist/types'
+import { Readable } from 'stream'
 import { _debugLogs } from '../utils/MultiDebugLogs'
 import { _echoReadable } from '../utils/EchoReadable'
+import { _sendMessageToFrontConsole } from '../utils/SendMessageToFrontConsole'
 import { _sendMessageToFrontLog } from '../utils/SendMessageToFrontLog'
 import { convertJSONDatasFromISimpleUrlInput } from '../utils/ConvertJSONDatas'
-import fs from 'node:fs'
+import { error } from 'console'
+import { fileURLToPath } from 'node:url'
+import fs from 'fs'
 import { getMainLog } from '../main'
 import i18n from '../../configs/i18next.config'
 import os from 'node:os'
@@ -22,7 +27,7 @@ import { utils } from '../../shared/constants'
   workDir: string
 }>
  */
-export async function _prepareCollect(): Promise<{
+async function _prepareCollect(): Promise<{
     command: string[]
     nodeDir: string
     workDir: string
@@ -42,9 +47,13 @@ export async function _prepareCollect(): Promise<{
         _debugLogs(`Npm dir: ${npmDir}`)
 
         const command = [
-            `${npmDir}/lighthouse-plugin-ecoindex/cli/index.js`.replace(
-                /\//gm,
-                path.sep
+            path.join(
+                __dirname,
+                `../..`,
+                `node_modules`,
+                `lighthouse-plugin-ecoindex`,
+                `cli`,
+                `run.js`
             ),
             'collect',
         ]
@@ -57,6 +66,113 @@ export async function _prepareCollect(): Promise<{
     }
 }
 
+class CollectDatas {
+    collectType: `simple` | `complexe`
+    outputPath: string
+    output?: string[]
+    listAllAudits: false
+    generationDate: string
+}
+
+class SimpleCollectDatas extends CollectDatas {
+    declare collectType: 'simple'
+    url: string[]
+}
+class ComplexeCollectDatas extends CollectDatas {
+    declare collectType: 'complexe'
+    jsonFile: string
+}
+
+class CollectDatas_V2 {
+    collectType: `simple` | `complexe`
+    command: CliFlags
+    listAllAudits: false
+}
+
+class SimpleCollectDatas_V2 extends CollectDatas_V2 {
+    declare collectType: 'simple'
+}
+class ComplexeCollectDatas_V2 extends CollectDatas_V2 {
+    declare collectType: 'complexe'
+}
+
+function _prepareDatas(
+    collectType: `simple` | `complexe`,
+    output: ('statement' | 'json' | 'html')[],
+    input: string | ISimpleUrlInput[]
+): ComplexeCollectDatas_V2 | SimpleCollectDatas_V2 {
+    const _workDir = getWorkDir() as string
+    if (!_workDir || _workDir === '') {
+        throw new Error('Work dir not found')
+    }
+    const date = new Date().toISOString().split('.')[0].replace(/:/g, '-')
+    const default_categories: (
+        | 'lighthouse-plugin-ecoindex-core'
+        | 'accessibility'
+        | 'best-practices'
+        | 'performance'
+        | 'seo'
+    )[] = [
+        'best-practices',
+        'performance',
+        'seo',
+        'lighthouse-plugin-ecoindex-core',
+        'accessibility',
+    ]
+
+    if (collectType === 'simple') {
+        const command: CliFlags = {
+            generationDate: date,
+            url: (input as ISimpleUrlInput[]).map((url) => {
+                return url.value
+            }),
+            'output-path': '',
+            exportPath: path.join(_workDir, date),
+            output: output,
+            'audit-category': default_categories,
+            // 'puppeteer-script': null,
+        }
+        const ouput: SimpleCollectDatas_V2 = {
+            collectType,
+            command,
+            listAllAudits: false,
+        }
+        return ouput
+        // const collectDatas: SimpleCollectDatas = {
+        //     collectType,
+        //     outputPath: _workDir,
+        //     output,
+        //     url: (input as ISimpleUrlInput[]).map((url) => {
+        //         return url.value
+        //     }),
+        //     listAllAudits: false,
+        //     generationDate: new Date().toISOString(),
+        // }
+        // return collectDatas
+    } else {
+        const command: CliFlags = {
+            generationDate: new Date().toISOString(),
+            'output-path': '',
+            exportPath: path.join(_workDir, date),
+            output: output,
+            'json-file': input as string,
+            'audit-category': default_categories,
+            // 'puppeteer-script': null,
+        }
+        const collectDatas: ComplexeCollectDatas_V2 = {
+            collectType,
+            command,
+            listAllAudits: false,
+            // outputPath: _workDir,
+            // output,
+            // jsonFile: input as string,
+            // listAllAudits: false,
+            // generationDate: new Date().toISOString(),
+        }
+        return collectDatas
+    }
+}
+
 /**
  * Utils, Collect
  * @param command string[]
@@ -65,7 +181,7 @@ export async function _prepareCollect(): Promise<{
  * @param logStream
  * @returns string
  */
-export async function _runCollect(
+async function _runCollect(
     command: string[],
     nodeDir: string,
     event: IpcMainEvent,
@@ -75,14 +191,33 @@ export async function _runCollect(
     try {
         const out: string[] = []
 
-        _debugLogs(`runCollect: ${nodeDir} ${JSON.stringify(command, null, 2)}`)
+        const [script, ...args] = command
+        _debugLogs(`runCollect: ${script} ${JSON.stringify(args, null, 2)}`)
+        _debugLogs(
+            `runCollect: ${process.execPath} ${JSON.stringify(command, null, 2)}`
+        )
         // const controller = new AbortController()
         // const { signal } = controller
-        const childProcess: ChildProcess = spawn(`"${nodeDir}"`, command, {
+        // const childProcess: ChildProcess = fork(script, args, {
+        //     stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
+        //     // stdio: [0, 1, 2, 'ipc'],
+        //     // silent: true,
+        //     // signal,
+        // })
+        // childProcess.send('hello')
+        const childProcess: ChildProcess = spawn(nodeDir, command, {
             stdio: ['pipe', 'pipe', process.stderr],
             shell: true,
             windowsHide: true,
             // signal,
+            // signal,
+        })
+        childProcess.on('message', (mess) => {
+            _debugLogs(`Message detected`, mess)
+        })
+        childProcess.on('error', (err) => {
+            _debugLogs(`Error detected`, err)
+            // This will be called with err being an AbortError if the controller aborts
         })
 
         childProcess.on('exit', (code, signal) => {
@@ -138,6 +273,195 @@ export async function _runCollect(
     }
 }
 
+async function _runDirectCollect(
+    command: SimpleCollectDatas_V2 | ComplexeCollectDatas_V2,
+    event: IpcMainEvent,
+    isSimple = false
+) {
+    const mainLog = getMainLog().scope('main/runDirectCollect')
+    try {
+        const workDir = command.command.exportPath
+        mainLog.log('Work directory:', workDir)
+
+        const tempFilePath = path.join(workDir, 'command-data.json')
+        mainLog.log('Temporary file path:', tempFilePath)
+
+        // S'assurer que le répertoire existe
+        if (!fs.existsSync(workDir)) {
+            mainLog.log('Creating directory:', workDir)
+            fs.mkdirSync(workDir, { recursive: true })
+        }
+
+        // Écrire les données dans le fichier
+        mainLog.log('Writing command data to file')
+        fs.writeFileSync(tempFilePath, JSON.stringify(command.command))
+        mainLog.log('Command data written to:', tempFilePath)
+
+        // Vérifier que le fichier existe
+        if (fs.existsSync(tempFilePath)) {
+            mainLog.log('File exists, size:', fs.statSync(tempFilePath).size)
+        } else {
+            mainLog.error('File does not exist after writing!')
+        }
+
+        // Définir les variables d'environnement pour le processus Node.js
+        process.env.WORK_DIR = workDir
+
+        // Créer une Promise qui se résoudra quand le processus enfant sera terminé
+        await new Promise<void>((resolve, reject) => {
+            mainLog.debug('Starting utility process...')
+
+            const pathToScript =
+                process.env['WEBPACK_SERVE'] === 'true'
+                    ? path.join(
+                          __dirname,
+                          '..',
+                          '..',
+                          'lib',
+                          'courses_index.mjs'
+                      )
+                    : path.join(
+                          process.resourcesPath,
+                          process.platform === 'win32' ? 'lib' : 'lib.asar',
+                          'courses_index.mjs'
+                      )
+            // pathToScript = path.join(__dirname, '..', 'scripts', 'courses_index.mjs')
+            // pathToScript = process.env['WEBPACK_SERVE'] === 'true'
+            //         ? path.join(__dirname, '..', 'scripts', 'courses_index.mjs')
+            //         : path.join(
+            //             'app.asar', 'scripts', 'courses_index.mjs'
+            //           )
+            const child = utilityProcess.fork(pathToScript, ['test'], {
+                stdio: ['ignore', 'pipe', 'pipe'],
+            })
+
+            let hasExited = false
+
+            // Gérer les logs stdout
+            if (child.stdout) {
+                child.stdout.on('data', (data) => {
+                    const all = /\n/g
+                    const first = /^\n/
+                    // Only remove the last newline characters (\n)
+                    const last = /\n$/
+                    // Only all the last newlines (\n)
+                    const all_last = /\n+$/
+                    const _data = data.toString().replace(all_last, '')
+                    mainLog.debug(_data)
+                    _sendMessageToFrontLog(_data)
+                    _sendMessageToFrontConsole(_data)
+                })
+            }
+
+            // Gérer les logs stderr
+            if (child.stderr) {
+                child.stderr.on('data', (data) => {
+                    mainLog.error(`stderr: ${data.toString()}`)
+                })
+            }
+
+            // Gérer les messages du processus enfant
+            child.on('message', (message) => {
+                mainLog.info('Message from child:', message)
+                if (typeof message === 'object' && message !== null) {
+                    if ('type' in message) {
+                        switch (message.type) {
+                            case 'progress':
+                                mainLog.debug(`Progress: ${message.data}`)
+                                break
+                            case 'error':
+                                mainLog.error(
+                                    `Error from child: ${message.data}`
+                                )
+                                if (!hasExited) {
+                                    hasExited = true
+                                    reject(
+                                        new Error(
+                                            `Process error: ${message.data}`
+                                        )
+                                    )
+                                }
+                                break
+                            case 'complete':
+                                mainLog.info(`Complete: ${message.data}`)
+                                if (!hasExited) {
+                                    hasExited = true
+                                    resolve()
+                                }
+                                break
+                            default:
+                                mainLog.warn(`Unknown message type: ${message}`)
+                        }
+                    }
+                }
+            })
+
+            // Gérer la fin du processus
+            child.on('exit', (code: number) => {
+                mainLog.log(`Child process exited with code ${code}`)
+                if (code === 0) {
+                    // Supprimer le fichier temporaire
+                    try {
+                        if (fs.existsSync(tempFilePath)) {
+                            fs.unlinkSync(tempFilePath)
+                            mainLog.debug('Temporary file deleted')
+                        } else {
+                            mainLog.warn(
+                                'Temporary file does not exist, nothing to delete'
+                            )
+                        }
+                    } catch (error) {
+                        mainLog.error('Error deleting temporary file:', error)
+                    }
+                } else {
+                    mainLog.error('Process failed:', error)
+                    reject(error)
+                }
+
+                // gérer l'ouverture dans l'explorateur de fichiers is simple
+                try {
+                    if (isSimple) {
+                        const url = path.join(workDir, `generic.report.html`)
+                        console.log('url', url)
+                        shell.showItemInFolder(url)
+                    }
+                } catch (error) {
+                    console.error('Error opening folder:', error)
+                    _sendMessageToFrontLog(
+                        'Error',
+                        `Error opening folder: ${error}`
+                    )
+                    mainLog.log(`Error opening folder: ${error}`)
+                }
+
+                if (!hasExited) {
+                    hasExited = true
+                    if (code === 0) {
+                        mainLog.log('Process completed successfully')
+                        resolve()
+                    } else {
+                        const error = new Error(
+                            `Process exited with code ${code}`
+                        )
+                        mainLog.error('Process failed:', error)
+                        reject(error)
+                    }
+                }
+            })
+
+            // Gérer le démarrage du processus
+            child.on('spawn', () => {
+                mainLog.log('Child process spawned successfully')
+            })
+        })
+
+        return 'mesure done'
+    } catch (error) {
+        mainLog.error('Error in _runDirectCollect', error)
+        throw error
+    }
+}
+
 /**
  * Handlers, SimpleCollect
  * @param event IpcMainEvent
@@ -157,7 +481,10 @@ export const handleSimpleCollect = async (
         body: i18n.t('Process intialization.'),
     })
 
+    // prepare common collect
+    const collectDatas = _prepareDatas(`simple`, [`html`], urlsList)
     const { command, nodeDir, workDir: _workDir } = await _prepareCollect()
+
     _debugLogs('Simple measure start, process intialization...')
     _debugLogs(`Urls list: ${JSON.stringify(urlsList)}`)
     try {
@@ -177,10 +504,14 @@ export const handleSimpleCollect = async (
             body: i18n.t('Collect started...'),
         })
         try {
-            if (isDev())
-                mainLog.debug(`before (simple) runCollect`, nodeDir, command)
-
-            await _runCollect(command, nodeDir, event, true)
+            if (isDev()) {
+                // mainLog.debug(`before (simple) runCollect`, nodeDir, command)
+                const [script, ...args] = command
+                mainLog.debug(`before (simple) runCollect`, script, args)
+                // mainLog.debug(`before (simple) runCollect`, collectDatas)
+            }
+            // await _runCollect(command, nodeDir, event, true)
+            await _runDirectCollect(collectDatas, event, true)
         } catch (error) {
             showNotification({
                 subtitle: i18n.t('🚫 Simple collect'),
@@ -189,6 +520,7 @@ export const handleSimpleCollect = async (
             throw new Error('Simple collect error')
         }
         // process.stdout.write(data)
+        // const _workDir = collectDatas.outputPath
         showNotification({
             subtitle: i18n.t('🎉 Simple collect'),
             body: i18n.t(
@@ -276,19 +608,26 @@ export const handleJsonSaveAndCollect = async (
         } else {
             if (isDev()) mainLog.debug('Json measure start...')
 
-            const {
-                command,
-                nodeDir,
-                workDir: _workDir,
-            } = await _prepareCollect()
+            // prepare common collect
+            const collectDatas = _prepareDatas(
+                `complexe`,
+                jsonDatas.output as ('statement' | 'json' | 'html')[],
+                jsonFilePath
+            )
+            // const {
+            //     command,
+            //     nodeDir,
+            //     workDir: _workDir,
+            // } = await _prepareCollect()
             _debugLogs('Json measure start...')
             _debugLogs(`JSON datas ${JSON.stringify(jsonDatas, null, 2)}`)
-            command.push('--json-file')
-            command.push(path.join(_workDir, utils.JSON_FILE_NAME))
-            command.push('--output-path')
-            command.push(_workDir)
+            // command.push('--json-file')
+            // command.push(path.join(_workDir, utils.JSON_FILE_NAME))
+            // command.push('--output-path')
+            // command.push(_workDir)
             try {
-                await _runCollect(command, nodeDir, event)
+                // await _runCollect(command, nodeDir, event)
+                await _runDirectCollect(collectDatas, event, false)
             } catch (error) {
                 mainLog.error('Simple collect error', error)
                 throw new Error('Simple collect error')

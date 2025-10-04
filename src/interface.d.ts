@@ -12,6 +12,19 @@ export interface IStoreAPI {
     get: (key: string, defaultValue?: any) => Promise<string>
     delete: (key: string) => Promise<void>
 }
+
+export interface ILogAPI {
+    // TODO
+    // Front → Main
+    sendLogToMain: (callback) => string
+    // Main → Front
+    sendLogToFront: (callback) => string
+}
+
+export interface IInteractionAPI {
+    displaySplashScreen: (callback) => string
+}
+
 export interface IElectronAPI {
     // i18nextElectronBackend: any
     // Main → Front
@@ -47,12 +60,15 @@ export interface IInitalization {
     initializeApplication: (forceInitialisation: boolean) => Promise<boolean>
     // Main → Front
     sendConfigDatasToFront: (callback) => ConfigData
+    sendInitializationMessages: (callback) => InitializationMessages
 }
 
 declare global {
     export interface IJsonMesureData {
         'extra-header': object | null
         output: string[]
+        'puppeteer-script'?: string
+        'audit-category': string[]
         'output-path'?: string
         'user-agent'?: string
         'output-name'?: string
@@ -77,5 +93,6 @@ declare global {
         electronAPI: IElectronAPI
         store: IStoreAPI
         initialisationAPI: IInitalization
+        interactionAPI: IInteractionAPI
     }
 }

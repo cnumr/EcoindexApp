@@ -1,10 +1,9 @@
-import { BrowserWindow, app as ElectronApp, app, shell } from 'electron'
-import { getWelcomeWindow, setHasShowedWelcomeWindow } from '../main/memory'
+import { BrowserWindow, app as ElectronApp, shell } from 'electron'
 
 import Store from 'electron-store'
 import { config } from '../configs/app.config'
 import { convertVersion } from '../main/utils'
-import { createHelloWindow } from '../main/main'
+import { handleSplashScreen } from '../main/handlers/HandleSplashScreen'
 import i18n from 'i18next'
 import log from 'electron-log/main'
 import pkg from '../../package.json'
@@ -170,9 +169,7 @@ export const darwinTemplate = (
                                 `displayHello.${convertVersion(pkg.version)}`,
                                 false
                             )
-                            setHasShowedWelcomeWindow(false)
-                            await createHelloWindow()
-                            // await getWelcomeWindow().show()
+                            await handleSplashScreen(null, 'resetAndDisplay')
                         },
                     },
                 ],

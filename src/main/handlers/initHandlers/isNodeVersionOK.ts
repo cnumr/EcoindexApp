@@ -1,11 +1,12 @@
 import { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
 import { channels, utils } from '../../../shared/constants'
-import { getMainWindow, setNodeV } from '../../memory'
+import { getMainWindow, getNodeDir, setNodeV } from '../../memory'
 
 import { ConfigData } from '../../../class/ConfigData'
 import Store from 'electron-store'
-import { exec } from 'child_process'
+import { execFile } from 'child_process'
 import { getMainLog } from '../../main'
+import { resolveNodeBinary } from '../../utils-node'
 
 const store = new Store()
 
@@ -22,32 +23,37 @@ export const initIsNodeNodeVersionOK = async (
         'main/initialization/initIsNodeNodeVersionOK'
     )
     const toReturned = new ConfigData('node_version_is_ok')
-    return new Promise<ConfigData>((resolve) => {
-        const cmd = `node -v`
-        exec(cmd, (error, stdout, stderr) => {
-            if (error) {
-                mainLog.error(`exec error: ${error}`)
-                toReturned.error =
-                    toReturned.message = `Node version can't be detected`
-                return resolve(toReturned)
-            }
-            if (stderr) mainLog.debug(`stderr: ${stderr}`)
-            if (stdout) {
-                const returned: string = stdout.trim()
-                // mainLog.debug(`Node version: ${returned}`)
+    const tryReadVersion = async (): Promise<ConfigData> => {
+        let nodePath = getNodeDir()
+        if (!nodePath) nodePath = await resolveNodeBinary()
+        if (!nodePath) {
+            toReturned.error =
+                toReturned.message = `Node version can't be detected`
+            return toReturned
+        }
+        return await new Promise<ConfigData>((resolve) => {
+            execFile(nodePath, ['-v'], (error, stdout, stderr) => {
+                if (error) {
+                    mainLog.error(error)
+                    toReturned.error =
+                        toReturned.message = `Node version can't be detected`
+                    return resolve(toReturned)
+                }
+                if (stderr) mainLog.debug(`stderr: ${stderr}`)
+                const returned: string = (stdout || '').trim()
                 const major = returned.replace('v', '').split('.')[0]
-                // if (stderr) mainLog.error(`stderr: ${stderr}`)
                 toReturned.result = Number(major) >= utils.LOWER_NODE_VERSION
                 toReturned.message = returned
                 setNodeV(returned)
                 store.set(`nodeVersion`, returned)
-                // mainLog.debug(toReturned)
                 getMainWindow().webContents.send(
                     channels.HOST_INFORMATIONS_BACK,
                     toReturned
                 )
                 return resolve(toReturned)
-            }
+            })
         })
-    })
+    }
+
+    return await tryReadVersion()
 }

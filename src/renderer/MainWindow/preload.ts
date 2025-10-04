@@ -21,6 +21,10 @@ contextBridge.exposeInMainWorld('initialisationAPI', {
         ipcRenderer.on(channels.INITIALIZATION_DATAS, (_event, value) =>
             callback(value)
         ),
+    sendInitializationMessages: (callback: any) =>
+        ipcRenderer.on(channels.INITIALIZATION_MESSAGES, (_event, message) =>
+            callback(message)
+        ),
 })
 contextBridge.exposeInMainWorld('electronAPI', {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -94,4 +98,12 @@ contextBridge.exposeInMainWorld('store', {
     get: (key: string, defaultValue: any) =>
         ipcRenderer.invoke('store-get', key, defaultValue),
     delete: (key: string) => ipcRenderer.invoke('store-delete', key),
+})
+
+contextBridge.exposeInMainWorld('interactionAPI', {
+    // Main → Front
+    displaySplashScreen: (callback: any) =>
+        ipcRenderer.on(channels.DISPLAY_SPLASH_SCREEN, (_event, message) =>
+            callback(message)
+        ),
 })

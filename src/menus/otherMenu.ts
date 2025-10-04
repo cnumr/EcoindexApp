@@ -2,7 +2,8 @@ import { BrowserWindow, app as ElectronApp, shell } from 'electron'
 
 import Store from 'electron-store'
 import { config } from '../configs/app.config'
-import { getWelcomeWindow } from '../main/memory'
+import { convertVersion } from '../main/utils'
+import { handleSplashScreen } from '../main/handlers/HandleSplashScreen'
 import i18n from 'i18next'
 import log from 'electron-log/main'
 import pkg from '../../package.json'
@@ -122,7 +123,11 @@ export const otherTemplate = (
                     {
                         label: `${_i18n.t('Open splash window...')}`,
                         click: async () => {
-                            await getWelcomeWindow().show()
+                            store.set(
+                                `displayHello.${convertVersion(pkg.version)}`,
+                                false
+                            )
+                            await handleSplashScreen(null, 'resetAndDisplay')
                         },
                     },
                 ],
