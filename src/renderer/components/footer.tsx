@@ -16,12 +16,24 @@ export const Footer = ({
     return (
         <div className="text-center text-sm">
             <p className="text-xs">
-                <a href={repoUrl} title="Visite website" target="_blank">
+                <a
+                    href={repoUrl}
+                    title={t('footer.visite-website.app')}
+                    target="_blank"
+                    className="underline"
+                >
                     {t('Application version:')} {appVersion}
                 </a>
             </p>
-            <p className="text-xs">
-                {t('Plugin version:')} {coursesVersion}
+            <p className="mb-4 text-xs">
+                <a
+                    href="https://lighthouse-ecoindex.greenit.eco/"
+                    title={t('footer.visite-website.plugin')}
+                    target="_blank"
+                    className="underline"
+                >
+                    {t('Plugin version:')} {coursesVersion?.match(/[0-9.]/g)}
+                </a>
             </p>
             <p className="text-xs">
                 {t('Internal Electron informations: Chrome')} (v

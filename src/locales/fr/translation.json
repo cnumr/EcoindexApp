@@ -16,7 +16,6 @@
     "Add an URL": "Ajouter une URL",
     "Application Update": "Mise à jour de l'application",
     "Application succefully loaded.\nWelcome 👋": "L'application a été chargée avec succès.\nBienvenue 👋",
-    "Application version:": "Version de l'application",
     "Are you shure to want create report(s) in your default folder?": "Êtes-vous sûr de vouloir créer le(s) rapport(s) dans votre dossier par défaut ?",
     "Are you shure to want create report(s) in your default folder?\n\rDestination: {{homeDir}}": "Êtes-vous sûr de vouloir créer le(s) rapport(s) dans votre dossier par défaut ?\n\rDestination: {{homeDir}}",
     "Browse": "Parcourir",
@@ -219,6 +218,12 @@
             }
         }
     },
-    "Plugin version": "Écoindex plugins v:",
-    "Application version": "Version de l'application:"
+    "Plugin version:": "Version du moteur de mesure Écoindex (lighthouse-plugin-ecoindex):",
+    "Application version:": "Version de l'application:",
+    "footer": {
+        "visite-website": {
+            "app": "Aller consulter le site de l'application",
+            "plugin": "Aller consulter le site du plugin lighthouse-plugin-ecoindex"
+        }
+    }
 }

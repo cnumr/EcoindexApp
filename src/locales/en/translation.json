@@ -218,5 +218,11 @@
         }
     },
     "Application version": "Application version:",
-    "Plugin version": "Écoindex plugins v:"
+    "Plugin version:": "Version of the Ecoindex measurement engine (lighthouse-plugin-ecoindex):",
+    "footer": {
+        "visite-website": {
+            "app": "Go consult the application website",
+            "plugin": "Go consult the Lighthouse-Plugin-Ecoindex plugin site"
+        }
+    }
 }
