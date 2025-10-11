@@ -2,6 +2,8 @@ import { ChangeEvent, FC, useEffect, useState } from 'react'
 
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
+import { Button } from '../ui/button'
+import { Input } from '../ui/input'
 import { KeyValue } from './key-value'
 import { Switch } from '../ui/switch'
 import log from 'electron-log/renderer'
@@ -33,6 +35,7 @@ export const AdvConfiguration: FC<ILayout> = ({
     }, [])
 
     const jsonMandatoryWithStatement = (e: boolean) => {
+        frontLog.debug('json', e)
         frontLog.debug('json', e)
         const output = configurationDatas?.output
         if (e) {
@@ -81,6 +84,31 @@ export const AdvConfiguration: FC<ILayout> = ({
         setUpdated(true)
     }
 
+    const handleSelectPuppeteerFilePath = async () => {
+        const filePath =
+            await window.electronAPI.handleSelectPuppeteerFilePath()
+
+        if (filePath !== undefined) {
+            frontLog.debug(`set Puppeteer File Path to ${filePath}`)
+            const _configurationDatas = {
+                ...configurationDatas,
+                'puppeteer-script': filePath,
+            }
+            setConfigurationDatas(_configurationDatas)
+            setUpdated(true)
+        }
+    }
+
+    const resetPuppeteerFilePath = () => {
+        frontLog.debug(`reset Puppeteer File Path`)
+        const _configurationDatas = {
+            ...configurationDatas,
+        }
+        delete _configurationDatas?.['puppeteer-script']
+        setConfigurationDatas(_configurationDatas)
+        setUpdated(true)
+    }
+
     const handlerOnChange = (
         course: number,
         e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement> | boolean,
@@ -95,6 +123,44 @@ export const AdvConfiguration: FC<ILayout> = ({
             _c: number
         ) => {
             frontLog.debug('updateGeneric', type, id, name, value, _c)
+
+            if (name === 'output') {
+                frontLog.debug(`is output`)
+                if (e) {
+                    const _configurationDatas = {
+                        ...configurationDatas,
+                    }
+                    _configurationDatas['output'].push(id)
+                    setConfigurationDatas?.(_configurationDatas)
+                } else {
+                    setConfigurationDatas?.({
+                        ...configurationDatas,
+                        output: configurationDatas['output'].filter(
+                            (val) => val !== id
+                        ),
+                    })
+                }
+            } else if (name === 'audit-category') {
+                frontLog.debug(`is audit-category`)
+                if (e) {
+                    const _configurationDatas = {
+                        ...configurationDatas,
+                    }
+                    _configurationDatas['audit-category'].push(id)
+                    setConfigurationDatas?.(_configurationDatas)
+                } else {
+                    setConfigurationDatas?.({
+                        ...configurationDatas,
+                        'audit-category': configurationDatas[
+                            'audit-category'
+                        ].filter((val) => val !== id),
+                    })
+                }
+            } else {
+                setConfigurationDatas?.({
+                    ...configurationDatas,
+                    [id]: value,
+                })
 
             if (name === 'output') {
                 frontLog.debug(`is output`)
