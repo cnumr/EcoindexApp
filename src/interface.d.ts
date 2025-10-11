@@ -64,7 +64,7 @@ export interface IInitalization {
 }
 
 declare global {
-    export interface IJsonMesureData {
+    export interface IAdvancedMesureData {
         'extra-header': object | null
         output: string[]
         'puppeteer-script'?: string
@@ -72,7 +72,12 @@ declare global {
         'output-path'?: string
         'user-agent'?: string
         'output-name'?: string
+    }
+    export interface IJsonMesureData extends IAdvancedMesureData {
         courses: ICourse[]
+    }
+    export interface ISimpleMesureData extends IAdvancedMesureData {
+        value: string
     }
     export interface ICourse {
         name: string

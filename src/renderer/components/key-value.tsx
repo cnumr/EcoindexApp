@@ -10,20 +10,20 @@ import { cn } from '../lib/utils'
 import { useTranslation } from 'react-i18next'
 
 export interface ILayout {
-    language: string
     visible: boolean
-    extraHeader: IKeyValue
-    setExtraHeader?: (value: React.SetStateAction<IKeyValue>) => void
+    datas: IKeyValue
+    setDatas?: (value: React.SetStateAction<IKeyValue>) => void
     title?: string
+    displayTitle?: boolean
     isFullWidth?: boolean
 }
 
 export const KeyValue: FC<ILayout> = ({
-    language,
-    extraHeader = { value: '', key: '' },
+    datas = { value: '', key: '' },
     visible = false,
-    setExtraHeader,
+    setDatas,
     title = 'Key Value (component)',
+    displayTitle = false,
     isFullWidth = false,
 }) => {
     const { t } = useTranslation()
@@ -31,10 +31,10 @@ export const KeyValue: FC<ILayout> = ({
     // Function to add a new input field
     const handleAddFields = () => {
         try {
-            const newExtraHeaderElement: IKeyValue = { key: 'value' }
-            setExtraHeader({
-                ...extraHeader,
-                ...newExtraHeaderElement,
+            const newDataElement: IKeyValue = { key: 'value' }
+            setDatas({
+                ...datas,
+                ...newDataElement,
             })
         } catch (error) {
             console.error(t('Error adding a new input field'), error)
@@ -43,10 +43,10 @@ export const KeyValue: FC<ILayout> = ({
 
     // Function to remove an input field by index
     const handleRemoveFields = (key: string) => {
-        const newInputFields = { ...extraHeader }
+        const newInputFields = { ...datas }
         delete newInputFields[key]
         try {
-            setExtraHeader(newInputFields)
+            setDatas(newInputFields)
         } catch (error) {
             console.error(t('Error removing an input field'), error)
         }
@@ -54,12 +54,12 @@ export const KeyValue: FC<ILayout> = ({
 
     // Function to update the value of an input field
     const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const values: IKeyValue = { ...extraHeader }
+        const values: IKeyValue = { ...datas }
         const newValue = event.currentTarget.value
         const key = event.currentTarget.dataset['key']
         values[key] = newValue
         try {
-            setExtraHeader(values)
+            setDatas(values)
         } catch (error) {
             console.error(
                 t('Error updating the value of an input field'),
@@ -71,10 +71,10 @@ export const KeyValue: FC<ILayout> = ({
         index: number,
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
-        const values: IKeyValue = { ...extraHeader }
+        const values: IKeyValue = { ...datas }
         const newKey = event.currentTarget.value
         const oldKey = event.currentTarget.dataset['oldKey']
-        const order = Object.keys(extraHeader).map((key) => key)
+        const order = Object.keys(datas).map((key) => key)
 
         if (oldKey !== newKey) {
             Object.defineProperty(
@@ -93,7 +93,7 @@ export const KeyValue: FC<ILayout> = ({
             }
         })
         try {
-            setExtraHeader(tempValues)
+            setDatas(tempValues)
         } catch (error) {
             console.error(
                 t('Error updating the value of an input field'),
@@ -109,7 +109,7 @@ export const KeyValue: FC<ILayout> = ({
                 '!items-start': isFullWidth,
             })}
         >
-            {title !== '' && (
+            {displayTitle && title !== '' && (
                 <Tag
                     className={cn({
                         'max-w-fit text-primary dark:text-foreground':
@@ -120,7 +120,7 @@ export const KeyValue: FC<ILayout> = ({
                     {title}
                 </Tag>
             )}
-            {Object.keys(extraHeader).map((extraHeaderKey, index) => {
+            {Object.keys(datas).map((dataKey, index) => {
                 return (
                     <div
                         className={cn('flex items-center gap-4', {
@@ -133,21 +133,21 @@ export const KeyValue: FC<ILayout> = ({
                         <Input
                             type="text"
                             data-idx={index}
-                            data-key={extraHeaderKey}
+                            data-key={dataKey}
                             data-type="key"
-                            data-old-key={extraHeaderKey}
+                            data-old-key={dataKey}
                             placeholder={t('Enter a key')}
-                            value={extraHeaderKey}
+                            value={dataKey}
                             onChange={(e) => handleKeyChange(index, e)}
                             className="block w-full"
                         />
                         <Input
                             type="text"
                             data-idx-value={index}
-                            data-key={extraHeaderKey}
+                            data-key={dataKey}
                             data-type="value"
                             placeholder={t('Enter a value')}
-                            value={extraHeader[extraHeaderKey]}
+                            value={datas[dataKey]}
                             onChange={(e) => handleValueChange(e)}
                             className="block w-full"
                         />
@@ -157,7 +157,7 @@ export const KeyValue: FC<ILayout> = ({
                             type="button"
                             id="btn-remove-url"
                             title="delete"
-                            onClick={() => handleRemoveFields(extraHeaderKey)}
+                            onClick={() => handleRemoveFields(dataKey)}
                         >
                             <Trash2 className="size-4" aria-label="delete" />
                             <span className="sr-only">{t('delete')}</span>
@@ -176,7 +176,7 @@ export const KeyValue: FC<ILayout> = ({
                 onClick={handleAddFields}
             >
                 <CirclePlus className="mr-2 size-4" aria-label={t('add')} />
-                {t('Add an ExtraHeader item')}
+                {t('key-value.add.to') + ' ' + title}
             </Button>
         </div>
     )
