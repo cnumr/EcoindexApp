@@ -37,6 +37,7 @@ export interface IElectronAPI {
     getInitialTranslations: () => Promise<object>
     handleSetFolderOuput: () => Promise<string>
     handleSelectFolder: () => Promise<string>
+    handleSelectPuppeteerFilePath: () => Promise<string>
     getWorkDir: (newDir: string) => Promise<string>
     getHomeDir: () => Promise<string>
     isNodeInstalled: () => Promise<boolean>

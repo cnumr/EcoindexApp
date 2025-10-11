@@ -228,11 +228,20 @@
     },
     "advConfiguration": {
         "title": "Configuration avancée",
-        "title-title": "Cliquez pour ouvrir ou fermer la Configuration avancée"
+        "title-title": "Cliquez pour ouvrir ou fermer la Configuration avancée",
+        "puppeteer": {
+            "title": "Utilisez un fichier de scénario Puppeteer custom",
+            "input": {
+                "aria": "Fichier de scénario Puppetter"
+            },
+            "description": "À renseigner si vous devez utiliser un scénarion spécififique, comme une authentification forte. Utiliser des fichies de types *.js, *.ts, *.mjs ou *.cjs (*.mjs est recommandé).",
+            "help-link": "Vous trouverez plus d'information à ce sujet sur l'aide https://lighthouse-ecoindex.greenit.eco/guides/9-adv-conf/#utilisation-dun-fichier-de-script-puppeteer-custom"
+        }
     },
     "key-value": {
         "add": {
             "to": "Ajouter un élément à"
         }
-    }
+    },
+    "Reset": "Effacer"
 }

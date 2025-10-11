@@ -292,12 +292,21 @@ export const JsonPanMesure: FC<ILayout> = ({
                     <AdvConfiguration
                         configurationDatas={jsonDatas}
                         setConfigurationDatas={(e: IAdvancedMesureData) => {
-                            setJsonDatas({
+                            const _jsonDatas = {
                                 ...jsonDatas,
                                 'extra-header': e['extra-header'],
                                 output: e['output'],
                                 'audit-category': e['audit-category'],
-                            })
+                            }
+                            if (e['audit-category']) {
+                                _jsonDatas['puppeteer-script'] =
+                                    e['puppeteer-script']
+                            } else {
+                                if (_jsonDatas['puppeteer-script']) {
+                                    delete _jsonDatas['puppeteer-script']
+                                }
+                            }
+                            setJsonDatas(_jsonDatas)
                         }}
                         setUpdated={(e) => {
                             setUpdated(e)

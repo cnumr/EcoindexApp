@@ -43,6 +43,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
     // communs handlers and getters
     handleSelectFolder: () => ipcRenderer.invoke(channels.SELECT_FOLDER),
+    handleSelectPuppeteerFilePath: () =>
+        ipcRenderer.invoke(channels.SELECT_PUPPETEER_FILE),
     getWorkDir: (newDir: string) =>
         ipcRenderer.invoke(channels.GET_WORKDIR, newDir),
     getHomeDir: () => ipcRenderer.invoke(channels.GET_HOMEDIR),
