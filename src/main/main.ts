@@ -24,6 +24,7 @@ import fixPath from 'fix-path'
 import { handleIsJsonConfigFileExist } from './handlers/HandleIsJsonConfigFileExist'
 import { handleJsonReadAndReload } from './handlers/HandleJsonReadAndReload'
 import { handleSelectFolder } from './handlers/HandleSelectFolder'
+import { handleSelectPuppeteerFilePath } from './handlers/HandleSelectPuppeteerFilePath'
 import i18n from '../configs/i18next.config'
 import { initialization } from './handlers/Initalization'
 import log from 'electron-log/main'
@@ -131,6 +132,10 @@ app.on('ready', async () => {
             initialization(event, forceInitialisation)
     )
     ipcMain.handle(channels.SELECT_FOLDER, handleSelectFolder)
+    ipcMain.handle(
+        channels.SELECT_PUPPETEER_FILE,
+        handleSelectPuppeteerFilePath
+    )
     ipcMain.handle(
         channels.IS_JSON_CONFIG_FILE_EXIST,
         handleIsJsonConfigFileExist

@@ -227,11 +227,24 @@
     },
     "advConfiguration": {
         "title": "Advanced configuration",
-        "title-title": "Click to open or close Advanced Setup"
+        "title-title": "Click to open or close Advanced Setup",
+        "puppeteer": {
+            "title": "Use a custom Puppeteer scenario file",
+            "input": {
+                "aria": "Puppetter scenario file"
+            },
+            "description": "Please fill in if you need to use a specific scenario, such as strong authentication. \nUse *.js, *.ts, *.mjs or *.cjs files (*.mjs is recommended).",
+            "help-link": "You will find more information on this subject in the help https://lighthouse-ecoindex.greenit.eco/guides/9-adv-conf/#utilisation-dun-fichier-de-script-puppeteer-custom"
+        },
+        "envvar": {
+            "description": "Environment variables to pass to the measurements script (for an identifier/password to use with the Puppeteer custom script, for example). \nThey will not be saved!",
+            "title": "Environment variables"
+        }
     },
     "key-value": {
         "add": {
             "to": "Add an item to"
         }
-    }
+    },
+    "Reset": "Reset"
 }

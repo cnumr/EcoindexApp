@@ -67,7 +67,7 @@
     "Full Screen": "Plein écran",
     "Generates Html reports in seleted dir.": "Génération des rapports HTML dans le dossier sélectionné.",
     "Generates reports files in seleted dir.": "Génération des rapports dans le dossier sélectionné.",
-    "Header to add cookies, Authentication...": "Header pour ajouter des Cookies, Authenification...",
+    "Header to add cookies, Authentication...": "Header pour ajouter des Cookies, Authentification...",
     "Help": "Aide",
     "Hide App": "Masquer l'application",
     "Hide Others": "Masquer les autres applications",
@@ -228,11 +228,24 @@
     },
     "advConfiguration": {
         "title": "Configuration avancée",
-        "title-title": "Cliquez pour ouvrir ou fermer la Configuration avancée"
+        "title-title": "Cliquez pour ouvrir ou fermer la Configuration avancée",
+        "puppeteer": {
+            "title": "Utilisez un fichier de scénario Puppeteer custom",
+            "input": {
+                "aria": "Fichier de scénario Puppetter"
+            },
+            "description": "À renseigner si vous devez utiliser un scénarion spécififique, comme une authentification forte. Utiliser des fichies de types *.js, *.ts, *.mjs ou *.cjs (*.mjs est recommandé).",
+            "help-link": "Vous trouverez plus d'information à ce sujet sur l'aide https://lighthouse-ecoindex.greenit.eco/guides/9-adv-conf/#utilisation-dun-fichier-de-script-puppeteer-custom"
+        },
+        "envvar": {
+            "description": "Variables d'environnement à passer au script de mesures (pour un identifiant/password à utiliser avec le script Puppeteer custom, par exemple). Elles ne seront pas sauvegardées !",
+            "title": "Variables d'environnement"
+        }
     },
     "key-value": {
         "add": {
             "to": "Ajouter un élément à"
         }
-    }
+    },
+    "Reset": "Effacer"
 }

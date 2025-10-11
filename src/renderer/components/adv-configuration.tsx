@@ -1,5 +1,7 @@
 import { ChangeEvent, FC, useEffect, useState } from 'react'
 
+import { Button } from '../ui/button'
+import { Input } from '../ui/input'
 import { KeyValue } from './key-value'
 import { Switch } from '../ui/switch'
 import log from 'electron-log/renderer'
@@ -31,7 +33,7 @@ export const AdvConfiguration: FC<ILayout> = ({
     }, [])
 
     const jsonMandatoryWithStatement = (e: boolean) => {
-        log.debug('json', e)
+        frontLog.debug('json', e)
         const output = configurationDatas?.output
         if (e) {
             output.push('json')
@@ -54,6 +56,31 @@ export const AdvConfiguration: FC<ILayout> = ({
         setUpdated(true)
     }
 
+    const handleSelectPuppeteerFilePath = async () => {
+        const filePath =
+            await window.electronAPI.handleSelectPuppeteerFilePath()
+
+        if (filePath !== undefined) {
+            frontLog.debug(`set Puppeteer File Path to ${filePath}`)
+            const _configurationDatas = {
+                ...configurationDatas,
+                'puppeteer-script': filePath,
+            }
+            setConfigurationDatas(_configurationDatas)
+            setUpdated(true)
+        }
+    }
+
+    const resetPuppeteerFilePath = () => {
+        frontLog.debug(`reset Puppeteer File Path`)
+        const _configurationDatas = {
+            ...configurationDatas,
+        }
+        delete _configurationDatas?.['puppeteer-script']
+        setConfigurationDatas(_configurationDatas)
+        setUpdated(true)
+    }
+
     const handlerOnChange = (
         course: number,
         e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement> | boolean,
@@ -68,58 +95,44 @@ export const AdvConfiguration: FC<ILayout> = ({
             _c: number
         ) => {
             frontLog.debug('updateGeneric', type, id, name, value, _c)
-            if (_c === -1) {
-                if (name === 'output') {
-                    frontLog.debug(`is output`)
-                    if (e) {
-                        const _configurationDatas = {
-                            ...configurationDatas,
-                        }
-                        _configurationDatas['output'].push(id)
-                        setConfigurationDatas?.(_configurationDatas)
-                    } else {
-                        setConfigurationDatas?.({
-                            ...configurationDatas,
-                            output: configurationDatas['output'].filter(
-                                (val) => val !== id
-                            ),
-                        })
+
+            if (name === 'output') {
+                frontLog.debug(`is output`)
+                if (e) {
+                    const _configurationDatas = {
+                        ...configurationDatas,
                     }
-                } else if (name === 'audit-category') {
-                    frontLog.debug(`is audit-category`)
-                    if (e) {
-                        const _configurationDatas = {
-                            ...configurationDatas,
-                        }
-                        _configurationDatas['audit-category'].push(id)
-                        setConfigurationDatas?.(_configurationDatas)
-                    } else {
-                        setConfigurationDatas?.({
-                            ...configurationDatas,
-                            'audit-category': configurationDatas[
-                                'audit-category'
-                            ].filter((val) => val !== id),
-                        })
-                    }
+                    _configurationDatas['output'].push(id)
+                    setConfigurationDatas?.(_configurationDatas)
                 } else {
                     setConfigurationDatas?.({
                         ...configurationDatas,
-                        [id]: value,
+                        output: configurationDatas['output'].filter(
+                            (val) => val !== id
+                        ),
+                    })
+                }
+            } else if (name === 'audit-category') {
+                frontLog.debug(`is audit-category`)
+                if (e) {
+                    const _configurationDatas = {
+                        ...configurationDatas,
+                    }
+                    _configurationDatas['audit-category'].push(id)
+                    setConfigurationDatas?.(_configurationDatas)
+                } else {
+                    setConfigurationDatas?.({
+                        ...configurationDatas,
+                        'audit-category': configurationDatas[
+                            'audit-category'
+                        ].filter((val) => val !== id),
                     })
                 }
             } else {
-                // setConfigurationDatas?.({
-                //     ...configurationDatas,
-                //     courses: configurationDatas.courses.map((course, index) => {
-                //         if (index === _c) {
-                //             return {
-                //                 ...course,
-                //                 [id]: value,
-                //             }
-                //         }
-                //         return course
-                //     }),
-                // })
+                setConfigurationDatas?.({
+                    ...configurationDatas,
+                    [id]: value,
+                })
             }
         }
         if (typeof e !== 'boolean') {
@@ -335,6 +348,45 @@ export const AdvConfiguration: FC<ILayout> = ({
                         </label>
                     </div>
                 </div>
+            </fieldset>
+            <fieldset>
+                <legend>{t('advConfiguration.puppeteer.title')}</legend>
+                <p>{t('advConfiguration.puppeteer.description')}</p>
+                <p>{t('advConfiguration.puppeteer.help-link')}</p>
+                <div className="flex w-full items-center gap-2">
+                    <Input
+                        id="filePath"
+                        value={configurationDatas?.['puppeteer-script'] || ''}
+                        type="text"
+                        readOnly
+                        aria-label={t('advConfiguration.puppeteer.input.aria')}
+                    />
+                    <Button
+                        type="button"
+                        id="btn-file"
+                        onClick={handleSelectPuppeteerFilePath}
+                    >
+                        {t('Browse')}
+                    </Button>
+                    <Button
+                        type="button"
+                        disabled={
+                            configurationDatas?.['puppeteer-script'] === null ||
+                            configurationDatas?.['puppeteer-script'] ===
+                                undefined
+                                ? true
+                                : false
+                        }
+                        id="btn-file"
+                        onClick={resetPuppeteerFilePath}
+                    >
+                        {t('Reset')}
+                    </Button>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>{t('advConfiguration.envvar.title')}</legend>
+                <p>{t('advConfiguration.envvar.description')}</p>
             </fieldset>
         </details>
     )

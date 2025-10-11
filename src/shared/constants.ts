@@ -27,6 +27,7 @@ const constants: IConstants = {
         GET_HOMEDIR: 'get-homedir',
         GET_NODE_VERSION: 'get-node-version',
         SELECT_FOLDER: 'dialog:select-folder',
+        SELECT_PUPPETEER_FILE: 'dialog:select-puppeteer-file',
         IS_LIGHTHOUSE_ECOINDEX_INSTALLED: 'is-lighthouse-ecoindex-installed',
         IS_NODE_INSTALLED: 'is-node-installed',
         IS_JSON_CONFIG_FILE_EXIST: 'is-json-config-file-exist',
