@@ -225,5 +225,14 @@
             "app": "Aller consulter le site de l'application",
             "plugin": "Aller consulter le site du plugin lighthouse-plugin-ecoindex"
         }
+    },
+    "advConfiguration": {
+        "title": "Configuration avancée",
+        "title-title": "Cliquez pour ouvrir ou fermer la Configuration avancée"
+    },
+    "key-value": {
+        "add": {
+            "to": "Ajouter un élément à"
+        }
     }
 }

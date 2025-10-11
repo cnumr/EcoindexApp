@@ -160,6 +160,25 @@
                 @apply flex items-center gap-2;
             } */
         }
+        details {
+            @apply flex flex-col gap-2 rounded-md border border-primary p-4;
+            summary {
+                @apply relative w-full cursor-pointer list-none font-bold text-primary dark:text-foreground;
+                &::after {
+                    @apply absolute right-0 top-[calc(50%_-_1rem)] size-[2.1rem] rounded-full border-2 border-primary pl-2 text-xl;
+                    content: '+';
+                }
+                [open] &::after {
+                    content: '−';
+                }
+                [open] & {
+                    @apply mb-4;
+                }
+            }
+            summary::-webkit-details-marker {
+                display: none;
+            }
+        }
     }
     .tooltip {
         position: relative;

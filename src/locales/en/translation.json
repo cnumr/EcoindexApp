@@ -224,5 +224,14 @@
             "app": "Go consult the application website",
             "plugin": "Go consult the Lighthouse-Plugin-Ecoindex plugin site"
         }
+    },
+    "advConfiguration": {
+        "title": "Advanced configuration",
+        "title-title": "Click to open or close Advanced Setup"
+    },
+    "key-value": {
+        "add": {
+            "to": "Add an item to"
+        }
     }
 }
