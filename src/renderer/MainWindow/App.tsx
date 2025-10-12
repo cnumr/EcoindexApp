@@ -599,7 +599,7 @@ function TheApp() {
                                         <SimplePanMesure
                                             appReady={appReady}
                                             language={i18nResources.language}
-                                            simpleMesures={runSimpleMesures}
+                                            mesure={runSimpleMesures}
                                             urlsList={urlsList}
                                             setUrlsList={setUrlsList}
                                             className="border-primary"

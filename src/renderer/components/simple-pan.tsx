@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next'
 export interface ISimpleMesureLayout {
     appReady: boolean
     language: string
-    simpleMesures: () => void
+    mesure: () => void
     urlsList: ISimpleUrlInput[]
     setUrlsList: (urlsList: ISimpleUrlInput[]) => void
     className: string
@@ -24,7 +24,7 @@ export interface ISimpleMesureLayout {
 export const SimplePanMesure: FC<ISimpleMesureLayout> = ({
     appReady,
     language,
-    simpleMesures,
+    mesure,
     urlsList,
     setUrlsList,
     className,
@@ -57,7 +57,7 @@ export const SimplePanMesure: FC<ISimpleMesureLayout> = ({
                     id="btn-simple-mesures"
                     title={t('Launch the measures')}
                     disabled={!appReady}
-                    onClick={simpleMesures}
+                    onClick={mesure}
                     className="btn btn-green"
                 >
                     {t('Measures')}
