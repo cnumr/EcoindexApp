@@ -12,7 +12,6 @@ import { CirclePlus, RotateCcw, Save, Trash2 } from 'lucide-react'
 import { AdvConfiguration } from './adv-configuration'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
-import { KeyValue } from './key-value'
 import { SimpleUrlsList } from './simple-urls'
 import { Switch } from '../ui/switch'
 import log from 'electron-log/renderer'
@@ -29,7 +28,7 @@ export interface ILayout {
     className: string
     save: () => void
     reload: () => void
-    mesure: () => void
+    mesure: (envVars: IKeyValue) => void
     notify: (subTitle: string, message: string) => void
 }
 
@@ -48,6 +47,11 @@ export const JsonPanMesure: FC<ILayout> = ({
     const { t } = useTranslation()
 
     const [updated, setUpdated] = useState(false)
+    const [envVars, setEnvVars] = useState({})
+
+    /**
+     * Gestionnaire d'ajout d'une course dans `jsonDatas`.
+     */
     const handlerAddCourse = () => {
         frontLog.debug('add course')
         const newCourse = {
@@ -64,16 +68,27 @@ export const JsonPanMesure: FC<ILayout> = ({
         notify(t('Courses Measure (Full mode)'), t('Course added'))
         setUpdated(true)
     }
+
+    /**
+     * Gestionnaire de la suppression d'un course dans `jsonDatas`.
+     * @param _ ?
+     * @param key index de la course à supprimer
+     */
     const handlerDeleteCourse = (_: any, key: number) => {
         frontLog.debug('delete course', key)
         setJsonDatas?.({
             ...jsonDatas,
             courses: jsonDatas.courses.filter((_, index) => index !== key),
         })
-        // to translate
         notify(t('Courses Measure (Full mode)'), `Course ${key + 1} deleted`)
         setUpdated(true)
     }
+
+    /**
+     * Gestionnaire de la maj des listes d'url d'une course dans `jsonDatas`.
+     * @param course course à maj
+     * @param urlsList list des URL
+     */
     const handlerOnUpdateSimpleUrlsList = (
         course: number,
         urlsList: ISimpleUrlInput[]
@@ -93,6 +108,15 @@ export const JsonPanMesure: FC<ILayout> = ({
         })
         setUpdated(true)
     }
+
+    /**
+     * Gestionnaire de mise à jour des données de `jsonDatas`.
+     * **A SIMPLIFIER !**
+     * @param course Données de course
+     * @param e Event de maj
+     * @param id ID de la source de maj
+     * @param name Name de la source de maj (utile pour des checkboxs)
+     */
     const handlerOnChange = (
         course: number,
         e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement> | boolean,
@@ -195,6 +219,11 @@ export const JsonPanMesure: FC<ILayout> = ({
         // frontLog.debug(`jsonDatas`, jsonDatas)
         setUpdated(true)
     }
+
+    /**
+     * Déclanchement (first-step) du rechargement du fichier JSON.
+     * @param event Event du bouton
+     */
     const handlerOnReload = (
         event: React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) => {
@@ -202,6 +231,12 @@ export const JsonPanMesure: FC<ILayout> = ({
         reload()
         setUpdated(false)
     }
+
+    /**
+     * Déclanchement (first-step) de la mesure.
+     * @param event Event du boutons
+     * @returns
+     */
     const handlerOnSubmit = (
         event: React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) => {
@@ -228,9 +263,15 @@ export const JsonPanMesure: FC<ILayout> = ({
             )
             return
         }
-        mesure()
+
+        mesure(envVars)
         setUpdated(false)
     }
+
+    /**
+     * Déclanchement (first-step) de la sauvegarde du fichier JSON.
+     * @param event Event du bouton
+     */
     const handlerOnSave = (
         event: React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) => {
@@ -310,6 +351,10 @@ export const JsonPanMesure: FC<ILayout> = ({
                         }}
                         setUpdated={(e) => {
                             setUpdated(e)
+                        }}
+                        envVars={envVars}
+                        setEnvVars={(ev) => {
+                            setEnvVars(ev)
                         }}
                     />
 

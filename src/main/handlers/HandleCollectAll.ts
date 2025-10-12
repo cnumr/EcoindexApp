@@ -10,6 +10,7 @@ import { _sendMessageToFrontConsole } from '../utils/SendMessageToFrontConsole'
 import { _sendMessageToFrontLog } from '../utils/SendMessageToFrontLog'
 import { convertJSONDatasFromISimpleUrlInput } from '../utils/ConvertJSONDatas'
 import { error } from 'console'
+import { exit } from 'node:process'
 import { fileURLToPath } from 'node:url'
 import fs from 'fs'
 import { getMainLog } from '../main'
@@ -276,7 +277,8 @@ async function _runCollect(
 async function _runDirectCollect(
     command: SimpleCollectDatas_V2 | ComplexeCollectDatas_V2,
     event: IpcMainEvent,
-    isSimple = false
+    isSimple = false,
+    envVars: IKeyValue = null
 ) {
     const mainLog = getMainLog().scope('main/runDirectCollect')
     try {
@@ -306,7 +308,19 @@ async function _runDirectCollect(
 
         // Définir les variables d'environnement pour le processus Node.js
         process.env.WORK_DIR = workDir
-
+        // Définir les variables d'environnement demandés par l'utilisateur
+        if (envVars) {
+            mainLog.debug(`LES ENVVARS de l'utilisateur`)
+            try {
+                Object.entries(envVars).map((ev) => {
+                    process.env[ev[0].toUpperCase()] = ev[1]
+                })
+                mainLog.debug(process.env)
+            } catch (error) {
+                throw new Error(`EnvVars in error`)
+            }
+        }
+        return
         // Créer une Promise qui se résoudra quand le processus enfant sera terminé
         await new Promise<void>((resolve, reject) => {
             mainLog.debug('Starting utility process...')
@@ -546,9 +560,11 @@ export const handleSimpleCollect = async (
 export const handleJsonSaveAndCollect = async (
     event: IpcMainEvent,
     jsonDatas: IJsonMesureData,
-    andCollect: boolean
+    andCollect: boolean,
+    envVars: IKeyValue
 ) => {
     const mainLog = getMainLog().scope('main/handleJsonSaveAndCollect')
+
     if (!jsonDatas) {
         throw new Error('Json data is empty')
     }
@@ -627,7 +643,7 @@ export const handleJsonSaveAndCollect = async (
             // command.push(_workDir)
             try {
                 // await _runCollect(command, nodeDir, event)
-                await _runDirectCollect(collectDatas, event, false)
+                await _runDirectCollect(collectDatas, event, false, envVars)
             } catch (error) {
                 mainLog.error('Simple collect error', error)
                 throw new Error('Simple collect error')

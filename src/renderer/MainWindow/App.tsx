@@ -232,7 +232,10 @@ function TheApp() {
      * @param saveAndCollect boolean
      * @returns Promise<void>
      */
-    const runJsonSaveAndCollect = async (saveAndCollect = false) => {
+    const runJsonSaveAndCollect = async (
+        saveAndCollect = false,
+        envVars: IKeyValue = null
+    ) => {
         frontLog.debug('Json save clicked')
         if (workDir === homeDir) {
             if (
@@ -254,7 +257,8 @@ function TheApp() {
             frontLog.debug(`saveAndCollect`, saveAndCollect)
             await window.electronAPI.handleJsonSaveAndCollect(
                 jsonDatas,
-                saveAndCollect
+                saveAndCollect,
+                envVars
             )
             showHidePopinDuringProcess(true)
         } catch (error) {
@@ -612,8 +616,11 @@ function TheApp() {
                                             language={i18nResources.language}
                                             jsonDatas={jsonDatas}
                                             setJsonDatas={setJsonDatas}
-                                            mesure={() =>
-                                                runJsonSaveAndCollect(true)
+                                            mesure={(envVars) =>
+                                                runJsonSaveAndCollect(
+                                                    true,
+                                                    envVars
+                                                )
                                             }
                                             reload={runJsonReadAndReload}
                                             save={runJsonSaveAndCollect}

@@ -16,6 +16,7 @@ export interface ILayout {
     title?: string
     displayTitle?: boolean
     isFullWidth?: boolean
+    isKeyInUppercase?: boolean
 }
 
 export const KeyValue: FC<ILayout> = ({
@@ -25,13 +26,16 @@ export const KeyValue: FC<ILayout> = ({
     title = 'Key Value (component)',
     displayTitle = false,
     isFullWidth = false,
+    isKeyInUppercase = false,
 }) => {
     const { t } = useTranslation()
     const Tag = isFullWidth ? 'strong' : TypographyH2
     // Function to add a new input field
     const handleAddFields = () => {
         try {
-            const newDataElement: IKeyValue = { key: 'value' }
+            const newDataElement: IKeyValue = isKeyInUppercase
+                ? { KEY: 'value' }
+                : { key: 'value' }
             setDatas({
                 ...datas,
                 ...newDataElement,
@@ -72,7 +76,9 @@ export const KeyValue: FC<ILayout> = ({
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
         const values: IKeyValue = { ...datas }
-        const newKey = event.currentTarget.value
+        const newKey = isKeyInUppercase
+            ? event.currentTarget.value.toUpperCase()
+            : event.currentTarget.value
         const oldKey = event.currentTarget.dataset['oldKey']
         const order = Object.keys(datas).map((key) => key)
 

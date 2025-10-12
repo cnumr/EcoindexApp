@@ -36,8 +36,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
     // json handlers
     handleJsonSaveAndCollect: (
         jsonDatas: IJsonMesureData,
-        andCollect: boolean
-    ) => ipcRenderer.invoke(channels.SAVE_JSON_FILE, jsonDatas, andCollect),
+        andCollect: boolean,
+        envVars: IKeyValue
+    ) =>
+        ipcRenderer.invoke(
+            channels.SAVE_JSON_FILE,
+            jsonDatas,
+            andCollect,
+            envVars
+        ),
     handleJsonReadAndReload: () =>
         ipcRenderer.invoke(channels.READ_RELOAD_JSON_FILE),
 

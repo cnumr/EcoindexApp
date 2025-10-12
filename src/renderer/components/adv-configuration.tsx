@@ -15,6 +15,8 @@ export interface ILayout {
         value: React.SetStateAction<IAdvancedMesureData>
     ) => void
     setUpdated?: (value: boolean) => void
+    envVars: IKeyValue
+    setEnvVars: (value: IKeyValue) => void
     isOpen?: boolean
 }
 
@@ -22,16 +24,29 @@ export const AdvConfiguration: FC<ILayout> = ({
     configurationDatas,
     setConfigurationDatas,
     setUpdated,
+    envVars,
+    setEnvVars,
     isOpen = false,
 }) => {
     const { t } = useTranslation()
 
+    /**
+     * Active/désactive le switch statement
+     */
     const [enableStatement, setEnableStatement] = useState(false)
 
+    /**
+     * au chargement, vérifie si l'output json est présent pour active/désactive le switch statement
+     */
     useEffect(() => {
         setEnableStatement(!configurationDatas['output'].includes('json'))
     }, [])
 
+    /**
+     * Synchronise `json` et `statement` dans les `output`.
+     * Si `json` n'est plus dans la liste et que `statement` y est encore, on le supprime de `output`.
+     * @param e json est présent ou non dans les output
+     */
     const jsonMandatoryWithStatement = (e: boolean) => {
         frontLog.debug('json', e)
         const output = configurationDatas?.output
@@ -56,6 +71,9 @@ export const AdvConfiguration: FC<ILayout> = ({
         setUpdated(true)
     }
 
+    /**
+     * Déclanchement de la boite de dialog pour sélectionner le fichier de scénario.
+     */
     const handleSelectPuppeteerFilePath = async () => {
         const filePath =
             await window.electronAPI.handleSelectPuppeteerFilePath()
@@ -71,6 +89,9 @@ export const AdvConfiguration: FC<ILayout> = ({
         }
     }
 
+    /**
+     * Suppression du fichier de scénario de l'object JSON.
+     */
     const resetPuppeteerFilePath = () => {
         frontLog.debug(`reset Puppeteer File Path`)
         const _configurationDatas = {
@@ -81,6 +102,14 @@ export const AdvConfiguration: FC<ILayout> = ({
         setUpdated(true)
     }
 
+    /**
+     * Gestionnaire de mise à jour des données de `configurationDatas`.
+     * **A NETTOYER !**
+     * @param course Données de course **A NETTOYER, CAR PAS DANS LA LOGIQUE DU COMPOSANT**
+     * @param e Event de maj
+     * @param id ID de la source de maj
+     * @param name Name de la source de maj (utile pour des checkboxs)
+     */
     const handlerOnChange = (
         course: number,
         e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement> | boolean,
@@ -387,6 +416,18 @@ export const AdvConfiguration: FC<ILayout> = ({
             <fieldset>
                 <legend>{t('advConfiguration.envvar.title')}</legend>
                 <p>{t('advConfiguration.envvar.description')}</p>
+                <div>
+                    <KeyValue
+                        datas={envVars}
+                        visible={true}
+                        isFullWidth={true}
+                        isKeyInUppercase={true}
+                        title={t('advConfiguration.envvar.title')}
+                        setDatas={(e: IKeyValue) => {
+                            setEnvVars(e)
+                        }}
+                    />
+                </div>
             </fieldset>
         </details>
     )

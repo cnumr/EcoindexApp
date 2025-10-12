@@ -49,7 +49,8 @@ export interface IElectronAPI {
     handleSimpleMesures: (urlsList: ISimpleUrlInput[]) => Promise<string>
     handleJsonSaveAndCollect: (
         json: IJsonMesureData,
-        andCollect: boolean
+        andCollect: boolean,
+        envVars: IKeyValue
     ) => Promise<string>
     handleJsonReadAndReload: () => Promise<IJsonMesureData>
     handleIsJsonConfigFileExist: (workDir: string) => Promise<boolean>
