@@ -172,7 +172,6 @@
         "windows": {
             "unpacking": "Extraction des fichiers (cela peut prendre quelques secondes et faire freezé l'application)..."
         },
-        "homeDir-workDir": "Recherche du dossier de travail",
         "dir": {
             "home": "Recherche du dossier utilisateur...",
             "work": "Recherche du dossier de travail..."
@@ -219,7 +218,6 @@
         }
     },
     "Plugin version:": "Version du moteur de mesure Écoindex (lighthouse-plugin-ecoindex):",
-    "Application version:": "Version de l'application:",
     "footer": {
         "visite-website": {
             "app": "Aller consulter le site de l'application",
@@ -247,5 +245,6 @@
             "to": "Ajouter un élément à"
         }
     },
-    "Reset": "Effacer"
+    "Reset": "Effacer",
+    "Application version": "Version de l'application:"
 }

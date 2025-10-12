@@ -217,7 +217,6 @@
             }
         }
     },
-    "Application version": "Application version:",
     "Plugin version:": "Version of the Ecoindex measurement engine (lighthouse-plugin-ecoindex):",
     "footer": {
         "visite-website": {
@@ -246,5 +245,6 @@
             "to": "Add an item to"
         }
     },
-    "Reset": "Reset"
+    "Reset": "Reset",
+    "Application version:": "Application version:"
 }
