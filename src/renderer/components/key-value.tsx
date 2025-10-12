@@ -162,10 +162,13 @@ export const KeyValue: FC<ILayout> = ({
                             variant="destructive"
                             type="button"
                             id="btn-remove-url"
-                            title="delete"
+                            title={t('delete')}
                             onClick={() => handleRemoveFields(dataKey)}
                         >
-                            <Trash2 className="size-4" aria-label="delete" />
+                            <Trash2
+                                className="size-4"
+                                aria-label={t('delete')}
+                            />
                             <span className="sr-only">{t('delete')}</span>
                         </Button>
                     </div>

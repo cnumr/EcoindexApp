@@ -4,6 +4,7 @@ import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { KeyValue } from './key-value'
 import { Switch } from '../ui/switch'
+import { Trash2 } from 'lucide-react'
 import log from 'electron-log/renderer'
 import { useTranslation } from 'react-i18next'
 
@@ -399,6 +400,7 @@ export const AdvConfiguration: FC<ILayout> = ({
                     </Button>
                     <Button
                         type="button"
+                        variant="destructive"
                         disabled={
                             configurationDatas?.['puppeteer-script'] === null ||
                             configurationDatas?.['puppeteer-script'] ===
@@ -407,9 +409,11 @@ export const AdvConfiguration: FC<ILayout> = ({
                                 : false
                         }
                         id="btn-file"
+                        title={t('delete')}
                         onClick={resetPuppeteerFilePath}
                     >
-                        {t('Reset')}
+                        <Trash2 className="size-4" aria-label={t('delete')} />
+                        <span className="sr-only">{t('delete')}</span>
                     </Button>
                 </div>
             </fieldset>
