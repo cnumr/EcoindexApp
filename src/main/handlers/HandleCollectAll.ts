@@ -320,7 +320,7 @@ async function _runDirectCollect(
                 throw new Error(`EnvVars in error`)
             }
         }
-        return
+
         // Créer une Promise qui se résoudra quand le processus enfant sera terminé
         await new Promise<void>((resolve, reject) => {
             mainLog.debug('Starting utility process...')
