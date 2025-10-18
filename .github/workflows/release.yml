@@ -51,6 +51,8 @@ jobs:
                   restore-keys: |
                       ${{ runner.os }}-modules-
             - run: npm ci
+              env:
+                  PUPPETEER_SKIP_DOWNLOAD: ${{vars.PUPPETEER_SKIP_DOWNLOAD}}
             - name: Debug token
               run: echo ${GITHUB_TOKEN:0:3}
               env:

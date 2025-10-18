@@ -31,18 +31,36 @@ contextBridge.exposeInMainWorld('electronAPI', {
     // @ts-ignore
     // Front → Main
     // simple handlers
-    handleSimpleMesures: (urlsList: ISimpleUrlInput[]) =>
-        ipcRenderer.invoke(channels.SIMPLE_MESURES, urlsList),
+    handleSimpleMesures: (
+        urlsList: ISimpleUrlInput[],
+        localAdvConfig: IAdvancedMesureData,
+        envVars: IKeyValue
+    ) =>
+        ipcRenderer.invoke(
+            channels.SIMPLE_MESURES,
+            urlsList,
+            localAdvConfig,
+            envVars
+        ),
     // json handlers
     handleJsonSaveAndCollect: (
         jsonDatas: IJsonMesureData,
-        andCollect: boolean
-    ) => ipcRenderer.invoke(channels.SAVE_JSON_FILE, jsonDatas, andCollect),
+        andCollect: boolean,
+        envVars: IKeyValue
+    ) =>
+        ipcRenderer.invoke(
+            channels.SAVE_JSON_FILE,
+            jsonDatas,
+            andCollect,
+            envVars
+        ),
     handleJsonReadAndReload: () =>
         ipcRenderer.invoke(channels.READ_RELOAD_JSON_FILE),
 
     // communs handlers and getters
     handleSelectFolder: () => ipcRenderer.invoke(channels.SELECT_FOLDER),
+    handleSelectPuppeteerFilePath: () =>
+        ipcRenderer.invoke(channels.SELECT_PUPPETEER_FILE),
     getWorkDir: (newDir: string) =>
         ipcRenderer.invoke(channels.GET_WORKDIR, newDir),
     getHomeDir: () => ipcRenderer.invoke(channels.GET_HOMEDIR),

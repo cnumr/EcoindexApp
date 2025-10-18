@@ -9,9 +9,9 @@ import {
 import { ChangeEvent, FC, useState } from 'react'
 import { CirclePlus, RotateCcw, Save, Trash2 } from 'lucide-react'
 
+import { AdvConfiguration } from './adv-configuration'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
-import { KeyValue } from './key-value'
 import { SimpleUrlsList } from './simple-urls'
 import { Switch } from '../ui/switch'
 import log from 'electron-log/renderer'
@@ -28,8 +28,10 @@ export interface ILayout {
     className: string
     save: () => void
     reload: () => void
-    mesure: () => void
+    mesure: (envVars: IKeyValue) => void
     notify: (subTitle: string, message: string) => void
+    envVars: IKeyValue
+    setEnvVars: (value: IKeyValue) => void
 }
 
 export const JsonPanMesure: FC<ILayout> = ({
@@ -43,10 +45,16 @@ export const JsonPanMesure: FC<ILayout> = ({
     reload,
     mesure,
     notify,
+    envVars,
+    setEnvVars,
 }) => {
     const { t } = useTranslation()
 
     const [updated, setUpdated] = useState(false)
+
+    /**
+     * Gestionnaire d'ajout d'une course dans `jsonDatas`.
+     */
     const handlerAddCourse = () => {
         frontLog.debug('add course')
         const newCourse = {
@@ -63,16 +71,27 @@ export const JsonPanMesure: FC<ILayout> = ({
         notify(t('Courses Measure (Full mode)'), t('Course added'))
         setUpdated(true)
     }
+
+    /**
+     * Gestionnaire de la suppression d'un course dans `jsonDatas`.
+     * @param _ ?
+     * @param key index de la course à supprimer
+     */
     const handlerDeleteCourse = (_: any, key: number) => {
         frontLog.debug('delete course', key)
         setJsonDatas?.({
             ...jsonDatas,
             courses: jsonDatas.courses.filter((_, index) => index !== key),
         })
-        // to translate
         notify(t('Courses Measure (Full mode)'), `Course ${key + 1} deleted`)
         setUpdated(true)
     }
+
+    /**
+     * Gestionnaire de la maj des listes d'url d'une course dans `jsonDatas`.
+     * @param course course à maj
+     * @param urlsList list des URL
+     */
     const handlerOnUpdateSimpleUrlsList = (
         course: number,
         urlsList: ISimpleUrlInput[]
@@ -92,6 +111,15 @@ export const JsonPanMesure: FC<ILayout> = ({
         })
         setUpdated(true)
     }
+
+    /**
+     * Gestionnaire de mise à jour des données de `jsonDatas`.
+     * **A SIMPLIFIER !**
+     * @param course Données de course
+     * @param e Event de maj
+     * @param id ID de la source de maj
+     * @param name Name de la source de maj (utile pour des checkboxs)
+     */
     const handlerOnChange = (
         course: number,
         e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement> | boolean,
@@ -194,6 +222,11 @@ export const JsonPanMesure: FC<ILayout> = ({
         // frontLog.debug(`jsonDatas`, jsonDatas)
         setUpdated(true)
     }
+
+    /**
+     * Déclanchement (first-step) du rechargement du fichier JSON.
+     * @param event Event du bouton
+     */
     const handlerOnReload = (
         event: React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) => {
@@ -201,6 +234,12 @@ export const JsonPanMesure: FC<ILayout> = ({
         reload()
         setUpdated(false)
     }
+
+    /**
+     * Déclanchement (first-step) de la mesure.
+     * @param event Event du boutons
+     * @returns
+     */
     const handlerOnSubmit = (
         event: React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) => {
@@ -227,9 +266,15 @@ export const JsonPanMesure: FC<ILayout> = ({
             )
             return
         }
-        mesure()
+
+        mesure(envVars)
         setUpdated(false)
     }
+
+    /**
+     * Déclanchement (first-step) de la sauvegarde du fichier JSON.
+     * @param event Event du bouton
+     */
     const handlerOnSave = (
         event: React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) => {
@@ -288,191 +333,34 @@ export const JsonPanMesure: FC<ILayout> = ({
                     </Button>
                 </div>
                 <form id="json-form">
-                    <fieldset>
-                        <legend>{t('Extra header')}</legend>
-                        <p>{t('Header to add cookies, Authentication...')} </p>
-                        <div>
-                            <KeyValue
-                                extraHeader={
-                                    jsonDatas?.['extra-header'] as IKeyValue
+                    <AdvConfiguration
+                        configurationDatas={jsonDatas}
+                        setConfigurationDatas={(e: IAdvancedMesureData) => {
+                            const _jsonDatas = {
+                                ...jsonDatas,
+                                'extra-header': e['extra-header'],
+                                output: e['output'],
+                                'audit-category': e['audit-category'],
+                            }
+                            if (e['audit-category']) {
+                                _jsonDatas['puppeteer-script'] =
+                                    e['puppeteer-script']
+                            } else {
+                                if (_jsonDatas['puppeteer-script']) {
+                                    delete _jsonDatas['puppeteer-script']
                                 }
-                                language={language}
-                                visible={true}
-                                isFullWidth={true}
-                                title=""
-                                setExtraHeader={(e: IKeyValue) => {
-                                    setJsonDatas({
-                                        ...jsonDatas,
-                                        'extra-header': e,
-                                    })
-                                    setUpdated(true)
-                                }}
-                            />
-                        </div>
-                    </fieldset>
-                    <fieldset>
-                        <legend className="mandatory">
-                            {t('Choose the reports you want to generate')}
-                        </legend>
-                        <div className="!grid grid-cols-2 gap-2">
-                            <div>
-                                <Switch
-                                    id="html"
-                                    name="output"
-                                    checked={jsonDatas?.output.includes('html')}
-                                    onCheckedChange={(e) => {
-                                        handlerOnChange(-1, e, 'html', 'output')
-                                    }}
-                                />
-                                <label htmlFor="html">HTML</label>
-                            </div>
-                            <div>
-                                <Switch
-                                    id="json"
-                                    name="output"
-                                    checked={jsonDatas?.output.includes('json')}
-                                    onCheckedChange={(e) => {
-                                        handlerOnChange(-1, e, 'json', 'output')
-                                    }}
-                                />
-                                <label htmlFor="json">JSON</label>
-                            </div>
-                            <div>
-                                <Switch
-                                    id="statement"
-                                    name="output"
-                                    checked={jsonDatas?.output.includes(
-                                        'statement'
-                                    )}
-                                    onCheckedChange={(e) => {
-                                        handlerOnChange(
-                                            -1,
-                                            e,
-                                            'statement',
-                                            'output'
-                                        )
-                                    }}
-                                />
-                                <label htmlFor="statement">
-                                    {t('Statement')}{' '}
-                                    <em className="text-xs">
-                                        {t('(JSON output mandatory)')}
-                                    </em>
-                                </label>
-                            </div>
-                        </div>
-                    </fieldset>
-                    <fieldset>
-                        <legend className="mandatory">
-                            {t('common.audit.audit-category.title')}
-                        </legend>
-                        <div className="!grid grid-cols-2 gap-2">
-                            <div>
-                                <Switch
-                                    id="seo"
-                                    name="audit-category"
-                                    checked={jsonDatas?.[
-                                        'audit-category'
-                                    ].includes('seo')}
-                                    onCheckedChange={(e) => {
-                                        handlerOnChange(
-                                            -1,
-                                            e,
-                                            'seo',
-                                            'audit-category'
-                                        )
-                                    }}
-                                />
-                                <label htmlFor="seo">
-                                    {t('common.audit.audit-category.seo')}
-                                </label>
-                            </div>
-                            <div>
-                                <Switch
-                                    id="performance"
-                                    name="audit-category"
-                                    checked={jsonDatas?.[
-                                        'audit-category'
-                                    ].includes('performance')}
-                                    onCheckedChange={(e) => {
-                                        handlerOnChange(
-                                            -1,
-                                            e,
-                                            'performance',
-                                            'audit-category'
-                                        )
-                                    }}
-                                />
-                                <label htmlFor="performance">
-                                    {t(
-                                        'common.audit.audit-category.performance'
-                                    )}
-                                </label>
-                            </div>
-                            <div>
-                                <Switch
-                                    id="accessibility"
-                                    name="audit-category"
-                                    checked={jsonDatas?.[
-                                        'audit-category'
-                                    ].includes('accessibility')}
-                                    onCheckedChange={(e) => {
-                                        handlerOnChange(
-                                            -1,
-                                            e,
-                                            'accessibility',
-                                            'audit-category'
-                                        )
-                                    }}
-                                />
-                                <label htmlFor="accessibility">
-                                    {t(
-                                        'common.audit.audit-category.accessibility'
-                                    )}
-                                </label>
-                            </div>
-                            <div>
-                                <Switch
-                                    id="best-practices"
-                                    name="audit-category"
-                                    checked={jsonDatas?.[
-                                        'audit-category'
-                                    ].includes('best-practices')}
-                                    onCheckedChange={(e) => {
-                                        handlerOnChange(
-                                            -1,
-                                            e,
-                                            'best-practices',
-                                            'audit-category'
-                                        )
-                                    }}
-                                />
-                                <label htmlFor="best-practices">
-                                    {t(
-                                        'common.audit.audit-category.best-practices'
-                                    )}
-                                </label>
-                            </div>
-                            <div>
-                                <Switch
-                                    id="lighthouse-plugin-ecoindex-core"
-                                    name="audit-category"
-                                    checked={true}
-                                    disabled={true}
-                                />
-                                <label htmlFor="lighthouse-plugin-ecoindex-core">
-                                    {t(
-                                        'common.audit.audit-category.lighthouse-plugin-ecoindex-core'
-                                    )}{' '}
-                                    <em className="text-xs">
-                                        {t(
-                                            'common.audit.audit-category.ecoindex-core.mandatory'
-                                        )}
-                                    </em>
-                                </label>
-                            </div>
-                        </div>
-                    </fieldset>
+                            }
+                            setJsonDatas(_jsonDatas)
+                        }}
+                        setUpdated={(e) => {
+                            setUpdated(e)
+                        }}
+                        envVars={envVars}
+                        setEnvVars={(ev) => {
+                            setEnvVars(ev)
+                        }}
+                    />
+
                     <fieldset>
                         <legend>
                             <span>{t('Courses')}</span>

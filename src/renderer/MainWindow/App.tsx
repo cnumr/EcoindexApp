@@ -73,6 +73,7 @@ function TheApp() {
     const [informationPopinIsAlert, setInformationPopinIsAlert] =
         useState(false)
     const [showInformationSpinner, setShowInformationSpinner] = useState(true)
+    const [envVars, setEnvVars] = useState({})
     // #endregion
 
     const [urlsList, setUrlsList] = useState<InputField[]>([
@@ -81,6 +82,9 @@ function TheApp() {
     ])
     const [jsonDatas, setJsonDatas] = useState<IJsonMesureData>(
         utils.DEFAULT_JSON_DATA
+    )
+    const [localAdvConfig, setLocalAdvConfig] = useState<IAdvancedMesureData>(
+        utils.DEFAULT_ADV_CONFIG
     )
 
     const { t } = useTranslation()
@@ -189,7 +193,11 @@ function TheApp() {
             `${t('Url(s) Measure (Simple mode)')} started 🚀`
         )
         try {
-            await window.electronAPI.handleSimpleMesures(urlsList)
+            await window.electronAPI.handleSimpleMesures(
+                urlsList,
+                localAdvConfig,
+                envVars
+            )
             showHidePopinDuringProcess(true)
         } catch (error) {
             frontLog.error('Error on runSimpleMesures', error)
@@ -232,7 +240,10 @@ function TheApp() {
      * @param saveAndCollect boolean
      * @returns Promise<void>
      */
-    const runJsonSaveAndCollect = async (saveAndCollect = false) => {
+    const runJsonSaveAndCollect = async (
+        saveAndCollect = false,
+        envVars: IKeyValue = null
+    ) => {
         frontLog.debug('Json save clicked')
         if (workDir === homeDir) {
             if (
@@ -254,7 +265,8 @@ function TheApp() {
             frontLog.debug(`saveAndCollect`, saveAndCollect)
             await window.electronAPI.handleJsonSaveAndCollect(
                 jsonDatas,
-                saveAndCollect
+                saveAndCollect,
+                envVars
             )
             showHidePopinDuringProcess(true)
         } catch (error) {
@@ -599,10 +611,16 @@ function TheApp() {
                                         <SimplePanMesure
                                             appReady={appReady}
                                             language={i18nResources.language}
-                                            simpleMesures={runSimpleMesures}
+                                            mesure={runSimpleMesures}
                                             urlsList={urlsList}
                                             setUrlsList={setUrlsList}
                                             className="border-primary"
+                                            envVars={envVars}
+                                            setEnvVars={setEnvVars}
+                                            localAdvConfig={localAdvConfig}
+                                            setLocalAdvConfig={
+                                                setLocalAdvConfig
+                                            }
                                         />
                                     </TabsContent>
                                     <TabsContent value="json-mesure">
@@ -612,13 +630,18 @@ function TheApp() {
                                             language={i18nResources.language}
                                             jsonDatas={jsonDatas}
                                             setJsonDatas={setJsonDatas}
-                                            mesure={() =>
-                                                runJsonSaveAndCollect(true)
+                                            mesure={(envVars) =>
+                                                runJsonSaveAndCollect(
+                                                    true,
+                                                    envVars
+                                                )
                                             }
                                             reload={runJsonReadAndReload}
                                             save={runJsonSaveAndCollect}
                                             notify={handlerJsonNotify}
                                             className="border-primary"
+                                            envVars={envVars}
+                                            setEnvVars={setEnvVars}
                                         />
                                     </TabsContent>
                                 </Tabs>
