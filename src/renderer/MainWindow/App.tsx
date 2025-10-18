@@ -73,6 +73,7 @@ function TheApp() {
     const [informationPopinIsAlert, setInformationPopinIsAlert] =
         useState(false)
     const [showInformationSpinner, setShowInformationSpinner] = useState(true)
+    const [envVars, setEnvVars] = useState({})
     // #endregion
 
     const [urlsList, setUrlsList] = useState<InputField[]>([
@@ -626,6 +627,8 @@ function TheApp() {
                                             save={runJsonSaveAndCollect}
                                             notify={handlerJsonNotify}
                                             className="border-primary"
+                                            envVars={envVars}
+                                            setEnvVars={setEnvVars}
                                         />
                                     </TabsContent>
                                 </Tabs>

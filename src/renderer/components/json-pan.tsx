@@ -30,6 +30,8 @@ export interface ILayout {
     reload: () => void
     mesure: (envVars: IKeyValue) => void
     notify: (subTitle: string, message: string) => void
+    envVars: IKeyValue
+    setEnvVars: (value: IKeyValue) => void
 }
 
 export const JsonPanMesure: FC<ILayout> = ({
@@ -43,11 +45,12 @@ export const JsonPanMesure: FC<ILayout> = ({
     reload,
     mesure,
     notify,
+    envVars,
+    setEnvVars,
 }) => {
     const { t } = useTranslation()
 
     const [updated, setUpdated] = useState(false)
-    const [envVars, setEnvVars] = useState({})
 
     /**
      * Gestionnaire d'ajout d'une course dans `jsonDatas`.
