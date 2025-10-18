@@ -121,7 +121,8 @@
     /* .tab-content {
         @apply border-primary w-full flex-col items-center gap-4 border-2 p-4;
     } */
-    #json-form {
+    #json-form,
+    #simple-form {
         @apply grid w-full grid-cols-1 space-y-2;
         label {
             @apply font-bold text-primary dark:text-foreground;

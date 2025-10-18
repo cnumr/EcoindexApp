@@ -246,5 +246,10 @@
         }
     },
     "Reset": "Reset",
-    "Application version:": "Application version:"
+    "Application version:": "Application version:",
+    "simple-mesure": {
+        "urls": {
+            "title": "URLs"
+        }
+    }
 }

@@ -83,6 +83,9 @@ function TheApp() {
     const [jsonDatas, setJsonDatas] = useState<IJsonMesureData>(
         utils.DEFAULT_JSON_DATA
     )
+    const [localAdvConfig, setLocalAdvConfig] = useState<IAdvancedMesureData>(
+        utils.DEFAULT_ADV_CONFIG
+    )
 
     const { t } = useTranslation()
 
@@ -608,6 +611,12 @@ function TheApp() {
                                             urlsList={urlsList}
                                             setUrlsList={setUrlsList}
                                             className="border-primary"
+                                            envVars={envVars}
+                                            setEnvVars={setEnvVars}
+                                            localAdvConfig={localAdvConfig}
+                                            setLocalAdvConfig={
+                                                setLocalAdvConfig
+                                            }
                                         />
                                     </TabsContent>
                                     <TabsContent value="json-mesure">

@@ -4,11 +4,30 @@ type IConstants = {
     scripts: { [key: string]: string }
     utils: {
         JSON_FILE_NAME: string
+        DEFAULT_ADV_CONFIG: IAdvancedMesureData
         DEFAULT_JSON_DATA: IJsonMesureData
         LOWER_NODE_VERSION: number
         DOWNLOAD_NODE_LINK: string
     }
 }
+
+const advConfig: IAdvancedMesureData = {
+    'extra-header': {
+        Cookie: 'monster=blue',
+        'x-men': 'wolverine',
+        Authorization: 'Basic c3BpZTpFaXBzRXJnb1N1bTQyJA==',
+    },
+    'audit-category': [
+        'performance',
+        'seo',
+        'accessibility',
+        'best-practices',
+        'lighthouse-plugin-ecoindex-core',
+    ],
+    output: ['html', 'json'],
+    'user-agent': 'random',
+}
+
 const constants: IConstants = {
     store: {
         APP_INSTALLED_ONCE: `app_installed_done_once`,
@@ -57,21 +76,9 @@ const constants: IConstants = {
         LOWER_NODE_VERSION: 20,
         DOWNLOAD_NODE_LINK: 'https://nodejs.org/en/download/',
         JSON_FILE_NAME: 'input-file.json',
+        DEFAULT_ADV_CONFIG: advConfig,
         DEFAULT_JSON_DATA: {
-            'extra-header': {
-                Cookie: 'monster=blue',
-                'x-men': 'wolverine',
-                Authorization: 'Basic c3BpZTpFaXBzRXJnb1N1bTQyJA==',
-            },
-            'audit-category': [
-                'performance',
-                'seo',
-                'accessibility',
-                'best-practices',
-                'lighthouse-plugin-ecoindex-core',
-            ],
-            output: ['html', 'json'],
-            'user-agent': 'random',
+            ...advConfig,
             'output-name': 'ecoindex',
             courses: [
                 {

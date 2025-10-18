@@ -246,5 +246,10 @@
         }
     },
     "Reset": "Effacer",
-    "Application version": "Version de l'application:"
+    "Application version": "Version de l'application:",
+    "simple-mesure": {
+        "urls": {
+            "title": "URLs"
+        }
+    }
 }
