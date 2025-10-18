@@ -1,5 +1,14 @@
 
 
+# [0.6.0](https://github.com/cnumr/EcoindexApp/compare/0.5.0...0.6.0) (2025-10-18)
+
+
+### Features
+
+* add advanced measurement configuration management and update translations for simple measurement ([083491e](https://github.com/cnumr/EcoindexApp/commit/083491e393dc836b199944c0d4341936feecea48))
+* enhance handleSimpleMesures to accept advanced configuration and environment variables for improved measurement handling ([6cc694a](https://github.com/cnumr/EcoindexApp/commit/6cc694a27a8e429601b165fb3acf03dbc37e9957))
+* integrate environment variable management in JsonPanMesure component ([88d6074](https://github.com/cnumr/EcoindexApp/commit/88d6074119a46e7b58b5e70740c6d3c9a37adb39))
+
 # [0.5.0](https://github.com/cnumr/EcoindexApp/compare/0.4.1...0.5.0) (2025-10-12)
 
 
