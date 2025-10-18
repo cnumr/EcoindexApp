@@ -31,8 +31,17 @@ contextBridge.exposeInMainWorld('electronAPI', {
     // @ts-ignore
     // Front → Main
     // simple handlers
-    handleSimpleMesures: (urlsList: ISimpleUrlInput[]) =>
-        ipcRenderer.invoke(channels.SIMPLE_MESURES, urlsList),
+    handleSimpleMesures: (
+        urlsList: ISimpleUrlInput[],
+        localAdvConfig: IAdvancedMesureData,
+        envVars: IKeyValue
+    ) =>
+        ipcRenderer.invoke(
+            channels.SIMPLE_MESURES,
+            urlsList,
+            localAdvConfig,
+            envVars
+        ),
     // json handlers
     handleJsonSaveAndCollect: (
         jsonDatas: IJsonMesureData,

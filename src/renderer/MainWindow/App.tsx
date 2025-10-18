@@ -193,7 +193,11 @@ function TheApp() {
             `${t('Url(s) Measure (Simple mode)')} started 🚀`
         )
         try {
-            await window.electronAPI.handleSimpleMesures(urlsList)
+            await window.electronAPI.handleSimpleMesures(
+                urlsList,
+                localAdvConfig,
+                envVars
+            )
             showHidePopinDuringProcess(true)
         } catch (error) {
             frontLog.error('Error on runSimpleMesures', error)

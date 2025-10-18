@@ -19,6 +19,7 @@ export interface ILayout {
     envVars: IKeyValue
     setEnvVars: (value: IKeyValue) => void
     isOpen?: boolean
+    statementVisible?: boolean
 }
 
 export const AdvConfiguration: FC<ILayout> = ({
@@ -28,6 +29,7 @@ export const AdvConfiguration: FC<ILayout> = ({
     envVars,
     setEnvVars,
     isOpen = false,
+    statementVisible = true,
 }) => {
     const { t } = useTranslation()
 
@@ -69,7 +71,7 @@ export const AdvConfiguration: FC<ILayout> = ({
         }
         setConfigurationDatas(_configurationDatas)
         setEnableStatement(!e)
-        setUpdated(true)
+        setUpdated && setUpdated(true)
     }
 
     /**
@@ -86,7 +88,7 @@ export const AdvConfiguration: FC<ILayout> = ({
                 'puppeteer-script': filePath,
             }
             setConfigurationDatas(_configurationDatas)
-            setUpdated(true)
+            setUpdated && setUpdated(true)
         }
     }
 
@@ -100,7 +102,7 @@ export const AdvConfiguration: FC<ILayout> = ({
         }
         delete _configurationDatas?.['puppeteer-script']
         setConfigurationDatas(_configurationDatas)
-        setUpdated(true)
+        setUpdated && setUpdated(true)
     }
 
     /**
@@ -197,7 +199,7 @@ export const AdvConfiguration: FC<ILayout> = ({
         }
 
         // frontLog.debug(`configurationDatas`, configurationDatas)
-        setUpdated(true)
+        setUpdated && setUpdated(true)
     }
 
     return (
@@ -221,7 +223,7 @@ export const AdvConfiguration: FC<ILayout> = ({
                                 ...configurationDatas,
                                 'extra-header': e,
                             })
-                            setUpdated(true)
+                            setUpdated && setUpdated(true)
                         }}
                     />
                 </div>
@@ -258,25 +260,32 @@ export const AdvConfiguration: FC<ILayout> = ({
                         />
                         <label htmlFor="json">JSON</label>
                     </div>
-                    <div>
-                        <Switch
-                            id="statement"
-                            name="output"
-                            disabled={enableStatement}
-                            checked={configurationDatas?.output.includes(
-                                'statement'
-                            )}
-                            onCheckedChange={(e) => {
-                                handlerOnChange(-1, e, 'statement', 'output')
-                            }}
-                        />
-                        <label htmlFor="statement">
-                            {t('Statement')}{' '}
-                            <em className="text-xs">
-                                {t('(JSON output mandatory)')}
-                            </em>
-                        </label>
-                    </div>
+                    {statementVisible && (
+                        <div>
+                            <Switch
+                                id="statement"
+                                name="output"
+                                disabled={enableStatement}
+                                checked={configurationDatas?.output.includes(
+                                    'statement'
+                                )}
+                                onCheckedChange={(e) => {
+                                    handlerOnChange(
+                                        -1,
+                                        e,
+                                        'statement',
+                                        'output'
+                                    )
+                                }}
+                            />
+                            <label htmlFor="statement">
+                                {t('Statement')}{' '}
+                                <em className="text-xs">
+                                    {t('(JSON output mandatory)')}
+                                </em>
+                            </label>
+                        </div>
+                    )}
                 </div>
             </fieldset>
             <fieldset>

@@ -24,7 +24,7 @@ const advConfig: IAdvancedMesureData = {
         'best-practices',
         'lighthouse-plugin-ecoindex-core',
     ],
-    output: ['html', 'json'],
+    output: ['html'],
     'user-agent': 'random',
 }
 

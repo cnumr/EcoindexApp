@@ -46,7 +46,11 @@ export interface IElectronAPI {
     // handleLighthouseEcoindexPluginUpdate: () => Promise<boolean>
     // isLighthousePluginEcoindexMustBeInstallOrUpdated: () => Promise<ResultMessage>
     handleIsPuppeteerBrowserInstalled: () => Promise<boolean | string>
-    handleSimpleMesures: (urlsList: ISimpleUrlInput[]) => Promise<string>
+    handleSimpleMesures: (
+        urlsList: ISimpleUrlInput[],
+        localAdvConfig: IAdvancedMesureData,
+        envVars: IKeyValue
+    ) => Promise<string>
     handleJsonSaveAndCollect: (
         json: IJsonMesureData,
         andCollect: boolean,

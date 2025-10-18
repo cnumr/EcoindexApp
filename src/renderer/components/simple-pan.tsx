@@ -50,6 +50,7 @@ export const SimplePanMesure: FC<ISimpleMesureLayout> = ({
             <CardContent>
                 <form id="simple-form">
                     <AdvConfiguration
+                        statementVisible={false}
                         configurationDatas={localAdvConfig}
                         setConfigurationDatas={(e: IAdvancedMesureData) => {
                             const _jsonDatas = {

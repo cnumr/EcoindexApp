@@ -310,12 +310,10 @@ async function _runDirectCollect(
         process.env.WORK_DIR = workDir
         // Définir les variables d'environnement demandés par l'utilisateur
         if (envVars) {
-            mainLog.debug(`LES ENVVARS de l'utilisateur`)
             try {
                 Object.entries(envVars).map((ev) => {
                     process.env[ev[0].toUpperCase()] = ev[1]
                 })
-                mainLog.debug(process.env)
             } catch (error) {
                 throw new Error(`EnvVars in error`)
             }
@@ -339,12 +337,6 @@ async function _runDirectCollect(
                           process.platform === 'win32' ? 'lib' : 'lib.asar',
                           'courses_index.mjs'
                       )
-            // pathToScript = path.join(__dirname, '..', 'scripts', 'courses_index.mjs')
-            // pathToScript = process.env['WEBPACK_SERVE'] === 'true'
-            //         ? path.join(__dirname, '..', 'scripts', 'courses_index.mjs')
-            //         : path.join(
-            //             'app.asar', 'scripts', 'courses_index.mjs'
-            //           )
             const child = utilityProcess.fork(pathToScript, ['test'], {
                 stdio: ['ignore', 'pipe', 'pipe'],
             })
@@ -484,7 +476,9 @@ async function _runDirectCollect(
  */
 export const handleSimpleCollect = async (
     event: IpcMainEvent,
-    urlsList: ISimpleUrlInput[]
+    urlsList: ISimpleUrlInput[],
+    localAdvConfig: IAdvancedMesureData,
+    envVars: IKeyValue
 ) => {
     const mainLog = getMainLog().scope('main/handleSimpleCollect')
     if (!urlsList || urlsList.length === 0) {
@@ -496,9 +490,13 @@ export const handleSimpleCollect = async (
     })
 
     // prepare common collect
-    const collectDatas = _prepareDatas(`simple`, [`html`], urlsList)
-    const { command, nodeDir, workDir: _workDir } = await _prepareCollect()
+    const collectDatas = _prepareDatas(
+        `simple`,
+        localAdvConfig.output as ('statement' | 'json' | 'html')[],
+        urlsList
+    )
 
+    const { command, nodeDir, workDir: _workDir } = await _prepareCollect()
     _debugLogs('Simple measure start, process intialization...')
     _debugLogs(`Urls list: ${JSON.stringify(urlsList)}`)
     try {
@@ -508,10 +506,33 @@ export const handleSimpleCollect = async (
                 command.push(url.value)
             }
         })
-        command.push('-o')
-        command.push('html')
+        collectDatas.command['output'] = localAdvConfig.output as (
+            | 'statement'
+            | 'json'
+            | 'html'
+        )[]
+        collectDatas.command['audit-category'] = localAdvConfig[
+            'audit-category'
+        ] as (
+            | 'accessibility'
+            | 'best-practices'
+            | 'performance'
+            | 'seo'
+            | 'lighthouse-plugin-ecoindex-core'
+        )[]
+        collectDatas.command['extra-header'] = JSON.stringify(
+            localAdvConfig['extra-header']
+        ) as unknown as {
+            [key: string]: string
+        }
+        collectDatas.command['user-agent'] = localAdvConfig['user-agent']
+        if (localAdvConfig['puppeteer-script']) {
+            collectDatas.command['puppeteer-script'] =
+                localAdvConfig['puppeteer-script']
+        }
         command.push('--output-path')
         command.push(`${_workDir}`)
+
         // Fake mesure and path. TODO: use specified path and urls
         showNotification({
             subtitle: i18n.t(' 🚀Simple collect'),
@@ -519,13 +540,18 @@ export const handleSimpleCollect = async (
         })
         try {
             if (isDev()) {
-                // mainLog.debug(`before (simple) runCollect`, nodeDir, command)
                 const [script, ...args] = command
-                mainLog.debug(`before (simple) runCollect`, script, args)
-                // mainLog.debug(`before (simple) runCollect`, collectDatas)
+                mainLog.debug(
+                    `before (simple) runCollect(script, args)`,
+                    script,
+                    args
+                )
+                mainLog.debug(
+                    `before (simple) runCollect(collectDatas)`,
+                    collectDatas
+                )
             }
-            // await _runCollect(command, nodeDir, event, true)
-            await _runDirectCollect(collectDatas, event, true)
+            await _runDirectCollect(collectDatas, event, true, envVars)
         } catch (error) {
             showNotification({
                 subtitle: i18n.t('🚫 Simple collect'),
