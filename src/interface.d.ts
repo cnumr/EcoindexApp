@@ -37,6 +37,7 @@ export interface IElectronAPI {
     getInitialTranslations: () => Promise<object>
     handleSetFolderOuput: () => Promise<string>
     handleSelectFolder: () => Promise<string>
+    handleSelectPuppeteerFilePath: () => Promise<string>
     getWorkDir: (newDir: string) => Promise<string>
     getHomeDir: () => Promise<string>
     isNodeInstalled: () => Promise<boolean>
@@ -45,10 +46,15 @@ export interface IElectronAPI {
     // handleLighthouseEcoindexPluginUpdate: () => Promise<boolean>
     // isLighthousePluginEcoindexMustBeInstallOrUpdated: () => Promise<ResultMessage>
     handleIsPuppeteerBrowserInstalled: () => Promise<boolean | string>
-    handleSimpleMesures: (urlsList: ISimpleUrlInput[]) => Promise<string>
+    handleSimpleMesures: (
+        urlsList: ISimpleUrlInput[],
+        localAdvConfig: IAdvancedMesureData,
+        envVars: IKeyValue
+    ) => Promise<string>
     handleJsonSaveAndCollect: (
         json: IJsonMesureData,
-        andCollect: boolean
+        andCollect: boolean,
+        envVars: IKeyValue
     ) => Promise<string>
     handleJsonReadAndReload: () => Promise<IJsonMesureData>
     handleIsJsonConfigFileExist: (workDir: string) => Promise<boolean>
@@ -64,7 +70,7 @@ export interface IInitalization {
 }
 
 declare global {
-    export interface IJsonMesureData {
+    export interface IAdvancedMesureData {
         'extra-header': object | null
         output: string[]
         'puppeteer-script'?: string
@@ -72,7 +78,12 @@ declare global {
         'output-path'?: string
         'user-agent'?: string
         'output-name'?: string
+    }
+    export interface IJsonMesureData extends IAdvancedMesureData {
         courses: ICourse[]
+    }
+    export interface ISimpleMesureData extends IAdvancedMesureData {
+        value: string
     }
     export interface ICourse {
         name: string

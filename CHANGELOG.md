@@ -1,5 +1,34 @@
 
 
+# [0.6.0](https://github.com/cnumr/EcoindexApp/compare/0.5.0...0.6.0) (2025-10-18)
+
+
+### Features
+
+* add advanced measurement configuration management and update translations for simple measurement ([083491e](https://github.com/cnumr/EcoindexApp/commit/083491e393dc836b199944c0d4341936feecea48))
+* enhance handleSimpleMesures to accept advanced configuration and environment variables for improved measurement handling ([6cc694a](https://github.com/cnumr/EcoindexApp/commit/6cc694a27a8e429601b165fb3acf03dbc37e9957))
+* integrate environment variable management in JsonPanMesure component ([88d6074](https://github.com/cnumr/EcoindexApp/commit/88d6074119a46e7b58b5e70740c6d3c9a37adb39))
+
+# [0.5.0](https://github.com/cnumr/EcoindexApp/compare/0.4.1...0.5.0) (2025-10-12)
+
+
+### Bug Fixes
+
+* correct return statement in _runDirectCollect function to ensure proper promise resolution ([c6b5d56](https://github.com/cnumr/EcoindexApp/commit/c6b5d564ef7dff03505a088a68e44ed14674f89d))
+* error in merge ([c084e28](https://github.com/cnumr/EcoindexApp/commit/c084e283dab94a83ce948d6bb289d6eae227519e))
+* remove duplicate "Reset" translation entries in English and French locale files ([6be9718](https://github.com/cnumr/EcoindexApp/commit/6be9718da9fec995b8e3a5a06c5b87db3fcf8632))
+* restore "Application version" translation entry in English and French locale files ([ae0bba2](https://github.com/cnumr/EcoindexApp/commit/ae0bba2d7334dd00fd47fb2cb2800cea11cbd5ec))
+
+
+### Features
+
+* ajout de la gestion du fichier de scénario Puppeteer dans la configuration avancée, incluant des traductions et des mises à jour de l'interface ([7e14289](https://github.com/cnumr/EcoindexApp/commit/7e14289883e5a23c56f0132ae49570feb96844e0))
+* ajouter la gestion d'un script puppeteer inclue dans `lighthouse-plugin-ecoindex` ^6.01 [#20](https://github.com/cnumr/EcoindexApp/issues/20) ([4b29530](https://github.com/cnumr/EcoindexApp/commit/4b2953053141fcdeba3f1d2562e124d66fe2439d))
+* ajouter la gestion de variables d'environnement passées au process de mesure [#22](https://github.com/cnumr/EcoindexApp/issues/22) ([33343ca](https://github.com/cnumr/EcoindexApp/commit/33343caa62d498fed988faafacdd719e6b05041f))
+* enhance button functionality in AdvConfiguration and KeyValue components with delete icon and translation support ([38fcf28](https://github.com/cnumr/EcoindexApp/commit/38fcf280d51c02132f1ad52174018d1fb721fd09))
+* mise à jour des traductions et ajout de liens dans le pied de page pour la version de l'application et du plugin Ecoindex ([9d5fdc4](https://github.com/cnumr/EcoindexApp/commit/9d5fdc4f86032037d77f16fdedf63ea81aa40745))
+* préparation à l'ajout de la Configuration avancée au mode simple en externalisant les élements de fromulaire sur `output`, `extra-header` et `audit-category` ([f0589e3](https://github.com/cnumr/EcoindexApp/commit/f0589e3f1c5da3df5878b6255f871d4911ef2d13))
+
 ## [0.4.1](https://github.com/cnumr/EcoindexApp/compare/0.4.0...0.4.1) (2025-10-04)
 
 

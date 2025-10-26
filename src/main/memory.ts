@@ -13,6 +13,7 @@ let nodeVersion = ''
 let mainWindow: BrowserWindow = null
 let welcomeWindow: BrowserWindow = null
 let showedWelcome = false
+let envVars: IKeyValue = {}
 
 export const getWorkDir = () => {
     const lastWorkDir = store.get(`lastWorkDir`)
@@ -35,6 +36,12 @@ export const setNodeDir = (value: string) => {
     nodeDir = value
 }
 
+export const getEnvVars = () => {
+    return envVars
+}
+export const setEnvVars = (value: IKeyValue) => {
+    envVars = value
+}
 export const getNpmDir = () => {
     return npmDir
 }
