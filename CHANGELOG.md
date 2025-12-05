@@ -1,5 +1,7 @@
 
 
+## [0.6.1](https://github.com/cnumr/EcoindexApp/compare/0.6.0...0.6.1) (2025-12-05)
+
 # [0.6.0](https://github.com/cnumr/EcoindexApp/compare/0.5.0...0.6.0) (2025-10-18)
 
 
