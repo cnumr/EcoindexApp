@@ -1,0 +1,17 @@
+{
+    "name": "lib",
+    "version": "1.0.0",
+    "description": "",
+    "type": "module",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "lighthouse": "13.0.1",
+        "lighthouse-plugin-ecoindex-core": "6.0.6",
+        "lighthouse-plugin-ecoindex-courses": "6.0.6"
+    }
+}

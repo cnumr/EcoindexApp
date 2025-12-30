@@ -1,0 +1,70 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Get the project root directory (parent of .husky)
+PROJECT_ROOT="$(cd "$(dirname -- "$0")/.." && pwd)"
+
+# Function to find and add Node.js to PATH
+find_node_path() {
+    # Method 1: Try to get node path from command (if available in current shell)
+    if command -v node >/dev/null 2>&1; then
+        NODE_PATH=$(command -v node | xargs dirname 2>/dev/null)
+        if [ -n "$NODE_PATH" ] && [ -x "$NODE_PATH/node" ]; then
+            export PATH="$NODE_PATH:$PATH"
+            return 0
+        fi
+    fi
+    
+    # Method 2: Try common Node.js installation paths
+    for POSSIBLE_PATH in \
+        "/opt/homebrew/opt/nvm/versions/node"/*/bin \
+        "$HOME/.nvm/versions/node"/*/bin \
+        "/opt/homebrew/bin" \
+        "/usr/local/bin" \
+        "$HOME/.local/bin"; do
+        if [ -d "$POSSIBLE_PATH" ] && [ -x "$POSSIBLE_PATH/node" ]; then
+            export PATH="$POSSIBLE_PATH:$PATH"
+            return 0
+        fi
+    done
+    
+    # Method 3: Try to find node via npm (if npm is available)
+    if command -v npm >/dev/null 2>&1; then
+        NPM_PATH=$(command -v npm | xargs dirname 2>/dev/null)
+        if [ -n "$NPM_PATH" ] && [ -x "$NPM_PATH/node" ]; then
+            export PATH="$NPM_PATH:$PATH"
+            return 0
+        fi
+    fi
+    
+    return 1
+}
+
+# Add node_modules/.bin to PATH (this is where npx should be via npm)
+export PATH="$PROJECT_ROOT/node_modules/.bin:$PATH"
+
+# Ensure node is in PATH (required for lint-staged to work)
+if ! command -v node >/dev/null 2>&1; then
+    find_node_path
+fi
+
+# Verify node is available
+if ! command -v node >/dev/null 2>&1; then
+    echo "Error: node not found in PATH. Please ensure Node.js is installed." >&2
+    echo "PATH=$PATH" >&2
+    exit 1
+fi
+
+# Execute lint-staged
+if command -v npx >/dev/null 2>&1; then
+    npx lint-staged
+else
+    # Fallback: use direct path to lint-staged
+    LINT_STAGED="$PROJECT_ROOT/node_modules/.bin/lint-staged"
+    if [ -x "$LINT_STAGED" ]; then
+        "$LINT_STAGED"
+    else
+        echo "Error: lint-staged not found. Please run 'npm install'." >&2
+        exit 1
+    fi
+fi

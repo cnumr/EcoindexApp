@@ -1,0 +1,258 @@
+{
+  "app": {
+    "count": "Le compteur est à {{count}}",
+    "description": "Une application pour mesurer l'impact écologique d'un site web avec LightHouse et Ecoindex.",
+    "reset": "Réinitialiser",
+    "title": "EcoindexApp",
+    "welcome": "Bienvenue dans EcoindexApp ! Ceci est une application exemple construite avec Electron, React, Tailwind et Shadcn."
+  },
+  "language": {
+    "change": "Changer la langue",
+    "english": "Anglais",
+    "french": "Français",
+    "label": "Langue",
+    "view": "Affichage"
+  },
+  "initialization": {
+    "title": "Démarrage de l'application",
+    "started": "Vérifications...",
+    "windows": {
+      "unpacking": "Extraction des fichiers (cela peut prendre quelques secondes et faire freezé l'application)..."
+    },
+    "dir": {
+      "home": "Recherche du dossier utilisateur...",
+      "work": "Recherche du dossier de travail..."
+    },
+    "browser-puppeteer": {
+      "isInstalled": "Vérification si le navigateur interne est déjà installé...",
+      "installation": "Installation du navigateur interne",
+      "verification": "Vérification de la bonne installation du navigateur interne...",
+      "error": "L'installation du navigateur à retourné une erreur. L'application ne peut pas démarrer 🚫"
+    },
+    "finished": "Installation terminée avec succès 🎉",
+    "title-error": "L'installation est en erreur !",
+    "node": {
+      "check": "Vérification de la présence de NodeJS sur l'ordinateur",
+      "version": "Vérification de la version de NodeJS présente sur l'ordinateur",
+      "install": {
+        "Label": "Lien de téléchargement"
+      },
+      "error": {
+        "notinstalled": "NodeJS n'est pas installé sur votre ordinateur !",
+        "wrongversion": "Votre version de NodeJS est obsolète"
+      }
+    },
+    "fatal": {
+      "error": "🚫 Erreur fatale !"
+    }
+  },
+  "menu": {
+    "about": "À propos de",
+    "hideApp": "Masquer l'application",
+    "hideOthers": "Masquer les autres applications",
+    "showAll": "Afficher tout",
+    "quit": "Quitter",
+    "file": "&Fichier",
+    "edit": "Éditer",
+    "undo": "Annuler",
+    "redo": "Refaire",
+    "cut": "Couper",
+    "copy": "Copier",
+    "paste": "Coller",
+    "pasteAndMatchStyle": "Coller et adapter le style",
+    "delete": "Supprimer",
+    "selectAll": "Tout sélectionner",
+    "speech": "Parole",
+    "startSpeaking": "Commencer à parler",
+    "stopSpeaking": "Arrêter de parler",
+    "view": "Affichage",
+    "reload": "Recharger",
+    "forceReload": "Forcer le rechargement",
+    "fullScreen": "Plein écran",
+    "minimize": "Réduire",
+    "toggleDeveloperTools": "Basculer les outils de développement",
+    "language": "Langue",
+    "help": "Aide",
+    "learnMoreAbout": "En apprendre plus sur",
+    "log": "Journal...",
+    "openSplashWindow": "Ouvrir la fenêtre d'accueil..."
+  },
+  "update": {
+    "newVersionAvailable": "Une nouvelle version d'EcoindexApp est disponible !",
+    "downloadingInBackground": "La nouvelle version est en cours de téléchargement en arrière-plan. Une fois téléchargée, vous serez notifié.",
+    "upToDate": "Vous êtes à jour !",
+    "currentVersionIsNewest": "EcoindexApp {{version}} est actuellement la version la plus récente disponible.",
+    "applicationUpdate": "Mise à jour de l'application",
+    "restartToApply": "Une nouvelle version a été téléchargée. Redémarrez l'application pour appliquer les mises à jour.",
+    "restart": "Redémarrer",
+    "later": "Plus tard",
+    "linuxNewVersionAvailable": "Une nouvelle version de l'application est disponible ({{version}}), voulez-vous la télécharger ?"
+  },
+  "Dark mode switch": "Dark mode selecteur",
+  "splash": {
+    "hello": "EcoindexApp"
+  },
+  "Do not show this window again.": "Ne plus afficher cette fenêtre.",
+  "Don't worry, you can always open it from the Help menu.": "Ne vous inquiétez pas, vous pouvez toujours l'ouvrir depuis le menu Aide.",
+  "Close this window": "Fermer cette fenêtre",
+  "Close": "Fermer",
+  "Version of the application": "Version de l'application",
+  "Open splash window...": "Ouvrir la fenêtre d'accueil...",
+  "1. Select ouput folder": "1. Sélectionner le dossier de génération",
+  "2. Configuration of the courses": "2. Configuration des parcours",
+  "2. Urls to measure": "2. URLs à mesurer",
+  "3. Launch the measures": "3. Lancer la mesure",
+  "Specify where to execute the measures.": "Indiquer où exécuter les mesures.",
+  "Choose the type of measure you want to do.": "Choisissez le type de mesure(s) que vous voulez réaliser",
+  "Browse": "Parcourir",
+  "Url(s) Measure (Simple mode)": "Mesure d'URLs (mode simple)",
+  "Courses Measure (Full mode)": "Mesure de parcours (mode complet)",
+  "Do you really want to launch a simple measure?": "Voulez-vous vraiment lancer une mesure simple ?",
+  "A complex measure configuration file has been detected in the selected folder, it seems that a complex measure is more appropriate.": "Un fichier de configuration de mesure complexe a été détecté dans le dossier sélectionné, il semble qu'une mesure de parcours (complexe) soit plus adaptée.",
+  "Cancel": "Annuler",
+  "Continue": "Continuer",
+  "Courses Measure (Simple mode)": "Mesure de parcours (mode simple)",
+  "Error on runSimpleMesures": "Erreur lors de l'exécution des mesures simples",
+  "Error on runJsonSaveAndCollect": "Erreur lors de l'exécution des mesures de parcours",
+  "🚫 Courses Measure (Full mode)": "🚫 Mesure de parcours (mode complet)",
+  "Are you shure to want create report(s) in your default folder?": "Êtes-vous sûr de vouloir créer le(s) rapport(s) dans votre dossier par défaut ?",
+  "Reload if too long": "...Recharger",
+  "Application version:": "Version de l'application:",
+  "Plugin version:": "Version du moteur de mesure Écoindex (lighthouse-plugin-ecoindex):",
+  "Internal Electron informations: Chrome": "Informations de l'application: Chrome",
+  "and": "et",
+  "Desktop": "application",
+  "footer": {
+    "visite-website": {
+      "app": "Aller consulter le site de l'application",
+      "plugin": "Aller consulter le site du plugin lighthouse-plugin-ecoindex"
+    }
+  },
+  "footerCopyright": "© {{ currentYear }} - Fabriqué avec ❤️ et 🌱 by ",
+  "Show informations": "Afficher les informations",
+  "Console": "Console",
+  "Copy application informations to clipboard.": "Copier les informations de l'application dans le Presse papier",
+  "Copy datas": "Copier les données",
+  "Configuration datas": "Informations de configuration",
+  "First launch": "Premier lancement",
+  "Error on Node": "Erreur avec Node",
+  "Error on Node Version": "Erreur de version de Node",
+  "Permissions Error": "Erreur de permission",
+  "Report error": "Rapport d'erreur",
+  "Install": "Installer",
+  "Retry": "Relancer",
+  "Upgrade": "Mettre à jour",
+  "Report": "Rapport",
+  "Urls to mesure": "Urls à mesurer",
+  "Enter an url": "Entrer une URL",
+  "delete": "supprimer",
+  "add": "ajouter",
+  "Add an URL": "Ajouter une URL",
+  "Error adding a new input field": "Erreur lors de l'ajout d'un nouvel élément",
+  "Error removing an input field": "Erreur lors de la suppression d'un élément",
+  "Error updating the value of an input field": "Erreur lors de la mise à jour d'un élément",
+  "Course added": "Parcours ajouté",
+  "Courses Measure (Full mode)": "Mesure de parcours (mode complet)",
+  "You must set 1 best-page on courses.": "Vous devez sélectionner 1 parcours de Meilleurs pages.",
+  "You must set only 1 best-page on courses.": "Vous devez sélectionner seulement 1 parcours de Meilleurs pages.",
+  "Reload the configuration": "Recharger la configuration",
+  "reload": "recharger",
+  "Reload": "Recharger",
+  "Save the configuration": "Sauvegarder la configuration",
+  "save": "sauvegarder",
+  "Save": "Enregistrer",
+  "Courses": "Parcours",
+  "Course": "Parcours",
+  "Delete this course": "Supprimer ce parcours",
+  "Delete course": "Supprimer le parcours",
+  "Course name": "Nom du parcours",
+  "Target": "Objectif",
+  "Description": "Description",
+  "Is best pages?": "Parcours des Meilleurs pages ?",
+  "Add a course": "Ajouter un parcours",
+  "Generates reports files in seleted dir.": "Génération des rapports dans le dossier sélectionné.",
+  "Launch the measures": "Lancer les mesures",
+  "Measures": "Mesures",
+  "Simples measures with HTML output.": "Mesures simples avec sortie HTML.",
+  "simple-mesure": {
+    "urls": {
+      "title": "URLs"
+    }
+  },
+  "Generates Html reports in seleted dir.": "Génération des rapports HTML dans le dossier sélectionné.",
+  "Launch the measures": "Lancer les mesures",
+  "Measures": "Mesures",
+  "Extra header": "Extra Header",
+  "Header to add cookies, Authentication...": "Header pour ajouter des Cookies, Authentification...",
+  "Choose the reports you want to generate": "Choisissez les rapports que vous souhaitez générer",
+  "Statement": "Déclaration",
+  "(JSON output mandatory)": "(génération en JSON est obligatoire)",
+  "common": {
+    "audit": {
+      "audit-category": {
+        "title": "Choisissez les audits que vous souhaitez réaliser",
+        "seo": "SEO",
+        "performance": "Performance",
+        "accessibility": "Accessibilité",
+        "best-practices": "Bonnes pratiques",
+        "lighthouse-plugin-ecoindex-core": "Écoindex Core",
+        "ecoindex-core": {
+          "mandatory": "(obligatoire)"
+        }
+      }
+    }
+  },
+  "advConfiguration": {
+    "title": "Configuration avancée",
+    "title-title": "Cliquez pour ouvrir ou fermer la Configuration avancée",
+    "puppeteer": {
+      "title": "Utilisez un fichier de scénario Puppeteer custom",
+      "description": "À renseigner si vous devez utiliser un scénarion spécififique, comme une authentification forte. Utiliser des fichies de types *.js, *.ts, *.mjs ou *.cjs (*.mjs est recommandé).",
+      "help-link": "Vous trouverez plus d'information à ce sujet sur l'aide https://lighthouse-ecoindex.greenit.eco/guides/9-adv-conf/#utilisation-dun-fichier-de-script-puppeteer-custom",
+      "input": {
+        "aria": "Fichier de scénario Puppetter"
+      }
+    },
+    "envvar": {
+      "title": "Variables d'environnement",
+      "description": "Variables d'environnement à passer au script de mesures (pour un identifiant/password à utiliser avec le script Puppeteer custom, par exemple). Elles ne seront pas sauvegardées !"
+    }
+  },
+  "Enter a key": "Entrer une clé",
+  "Enter a value": "Entrer une valeur",
+  "key-value": {
+    "add": {
+      "to": "Ajouter un élément à"
+    }
+  },
+  "loading file content...": "Chargement du contenu du fichier...",
+  "Config file founded 👀": "Fichier de configuration trouvé 👀",
+  "🔄 JSON reload": "🔄 Rechargement JSON",
+  "Json file read and reloaded.": "Fichier JSON lu et rechargé.",
+  "🚫 JSON reload": "🚫 Erreur de rechargement JSON",
+  "Json file not read and reloaded. {{error}}": "Le fichier JSON n'a pas pu être lu et rechargé. {{error}}",
+  "🧩 Simple collect": "🧩 Collecte simple",
+  "Process intialization.": "Initialisation du processus.",
+  " 🚀Simple collect": " 🚀 Collecte simple",
+  "Collect started...": "Collecte démarrée...",
+  "🚫 Simple collect": "🚫 Collecte simple",
+  "🎉 Simple collect": "🎉 Collecte simple",
+  "🧩 JSON save and collect": "🧩 Sauvegarde et collecte JSON",
+  "🧩 JSON save": "🧩 Sauvegarde JSON",
+  "🚀 JSON save and collect": "🚀 Sauvegarde et collecte JSON",
+  "🚀 JSON save": "🚀 Sauvegarde JSON",
+  "Json save and collect started...": "Sauvegarde et collecte JSON démarrées...",
+  "Json save started...": "Sauvegarde JSON démarrée...",
+  "🚫 JSON save and collect": "🚫 Sauvegarde et collecte JSON",
+  "Json file not saved.": "Le fichier JSON n'a pas été sauvegardé.",
+  "💾 JSON save": "💾 Sauvegarde JSON",
+  "Json file saved.": "Fichier JSON sauvegardé.",
+  "🎉 JSON collect": "🎉 Collecte JSON",
+  "🚫 JSON save": "🚫 Sauvegarde JSON",
+  "Json file not saved or collect.": "Le fichier JSON n'a pas été sauvegardé ou la collecte n'a pas été effectuée.",
+  "Notification body": "Corps de la notification",
+  "Notification subtitle": "Sous-titre de la notification",
+  "Collect KO, {{error}}\n": "Collecte échouée, {{error}}\n",
+  "Collect done, you can consult reports in\n{{_workDir}}": "Collecte terminée, vous pouvez consulter les rapports dans\n{{_workDir}}",
+  "Measures done, you can consult reports in\n{{_workDir}}": "Mesures terminées, vous pouvez consulter les rapports dans\n{{_workDir}}"
+}

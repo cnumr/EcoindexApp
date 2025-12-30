@@ -1,0 +1,28 @@
+# Dependencies
+node_modules
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist
+dist-electron
+out
+.vite
+*.dmg
+*.zip
+*.deb
+*.rpm
+*.AppImage
+
+# Generated files
+*.log
+.DS_Store
+*.local
+
+# ASAR files
+*.asar
+
+# changeset
+.changeset/*.md
+

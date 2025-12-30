@@ -1,0 +1,60 @@
+# Apple
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+.DocumentRevisions-V100
+.DocumentVersions
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-electron
+.vite
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Electron
+out
+*.dmg
+*.zip
+*.deb
+*.rpm
+*.AppImage
+
+# Changeset
+# Les changesets doivent être commités pour que le workflow fonctionne
+# On ignore seulement les fichiers temporaires ou de travail si nécessaire
+# .changeset/*.md
+!.changeset/config.json
+
+# Environment variables
+.env
+!.env.example
+
+# Extra resources
+!lib
+src/extraResources/lib.asar
