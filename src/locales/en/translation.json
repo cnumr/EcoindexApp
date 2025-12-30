@@ -16,6 +16,7 @@
     "Add an URL": "Add an URL",
     "Application Update": "Application Update",
     "Application succefully loaded.\nWelcome 👋": "Application successfully loaded.\nWelcome 👋",
+    "Application version:": "Application version:",
     "Are you shure to want create report(s) in your default folder?": "Are you shure to want create report(s) in your default folder?",
     "Are you shure to want create report(s) in your default folder?\n\rDestination: {{homeDir}}": "Are you shure to want create report(s) in your default folder?\n\rDestination: {{homeDir}}",
     "Browse": "Browse",
@@ -101,6 +102,7 @@
     "Paste": "Paste",
     "Paste and match style": "Paste and match style",
     "Permissions Error": "Permissions Error",
+    "Plugin version:": "Version of the Ecoindex measurement engine (lighthouse-plugin-ecoindex):",
     "Process intialization.": "Process intialization.",
     "Quit": "Quit",
     "Redo": "Redo",
@@ -109,6 +111,7 @@
     "Reload the configuration": "Reload the configuration",
     "Report": "Report",
     "Report error": "Report error",
+    "Reset": "Reset",
     "Retry": "Retry",
     "Save": "Save",
     "Save the configuration": "Save the configuration",
@@ -141,16 +144,136 @@
     "Your Node installation is outdated, you must upgrade it to 20 or upper, upgrade it (you must be admin of your computer)! After upgrade, restart application.": "Your Node installation is outdated, you must upgrade it to 20 or upper, upgrade it (you must be admin of your computer)! After upgrade, restart application.",
     "You’re up-to-date!": "You’re up-to-date!",
     "add": "add",
+    "advConfiguration": {
+        "envvar": {
+            "description": "Environment variables to pass to the measurements script (for an identifier/password to use with the Puppeteer custom script, for example). \nThey will not be saved!",
+            "title": "Environment variables"
+        },
+        "puppeteer": {
+            "description": "Please fill in if you need to use a specific scenario, such as strong authentication. \nUse *.js, *.ts, *.mjs or *.cjs files (*.mjs is recommended).",
+            "help-link": "You will find more information on this subject in the help https://lighthouse-ecoindex.greenit.eco/guides/9-adv-conf/#utilisation-dun-fichier-de-script-puppeteer-custom",
+            "input": {
+                "aria": "Puppetter scenario file"
+            },
+            "title": "Use a custom Puppeteer scenario file"
+        },
+        "title": "Advanced configuration",
+        "title-title": "Click to open or close Advanced Setup"
+    },
+    "advConfiguration.envvar.description": "advConfiguration.envvar.description",
+    "advConfiguration.envvar.title": "advConfiguration.envvar.title",
+    "advConfiguration.puppeteer.description": "advConfiguration.puppeteer.description",
+    "advConfiguration.puppeteer.help-link": "advConfiguration.puppeteer.help-link",
+    "advConfiguration.puppeteer.input.aria": "advConfiguration.puppeteer.input.aria",
+    "advConfiguration.puppeteer.title": "advConfiguration.puppeteer.title",
+    "advConfiguration.title": "advConfiguration.title",
+    "advConfiguration.title-title": "advConfiguration.title-title",
     "and": "and",
+    "common": {
+        "audit": {
+            "audit-category": {
+                "accessibility": "Accessibility",
+                "best-practices": "Best practices",
+                "ecoindex-core": {
+                    "mandatory": "(mandatory)"
+                },
+                "lighthouse-plugin-ecoindex-core": "Ecoindex",
+                "performance": "Performance",
+                "seo": "SEO",
+                "title": "Choose the audits you want to make"
+            }
+        }
+    },
+    "common.audit.audit-category.accessibility": "common.audit.audit-category.accessibility",
+    "common.audit.audit-category.best-practices": "common.audit.audit-category.best-practices",
+    "common.audit.audit-category.ecoindex-core.mandatory": "common.audit.audit-category.ecoindex-core.mandatory",
+    "common.audit.audit-category.lighthouse-plugin-ecoindex-core": "common.audit.audit-category.lighthouse-plugin-ecoindex-core",
+    "common.audit.audit-category.performance": "common.audit.audit-category.performance",
+    "common.audit.audit-category.seo": "common.audit.audit-category.seo",
+    "common.audit.audit-category.title": "common.audit.audit-category.title",
     "delete": "delete",
     "en": "en",
+    "footer": {
+        "visite-website": {
+            "app": "Go consult the application website",
+            "plugin": "Go consult the Lighthouse-Plugin-Ecoindex plugin site"
+        }
+    },
+    "footer.visite-website.app": "footer.visite-website.app",
+    "footer.visite-website.plugin": "footer.visite-website.plugin",
     "footerCopyright": "© {{ currentYear }} - Made with ❤️ and 🌱 by ",
     "fr": "fr",
+    "initialization": {
+        "browser-puppeteer": {
+            "error": "The installation of the browser has returned an error. \nThe application cannot start 🚫",
+            "installation": "Installation of the internal browser",
+            "isInstalled": "Check if the internal browser is already installed ...",
+            "verification": "Check the right installation of the internal browser ..."
+        },
+        "dir": {
+            "home": "Search for the user folder ...",
+            "work": "Search for the work folder ..."
+        },
+        "fatal": {
+            "error": "🚫 fatal error!"
+        },
+        "finished": "Installation successfully completed 🎉",
+        "node": {
+            "check": "Verification of the presence of nodejs on the computer",
+            "error": {
+                "notinstalled": "NodeJS is not installed on your computer!",
+                "wrongversion": "Your version of Nodejs is obsolete"
+            },
+            "install": {
+                "Label": "Download link"
+            },
+            "version": "Checking the Nodejs version on the computer"
+        },
+        "started": "Checks ...",
+        "title": "Application start",
+        "title-error": "The installation is in error!",
+        "windows": {
+            "unpacking": "Extraction of files (this can take a few seconds and do freeze the application) ..."
+        }
+    },
+    "initialization.browser-puppeteer.error": "initialization.browser-puppeteer.error",
+    "initialization.browser-puppeteer.installation": "initialization.browser-puppeteer.installation",
+    "initialization.browser-puppeteer.isInstalled": "initialization.browser-puppeteer.isInstalled",
+    "initialization.browser-puppeteer.verification": "initialization.browser-puppeteer.verification",
+    "initialization.dir.home": "initialization.dir.home",
+    "initialization.dir.work": "initialization.dir.work",
+    "initialization.fatal.error": "initialization.fatal.error",
+    "initialization.finished": "initialization.finished",
+    "initialization.node.check": "initialization.node.check",
+    "initialization.node.error.notinstalled": "initialization.node.error.notinstalled",
+    "initialization.node.error.wrongversion": "initialization.node.error.wrongversion",
+    "initialization.node.install.Label": "initialization.node.install.Label",
+    "initialization.node.version": "initialization.node.version",
+    "initialization.started": "initialization.started",
+    "initialization.title": "initialization.title",
+    "initialization.title-error": "initialization.title-error",
+    "initialization.windows.unpacking": "initialization.windows.unpacking",
     "key": "",
+    "key-value": {
+        "add": {
+            "to": "Add an item to"
+        }
+    },
+    "key-value.add.to": "key-value.add.to",
     "loading file content...": "loading file content...",
     "loading...": "loading...",
     "reload": "reload",
     "save": "save",
+    "simple-mesure": {
+        "urls": {
+            "title": "URLs"
+        }
+    },
+    "simple-mesure.urls.title": "simple-mesure.urls.title",
+    "splash": {
+        "hello": "EcondexApp"
+    },
+    "splash.hello": "splash.hello",
     "🎉 JSON collect": "🎉 JSON collect",
     "🎉 Simple collect": "🎉 Simple collect",
     "💾 JSON save": "💾 JSON save",
@@ -165,91 +288,5 @@
     "🧩 JSON reload": "🧩 JSON reload",
     "🧩 JSON save": "🧩 JSON save",
     "🧩 JSON save and collect": "🧩 JSON save and collect",
-    "🧩 Simple collect": "🧩 Simple collect",
-    "initialization": {
-        "title": "Application start",
-        "title-error": "The installation is in error!",
-        "browser-puppeteer": {
-            "error": "The installation of the browser has returned an error. \nThe application cannot start 🚫",
-            "verification": "Check the right installation of the internal browser ...",
-            "installation": "Installation of the internal browser",
-            "isInstalled": "Check if the internal browser is already installed ..."
-        },
-        "finished": "Installation successfully completed 🎉",
-        "dir": {
-            "work": "Search for the work folder ...",
-            "home": "Search for the user folder ..."
-        },
-        "windows": {
-            "unpacking": "Extraction of files (this can take a few seconds and do freeze the application) ..."
-        },
-        "started": "Checks ...",
-        "node": {
-            "check": "Verification of the presence of nodejs on the computer",
-            "version": "Checking the Nodejs version on the computer",
-            "install": {
-                "Label": "Download link"
-            },
-            "error": {
-                "notinstalled": "NodeJS is not installed on your computer!",
-                "wrongversion": "Your version of Nodejs is obsolete"
-            }
-        },
-        "fatal": {
-            "error": "🚫 fatal error!"
-        }
-    },
-    "splash": {
-        "hello": "EcondexApp"
-    },
-    "common": {
-        "audit": {
-            "audit-category": {
-                "title": "Choose the audits you want to make",
-                "seo": "SEO",
-                "performance": "Performance",
-                "accessibility": "Accessibility",
-                "best-practices": "Best practices",
-                "lighthouse-plugin-ecoindex-core": "Ecoindex",
-                "ecoindex-core": {
-                    "mandatory": "(mandatory)"
-                }
-            }
-        }
-    },
-    "Plugin version:": "Version of the Ecoindex measurement engine (lighthouse-plugin-ecoindex):",
-    "footer": {
-        "visite-website": {
-            "app": "Go consult the application website",
-            "plugin": "Go consult the Lighthouse-Plugin-Ecoindex plugin site"
-        }
-    },
-    "advConfiguration": {
-        "title": "Advanced configuration",
-        "title-title": "Click to open or close Advanced Setup",
-        "puppeteer": {
-            "title": "Use a custom Puppeteer scenario file",
-            "input": {
-                "aria": "Puppetter scenario file"
-            },
-            "description": "Please fill in if you need to use a specific scenario, such as strong authentication. \nUse *.js, *.ts, *.mjs or *.cjs files (*.mjs is recommended).",
-            "help-link": "You will find more information on this subject in the help https://lighthouse-ecoindex.greenit.eco/guides/9-adv-conf/#utilisation-dun-fichier-de-script-puppeteer-custom"
-        },
-        "envvar": {
-            "description": "Environment variables to pass to the measurements script (for an identifier/password to use with the Puppeteer custom script, for example). \nThey will not be saved!",
-            "title": "Environment variables"
-        }
-    },
-    "key-value": {
-        "add": {
-            "to": "Add an item to"
-        }
-    },
-    "Reset": "Reset",
-    "Application version:": "Application version:",
-    "simple-mesure": {
-        "urls": {
-            "title": "URLs"
-        }
-    }
+    "🧩 Simple collect": "🧩 Simple collect"
 }
