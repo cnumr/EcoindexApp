@@ -1,101 +1,100 @@
-import { ChildProcess, spawn } from 'child_process'
-import { IpcMainEvent, shell, utilityProcess } from 'electron'
-import { getNodeDir, getNpmDir, getWorkDir, isDev } from '../memory'
+import type {
+    IAdvancedMesureData,
+    IJsonMesureData,
+    IKeyValue,
+    ISimpleUrlInput,
+} from '../../interface'
+import {
+    app,
+    IpcMainEvent,
+    IpcMainInvokeEvent,
+    shell,
+    utilityProcess,
+} from 'electron'
+import { getWorkDir, isDev } from '../memory'
 
-import type { CliFlags } from 'lighthouse-plugin-ecoindex-courses/dist/types'
-import { Readable } from 'stream'
+import type { CliFlags } from 'lighthouse-plugin-ecoindex-courses'
 import { _debugLogs } from '../utils/MultiDebugLogs'
-import { _echoReadable } from '../utils/EchoReadable'
 import { _sendMessageToFrontConsole } from '../utils/SendMessageToFrontConsole'
 import { _sendMessageToFrontLog } from '../utils/SendMessageToFrontLog'
 import { convertJSONDatasFromISimpleUrlInput } from '../utils/ConvertJSONDatas'
-import { error } from 'console'
 import { fileURLToPath } from 'node:url'
 import fs from 'fs'
 import { getMainLog } from '../main'
 import i18n from '../../configs/i18next.config'
-import os from 'node:os'
 import path from 'node:path'
 import { showNotification } from '../utils/ShowNotification'
 import { utils } from '../../shared/constants'
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
 /**
- * Utils, prepare Json Collect.
- * @returns Promise<{
-  command: string[]
-  nodeDir: string
-  workDir: string
-}>
+ * Vérifie que le répertoire de travail existe avant de lancer une collecte.
+ * Cette fonction est appelée avant chaque mesure pour s'assurer que le dossier
+ * de destination est valide et accessible.
+ * @throws {Error} Si le répertoire de travail n'est pas défini ou vide
  */
-async function _prepareCollect(): Promise<{
-    command: string[]
-    nodeDir: string
-    workDir: string
-}> {
+async function _prepareCollect(): Promise<void> {
     const mainLog = getMainLog().scope('main/prepareCollect')
-    // create stream to log the output. TODO: use specified path
     try {
         const _workDir = getWorkDir() as string
         if (!_workDir || _workDir === '') {
             throw new Error('Work dir not found')
         }
-
-        let nodeDir = getNodeDir()
-        _debugLogs(`Node dir: ${nodeDir}`)
-
-        const npmDir = getNpmDir()
-        _debugLogs(`Npm dir: ${npmDir}`)
-
-        const command = [
-            path.join(
-                __dirname,
-                `../..`,
-                `node_modules`,
-                `lighthouse-plugin-ecoindex`,
-                `cli`,
-                `run.js`
-            ),
-            'collect',
-        ]
-        if (os.platform() === `win32`) {
-            nodeDir = nodeDir.replace(/\\/gm, path.sep)
-        }
-        return { command, nodeDir, workDir: _workDir.replace(/ /g, '\\ ') }
     } catch (error) {
         mainLog.error('Error in _prepareCollect', error)
+        throw error
     }
 }
 
-class CollectDatas {
-    collectType: `simple` | `complexe`
-    outputPath: string
-    output?: string[]
-    listAllAudits: false
-    generationDate: string
-}
-
-class SimpleCollectDatas extends CollectDatas {
-    declare collectType: 'simple'
-    url: string[]
-}
-class ComplexeCollectDatas extends CollectDatas {
-    declare collectType: 'complexe'
-    jsonFile: string
-}
-
+/**
+ * Classe de base pour les données de collecte.
+ * Représente les informations nécessaires pour lancer une mesure :
+ * - Le type de collecte (simple ou complexe/parcours)
+ * - Les commandes CLI à exécuter
+ * - Les options d'audit
+ */
 class CollectDatas_V2 {
-    collectType: `simple` | `complexe`
-    command: CliFlags
-    listAllAudits: false
+    collectType!: `simple` | `complexe`
+    command!: CliFlags
+    listAllAudits!: false
 }
 
+/**
+ * Données pour une mesure simple : une ou plusieurs URLs analysées individuellement.
+ * Chaque URL est traitée séparément et génère son propre rapport.
+ */
 class SimpleCollectDatas_V2 extends CollectDatas_V2 {
     declare collectType: 'simple'
 }
+
+/**
+ * Données pour une mesure complexe (parcours) : analyse d'un parcours utilisateur
+ * défini dans un fichier JSON avec plusieurs étapes/courses.
+ * Les courses peuvent avoir des dépendances et des sélecteurs d'URL dynamiques.
+ */
 class ComplexeCollectDatas_V2 extends CollectDatas_V2 {
     declare collectType: 'complexe'
 }
 
+/**
+ * Prépare les données de collecte selon le type de mesure.
+ *
+ * Pour une mesure simple :
+ * - Prend une liste d'URLs en entrée
+ * - Génère un répertoire de sortie avec timestamp
+ * - Configure les catégories d'audit par défaut
+ *
+ * Pour une mesure complexe :
+ * - Prend le chemin d'un fichier JSON de configuration
+ * - Le fichier JSON contient les courses (parcours) à analyser
+ * - Génère un répertoire de sortie avec timestamp
+ *
+ * @param collectType Type de collecte : 'simple' ou 'complexe'
+ * @param output Formats de sortie souhaités : 'statement', 'json', 'html'
+ * @param input Pour 'simple' : liste d'URLs, pour 'complexe' : chemin du fichier JSON
+ * @returns Données de collecte préparées avec toutes les options configurées
+ */
 function _prepareDatas(
     collectType: `simple` | `complexe`,
     output: ('statement' | 'json' | 'html')[],
@@ -138,17 +137,6 @@ function _prepareDatas(
             listAllAudits: false,
         }
         return ouput
-        // const collectDatas: SimpleCollectDatas = {
-        //     collectType,
-        //     outputPath: _workDir,
-        //     output,
-        //     url: (input as ISimpleUrlInput[]).map((url) => {
-        //         return url.value
-        //     }),
-        //     listAllAudits: false,
-        //     generationDate: new Date().toISOString(),
-        // }
-        // return collectDatas
     } else {
         const command: CliFlags = {
             generationDate: new Date().toISOString(),
@@ -163,120 +151,38 @@ function _prepareDatas(
             collectType,
             command,
             listAllAudits: false,
-            // outputPath: _workDir,
-            // output,
-            // jsonFile: input as string,
-            // listAllAudits: false,
-            // generationDate: new Date().toISOString(),
         }
         return collectDatas
     }
 }
 
 /**
- * Utils, Collect
- * @param command string[]
- * @param nodeDir string
- * @param event IpcMainEvent
- * @param logStream
- * @returns string
+ * Lance l'exécution effective de la collecte via un processus utilitaire Node.js.
+ *
+ * Flux d'exécution :
+ * 1. Crée un répertoire de sortie avec timestamp
+ * 2. Écrit les données de commande dans un fichier JSON temporaire
+ * 3. Configure les variables d'environnement (WORK_DIR + variables utilisateur)
+ * 4. Lance le script courses_index.mjs dans un processus séparé (utilityProcess)
+ * 5. Écoute les logs stdout/stderr du processus enfant
+ * 6. Gère les messages IPC du processus enfant (progress, error, complete)
+ * 7. Nettoie le fichier temporaire à la fin
+ * 8. Ouvre l'explorateur de fichiers pour les mesures simples
+ *
+ * Le script courses_index.mjs lit le fichier JSON temporaire et exécute les mesures
+ * via Lighthouse avec le plugin ecoindex.
+ *
+ * @param command Données de collecte préparées (simple ou complexe)
+ * @param _event Événement IPC (non utilisé mais requis par la signature)
+ * @param isSimple Si true, ouvre l'explorateur de fichiers à la fin
+ * @param envVars Variables d'environnement personnalisées à passer au processus
+ * @returns Promise qui se résout quand la collecte est terminée
  */
-async function _runCollect(
-    command: string[],
-    nodeDir: string,
-    event: IpcMainEvent,
-    isSimple = false
-): Promise<string> {
-    const mainLog = getMainLog().scope('main/runCollect')
-    try {
-        const out: string[] = []
-
-        const [script, ...args] = command
-        _debugLogs(`runCollect: ${script} ${JSON.stringify(args, null, 2)}`)
-        _debugLogs(
-            `runCollect: ${process.execPath} ${JSON.stringify(command, null, 2)}`
-        )
-        // const controller = new AbortController()
-        // const { signal } = controller
-        // const childProcess: ChildProcess = fork(script, args, {
-        //     stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
-        //     // stdio: [0, 1, 2, 'ipc'],
-        //     // silent: true,
-        //     // signal,
-        // })
-        // childProcess.send('hello')
-        const childProcess: ChildProcess = spawn(nodeDir, command, {
-            stdio: ['pipe', 'pipe', process.stderr],
-            shell: true,
-            windowsHide: true,
-            // signal,
-            // signal,
-        })
-        childProcess.on('message', (mess) => {
-            _debugLogs(`Message detected`, mess)
-        })
-        childProcess.on('error', (err) => {
-            _debugLogs(`Error detected`, err)
-            // This will be called with err being an AbortError if the controller aborts
-        })
-
-        childProcess.on('exit', (code, signal) => {
-            if (isSimple && out.length > 0) {
-                const fl = (item: string) => {
-                    return item.includes('Report generated')
-                }
-                const filtered = out.filter(fl)
-                const url =
-                    'file:///' +
-                    filtered
-                        .at(-1)
-                        .replace(`Report generated: `, ``)
-                        .split('generic.report.html')[0] +
-                    `generic.report.html`
-                mainLog.debug(`url`, url)
-                shell.openExternal(url, { activate: true })
-            }
-            _debugLogs(
-                `Child process exited with code ${code} and signal ${signal}`
-            )
-        })
-
-        childProcess.on('close', (code) => {
-            _debugLogs(`Child process close with code ${code}`)
-            _debugLogs('Measure done 🚀')
-        })
-
-        childProcess.stdout.on('data', (data) => {
-            out.push(data.toString())
-            _debugLogs(`stdout: ${data}`)
-        })
-
-        if (childProcess.stderr) {
-            childProcess.stderr.on('data', (data) => {
-                _debugLogs(`stderr: ${data.toString()}`)
-            })
-        }
-
-        childProcess.on('disconnect', () => {
-            _debugLogs('Child process disconnected')
-        })
-
-        childProcess.on('message', (message, sendHandle) => {
-            _debugLogs(`Child process message: ${message}`)
-        })
-
-        await _echoReadable(event, childProcess.stdout)
-        // controller.abort()
-        return 'mesure done'
-    } catch (error) {
-        mainLog.error('Error in _runCollect', error)
-    }
-}
-
 async function _runDirectCollect(
     command: SimpleCollectDatas_V2 | ComplexeCollectDatas_V2,
-    event: IpcMainEvent,
-    isSimple = false
+    _event: IpcMainEvent | IpcMainInvokeEvent,
+    isSimple = false,
+    envVars: IKeyValue | null = null
 ) {
     const mainLog = getMainLog().scope('main/runDirectCollect')
     try {
@@ -306,45 +212,99 @@ async function _runDirectCollect(
 
         // Définir les variables d'environnement pour le processus Node.js
         process.env.WORK_DIR = workDir
+        // Définir les variables d'environnement demandés par l'utilisateur
+        if (envVars) {
+            try {
+                Object.entries(envVars).map((ev) => {
+                    process.env[ev[0].toUpperCase()] = ev[1]
+                })
+            } catch {
+                throw new Error(`EnvVars in error`)
+            }
+        }
 
         // Créer une Promise qui se résoudra quand le processus enfant sera terminé
         await new Promise<void>((resolve, reject) => {
             mainLog.debug('Starting utility process...')
 
-            const pathToScript =
-                process.env['WEBPACK_SERVE'] === 'true'
-                    ? path.join(
-                          __dirname,
-                          '..',
-                          '..',
-                          'lib',
-                          'courses_index.mjs'
-                      )
-                    : path.join(
-                          process.resourcesPath,
-                          process.platform === 'win32' ? 'lib' : 'lib.asar',
-                          'courses_index.mjs'
-                      )
-            // pathToScript = path.join(__dirname, '..', 'scripts', 'courses_index.mjs')
-            // pathToScript = process.env['WEBPACK_SERVE'] === 'true'
-            //         ? path.join(__dirname, '..', 'scripts', 'courses_index.mjs')
-            //         : path.join(
-            //             'app.asar', 'scripts', 'courses_index.mjs'
-            //           )
+            /**
+             * Détermination du chemin du script courses_index.mjs selon l'environnement :
+             *
+             * - DÉVELOPPEMENT : Le script est dans src/lib/courses_index.mjs
+             *   Accessible directement depuis le projet
+             *
+             * - PRODUCTION (packagé) :
+             *   - Windows : lib.asar est extrait vers lib/ pendant l'initialisation
+             *     → Utilise process.resourcesPath/lib/courses_index.mjs
+             *   - macOS/Linux : On peut accéder directement à lib.asar
+             *     → Utilise process.resourcesPath/lib.asar/courses_index.mjs
+             *
+             * Le script courses_index.mjs est le point d'entrée qui :
+             * - Lit le fichier command-data.json
+             * - Lance Lighthouse avec le plugin ecoindex
+             * - Génère les rapports (HTML, JSON, statement)
+             */
+            let pathToScript: string
+            if (!app.isPackaged || process.env['WEBPACK_SERVE'] === 'true') {
+                // En développement : utiliser le dossier lib du projet
+                pathToScript = path.join(
+                    __dirname,
+                    '..',
+                    '..',
+                    'lib',
+                    'courses_index.mjs'
+                )
+                mainLog.debug(`Using development path: ${pathToScript}`)
+            } else if (process.resourcesPath) {
+                // En production packagée : utiliser process.resourcesPath
+                pathToScript = path.join(
+                    process.resourcesPath,
+                    process.platform === 'win32' ? 'lib' : 'lib.asar',
+                    'courses_index.mjs'
+                )
+                mainLog.debug(`Using production path: ${pathToScript}`)
+            } else {
+                // Fallback : utiliser le dossier lib du projet
+                pathToScript = path.join(
+                    __dirname,
+                    '..',
+                    '..',
+                    'lib',
+                    'courses_index.mjs'
+                )
+                mainLog.warn(
+                    `process.resourcesPath not available, using fallback: ${pathToScript}`
+                )
+            }
+
+            /**
+             * Création d'un processus utilitaire séparé pour exécuter le script.
+             * utilityProcess.fork permet d'exécuter un script Node.js dans un processus
+             * isolé, ce qui évite de bloquer le processus principal de l'application.
+             *
+             * stdio configuré pour :
+             * - stdin: 'ignore' (pas d'entrée standard)
+             * - stdout: 'pipe' (capture des logs pour affichage dans la console)
+             * - stderr: 'pipe' (capture des erreurs)
+             */
             const child = utilityProcess.fork(pathToScript, ['test'], {
                 stdio: ['ignore', 'pipe', 'pipe'],
             })
 
+            /**
+             * Flag pour éviter de résoudre/rejeter la Promise plusieurs fois
+             * (peut arriver si on reçoit à la fois un message 'complete' et un exit code 0)
+             */
             let hasExited = false
 
+            /**
+             * Écoute des logs stdout du processus enfant.
+             * Ces logs sont affichés dans la console de l'application (frontend)
+             * et dans les logs du main process.
+             */
             // Gérer les logs stdout
             if (child.stdout) {
                 child.stdout.on('data', (data) => {
-                    const all = /\n/g
-                    const first = /^\n/
-                    // Only remove the last newline characters (\n)
-                    const last = /\n$/
-                    // Only all the last newlines (\n)
                     const all_last = /\n+$/
                     const _data = data.toString().replace(all_last, '')
                     mainLog.debug(_data)
@@ -360,6 +320,16 @@ async function _runDirectCollect(
                 })
             }
 
+            /**
+             * Écoute des messages IPC du processus enfant.
+             * Le script courses_index.mjs peut envoyer des messages structurés :
+             * - { type: 'progress', data: string } : Progression de la mesure
+             * - { type: 'error', data: string } : Erreur rencontrée
+             * - { type: 'complete', data: string } : Mesure terminée avec succès
+             *
+             * Ces messages permettent une communication bidirectionnelle entre
+             * le processus principal et le processus enfant.
+             */
             // Gérer les messages du processus enfant
             child.on('message', (message) => {
                 mainLog.info('Message from child:', message)
@@ -396,6 +366,19 @@ async function _runDirectCollect(
                 }
             })
 
+            /**
+             * Gestion de la fin du processus enfant.
+             *
+             * Code de sortie :
+             * - 0 : Succès, la collecte s'est terminée correctement
+             * - Autre : Erreur, quelque chose s'est mal passé
+             *
+             * Actions effectuées :
+             * 1. Suppression du fichier temporaire command-data.json
+             * 2. Pour les mesures simples : ouverture de l'explorateur de fichiers
+             *    sur le rapport HTML généré
+             * 3. Résolution ou rejet de la Promise selon le code de sortie
+             */
             // Gérer la fin du processus
             child.on('exit', (code: number) => {
                 mainLog.log(`Child process exited with code ${code}`)
@@ -414,6 +397,7 @@ async function _runDirectCollect(
                         mainLog.error('Error deleting temporary file:', error)
                     }
                 } else {
+                    const error = new Error(`Process exited with code ${code}`)
                     mainLog.error('Process failed:', error)
                     reject(error)
                 }
@@ -422,16 +406,15 @@ async function _runDirectCollect(
                 try {
                     if (isSimple) {
                         const url = path.join(workDir, `generic.report.html`)
-                        console.log('url', url)
+                        mainLog.debug('url', url)
                         shell.showItemInFolder(url)
                     }
                 } catch (error) {
-                    console.error('Error opening folder:', error)
+                    mainLog.error('Error opening folder:', error)
                     _sendMessageToFrontLog(
                         'Error',
                         `Error opening folder: ${error}`
                     )
-                    mainLog.log(`Error opening folder: ${error}`)
                 }
 
                 if (!hasExited) {
@@ -463,14 +446,31 @@ async function _runDirectCollect(
 }
 
 /**
- * Handlers, SimpleCollect
- * @param event IpcMainEvent
- * @param urlsList ISimpleUrlInput[]
- * @returns string
+ * Handler principal pour les mesures simples.
+ *
+ * Flux d'exécution :
+ * 1. Validation : vérifie que la liste d'URLs n'est pas vide
+ * 2. Notification : informe l'utilisateur du démarrage
+ * 3. Préparation : crée les données de collecte avec les URLs et la config avancée
+ * 4. Configuration : applique les options avancées (output, audit-category, extra-header, etc.)
+ * 5. Exécution : lance _runDirectCollect qui exécute le script de mesure
+ * 6. Notification : informe l'utilisateur du résultat (succès ou échec)
+ *
+ * Les rapports générés sont sauvegardés dans :
+ * {workDir}/{timestamp}/ où timestamp est au format ISO (ex: 2025-12-27T10-30-45)
+ *
+ * @param event Événement IPC (non utilisé mais requis)
+ * @param urlsList Liste des URLs à analyser
+ * @param localAdvConfig Configuration avancée (formats de sortie, catégories d'audit, etc.)
+ * @param envVars Variables d'environnement personnalisées
+ * @returns 'collect done' si succès
+ * @throws {Error} Si la liste d'URLs est vide ou si la collecte échoue
  */
 export const handleSimpleCollect = async (
-    event: IpcMainEvent,
-    urlsList: ISimpleUrlInput[]
+    event: IpcMainEvent | IpcMainInvokeEvent,
+    urlsList: ISimpleUrlInput[],
+    localAdvConfig: IAdvancedMesureData,
+    envVars: IKeyValue
 ) => {
     const mainLog = getMainLog().scope('main/handleSimpleCollect')
     if (!urlsList || urlsList.length === 0) {
@@ -481,37 +481,76 @@ export const handleSimpleCollect = async (
         body: i18n.t('Process intialization.'),
     })
 
+    /**
+     * Étape 1 : Préparation des données de base de collecte
+     * Crée la structure de données avec les URLs et les formats de sortie de base
+     */
     // prepare common collect
-    const collectDatas = _prepareDatas(`simple`, [`html`], urlsList)
-    const { command, nodeDir, workDir: _workDir } = await _prepareCollect()
+    const collectDatas = _prepareDatas(
+        `simple`,
+        localAdvConfig.output as ('statement' | 'json' | 'html')[],
+        urlsList
+    )
 
+    /**
+     * Étape 2 : Vérification du répertoire de travail
+     * S'assure que le dossier de destination existe et est accessible
+     */
+    await _prepareCollect()
     _debugLogs('Simple measure start, process intialization...')
     _debugLogs(`Urls list: ${JSON.stringify(urlsList)}`)
     try {
-        urlsList.forEach((url) => {
-            if (url.value) {
-                command.push('-u')
-                command.push(url.value)
-            }
-        })
-        command.push('-o')
-        command.push('html')
-        command.push('--output-path')
-        command.push(`${_workDir}`)
-        // Fake mesure and path. TODO: use specified path and urls
+        /**
+         * Étape 3 : Application de la configuration avancée
+         * Remplace les valeurs par défaut par celles choisies par l'utilisateur :
+         * - Formats de sortie (HTML, JSON, statement)
+         * - Catégories d'audit (performance, SEO, accessibility, etc.)
+         * - Headers HTTP supplémentaires (cookies, authentification, etc.)
+         * - User-Agent personnalisé
+         * - Script Puppeteer personnalisé (pour interactions complexes)
+         */
+        collectDatas.command['output'] = localAdvConfig.output as (
+            | 'statement'
+            | 'json'
+            | 'html'
+        )[]
+        collectDatas.command['audit-category'] = localAdvConfig[
+            'audit-category'
+        ] as (
+            | 'accessibility'
+            | 'best-practices'
+            | 'performance'
+            | 'seo'
+            | 'lighthouse-plugin-ecoindex-core'
+        )[]
+        // Les extra-headers sont sérialisés en JSON pour être passés au script
+        collectDatas.command['extra-header'] = JSON.stringify(
+            localAdvConfig['extra-header']
+        ) as unknown as {
+            [key: string]: string
+        }
+        collectDatas.command['user-agent'] = localAdvConfig['user-agent']
+        // Le script Puppeteer est optionnel, utilisé pour des interactions complexes
+        if (localAdvConfig['puppeteer-script']) {
+            collectDatas.command['puppeteer-script'] =
+                localAdvConfig['puppeteer-script']
+        }
+        collectDatas.command['exportPath'] = path.join(
+            (await getWorkDir()) as string,
+            collectDatas.command.generationDate
+        )
         showNotification({
             subtitle: i18n.t(' 🚀Simple collect'),
             body: i18n.t('Collect started...'),
         })
         try {
             if (isDev()) {
-                // mainLog.debug(`before (simple) runCollect`, nodeDir, command)
-                const [script, ...args] = command
-                mainLog.debug(`before (simple) runCollect`, script, args)
-                // mainLog.debug(`before (simple) runCollect`, collectDatas)
+                mainLog.debug(
+                    `before (simple) runCollect(collectDatas)`,
+                    collectDatas
+                )
             }
-            // await _runCollect(command, nodeDir, event, true)
-            await _runDirectCollect(collectDatas, event, true)
+            await _runDirectCollect(collectDatas, event, true, envVars)
         } catch (error) {
             showNotification({
                 subtitle: i18n.t('🚫 Simple collect'),
@@ -519,13 +558,11 @@ export const handleSimpleCollect = async (
             })
             throw new Error('Simple collect error')
         }
-        // process.stdout.write(data)
-        // const _workDir = collectDatas.outputPath
         showNotification({
             subtitle: i18n.t('🎉 Simple collect'),
             body: i18n.t(
                 `Collect done, you can consult reports in\n{{_workDir}}`,
-                { _workDir }
+                { _workDir: collectDatas.command.exportPath }
             ),
         })
         if (isDev()) mainLog.debug('Simple collect done 🚀')
@@ -537,18 +574,42 @@ export const handleSimpleCollect = async (
 }
 
 /**
- * Handler, JsonSaveAndCollect
- * @param event IpcMainEvent
- * @param jsonDatas IJsonMesureData
- * @param andCollect boolean
- * @returns string
+ * Handler principal pour les mesures complexes (parcours).
+ *
+ * Ce handler gère deux opérations :
+ * 1. SAUVEGARDE : Écrit la configuration JSON dans le répertoire de travail
+ * 2. COLLECTE (optionnelle) : Lance les mesures si andCollect = true
+ *
+ * Flux d'exécution :
+ * 1. Validation : vérifie que les données JSON sont valides
+ * 2. Sauvegarde : écrit le fichier JSON dans {workDir}/ecoindex.json
+ * 3. Si andCollect = true :
+ *    - Prépare les données de collecte avec le chemin du fichier JSON
+ *    - Lance _runDirectCollect qui exécute le script de mesure
+ *    - Ouvre le répertoire de travail à la fin
+ *
+ * Le fichier JSON contient :
+ * - courses : Liste des parcours à analyser (chacun avec ses URLs et options)
+ * - output : Formats de sortie souhaités
+ * - audit-category : Catégories d'audit à exécuter
+ * - extra-header : Headers HTTP supplémentaires
+ * - puppeteer-script : Script Puppeteer optionnel pour interactions complexes
+ *
+ * @param event Événement IPC (non utilisé mais requis)
+ * @param jsonDatas Configuration complète de la mesure complexe
+ * @param andCollect Si true, lance la collecte après la sauvegarde
+ * @param envVars Variables d'environnement personnalisées
+ * @returns 'measure done' si succès et andCollect = true, sinon rien
+ * @throws {Error} Si les données JSON sont invalides ou si la collecte échoue
  */
 export const handleJsonSaveAndCollect = async (
-    event: IpcMainEvent,
+    event: IpcMainEvent | IpcMainInvokeEvent,
     jsonDatas: IJsonMesureData,
-    andCollect: boolean
+    andCollect: boolean,
+    envVars: IKeyValue
 ) => {
     const mainLog = getMainLog().scope('main/handleJsonSaveAndCollect')
+
     if (!jsonDatas) {
         throw new Error('Json data is empty')
     }
@@ -567,6 +628,14 @@ export const handleJsonSaveAndCollect = async (
         }
         // _workDir = (_workDir as string).replace(/ /g, '\\\\ ')
         if (isDev()) mainLog.debug(`Work dir: ${_workDir}`)
+        /**
+         * Écriture du fichier JSON de configuration.
+         * Le fichier est sauvegardé dans le répertoire de travail avec le nom
+         * défini dans utils.JSON_FILE_NAME (généralement 'ecoindex.json').
+         *
+         * Les données sont converties pour s'assurer que les URLs sont au bon format
+         * (ISimpleUrlInput[] → string[]).
+         */
         const jsonFilePath = path.join(_workDir as string, utils.JSON_FILE_NAME)
         const jsonStream = fs.createWriteStream(jsonFilePath)
         showNotification({
@@ -606,28 +675,28 @@ export const handleJsonSaveAndCollect = async (
                 body: i18n.t('Json file saved.'),
             })
         } else {
+            /**
+             * Si andCollect = true, on lance la collecte après la sauvegarde.
+             * Le script courses_index.mjs va lire le fichier JSON que nous venons
+             * de créer et exécuter toutes les courses (parcours) définies dedans.
+             */
             if (isDev()) mainLog.debug('Json measure start...')
 
+            /**
+             * Préparation des données de collecte pour une mesure complexe.
+             * On passe le chemin du fichier JSON (pas les URLs directement)
+             * car le script va lire le fichier pour récupérer toutes les courses.
+             */
             // prepare common collect
             const collectDatas = _prepareDatas(
                 `complexe`,
                 jsonDatas.output as ('statement' | 'json' | 'html')[],
                 jsonFilePath
             )
-            // const {
-            //     command,
-            //     nodeDir,
-            //     workDir: _workDir,
-            // } = await _prepareCollect()
             _debugLogs('Json measure start...')
             _debugLogs(`JSON datas ${JSON.stringify(jsonDatas, null, 2)}`)
-            // command.push('--json-file')
-            // command.push(path.join(_workDir, utils.JSON_FILE_NAME))
-            // command.push('--output-path')
-            // command.push(_workDir)
             try {
-                // await _runCollect(command, nodeDir, event)
-                await _runDirectCollect(collectDatas, event, false)
+                await _runDirectCollect(collectDatas, event, false, envVars)
             } catch (error) {
                 mainLog.error('Simple collect error', error)
                 throw new Error('Simple collect error')

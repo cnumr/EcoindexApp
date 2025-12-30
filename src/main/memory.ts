@@ -1,4 +1,5 @@
 import { BrowserWindow } from 'electron'
+import type { IKeyValue } from '../interface'
 import Store from 'electron-store'
 import log from 'electron-log/main'
 import os from 'node:os'
@@ -10,9 +11,10 @@ let nodeDir = ''
 let npmDir = ''
 let homeDir = ''
 let nodeVersion = ''
-let mainWindow: BrowserWindow = null
-let welcomeWindow: BrowserWindow = null
+let mainWindow: BrowserWindow | null = null
+let welcomeWindow: BrowserWindow | null = null
 let showedWelcome = false
+let envVars: IKeyValue = {}
 
 export const getWorkDir = () => {
     const lastWorkDir = store.get(`lastWorkDir`)
@@ -35,6 +37,12 @@ export const setNodeDir = (value: string) => {
     nodeDir = value
 }
 
+export const getEnvVars = () => {
+    return envVars
+}
+export const setEnvVars = (value: IKeyValue) => {
+    envVars = value
+}
 export const getNpmDir = () => {
     return npmDir
 }

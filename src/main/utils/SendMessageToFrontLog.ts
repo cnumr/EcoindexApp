@@ -13,11 +13,14 @@ export const _sendMessageToFrontLog = (
 ) => {
     const mainLog = getMainLog().scope('main/sendMessageToFrontLog')
     try {
-        getMainWindow().webContents.send(
-            channels.HOST_INFORMATIONS,
-            message,
-            optionalParams
-        )
+        const mainWindow = getMainWindow()
+        if (mainWindow) {
+            mainWindow.webContents.send(
+                channels.HOST_INFORMATIONS,
+                message,
+                optionalParams
+            )
+        }
     } catch (error) {
         mainLog.error('Error in _sendMessageToFrontLog', error)
     }

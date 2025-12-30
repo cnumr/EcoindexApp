@@ -15,7 +15,6 @@ const store = new Store()
  * @returns Promise&lt;ConfigData>
  */
 export const initIsNodeInstalled = async (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _event: IpcMainEvent | IpcMainInvokeEvent
 ) => {
     const mainLog = getMainLog().scope(
@@ -34,9 +33,9 @@ export const initIsNodeInstalled = async (
     toReturned.message = `Node is Installed in ${nodePath}`
     setNodeDir(nodePath)
     store.set(`nodeDir`, nodePath)
-    getMainWindow().webContents.send(
-        channels.HOST_INFORMATIONS_BACK,
-        toReturned
-    )
+    const mainWindow = getMainWindow()
+    if (mainWindow) {
+        mainWindow.webContents.send(channels.HOST_INFORMATIONS_BACK, toReturned)
+    }
     return toReturned
 }

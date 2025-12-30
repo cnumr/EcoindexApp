@@ -12,7 +12,6 @@ import { getMainWindow } from '../../memory'
  * @returns Promise&lt;ConfigData>
  */
 export const initPluginIsIntalled = (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _event: IpcMainEvent | IpcMainInvokeEvent
 ) => {
     const mainLog = getMainLog().scope(
@@ -60,13 +59,16 @@ export const initPluginIsIntalled = (
                     mainLog.debug(`version installed: ${currentVersion}`)
                     toReturned.message = `plugin allready installed`
                     toReturned.result = `${currentVersion}`
-                    getMainWindow().webContents.send(
-                        channels.HOST_INFORMATIONS_BACK,
-                        toReturned
-                    )
+                    const mainWindow = getMainWindow()
+                    if (mainWindow) {
+                        mainWindow.webContents.send(
+                            channels.HOST_INFORMATIONS_BACK,
+                            toReturned
+                        )
+                    }
                     resolve(toReturned)
-                } catch (error) {
-                    throw new Error(error)
+                } catch {
+                    throw new Error('Error on initPluginIsIntalled')
                 }
         })
     })

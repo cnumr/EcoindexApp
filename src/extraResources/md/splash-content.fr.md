@@ -1,4 +1,4 @@
-_You can change the application language in the menu, `Language`._
+_You can change the application language in the menu, `Langue`._
 
 Cette application de bureau vous permet d'effectuer des mesures comme sur le site [ecoindex.fr](https://ecoindex.fr) , mais aussi d'avoir les mesures de lighthouse de Google, dans un seul et même rapport, sans limitation de mesures. 🎉
 

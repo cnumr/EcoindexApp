@@ -1,0 +1,128 @@
+import { Bug, ClipboardCopy } from 'lucide-react'
+
+import { Button } from './ui/button'
+import { FC, useEffect, useRef } from 'react'
+import { SimpleTooltip } from './SimpleTooltip'
+import { Textarea } from './ui/textarea'
+import { TypographyH3 } from './ui/typography/TypographyH3'
+import { useTranslation } from 'react-i18next'
+
+interface ILayout {
+    datasFromHost: any
+    appReady?: boolean
+    isFirstStart?: boolean
+    isPuppeteerBrowserInstalled?: boolean
+    workDir?: string
+    homeDir?: string
+    puppeteerBrowserInstalledVersion?: string
+    consoleMessages?: string
+}
+export const ConsoleApp: FC<ILayout> = ({
+    datasFromHost,
+    appReady,
+    isFirstStart,
+    isPuppeteerBrowserInstalled,
+    workDir,
+    homeDir,
+    puppeteerBrowserInstalledVersion,
+    consoleMessages = '',
+}) => {
+    const copyToClipBoard = () => {
+        navigator.clipboard.writeText(JSON.stringify(datasFromHost, null, 2))
+    }
+    const { t } = useTranslation()
+    const consoleTextareaRef = useRef<HTMLTextAreaElement>(null)
+
+    // Auto-scroll vers le bas quand de nouveaux messages arrivent
+    useEffect(() => {
+        if (consoleTextareaRef.current) {
+            const textarea = consoleTextareaRef.current
+            textarea.scrollTop = textarea.scrollHeight
+        }
+    }, [consoleMessages])
+
+    return (
+        <details className="w-full rounded-lg border border-primary bg-card p-2 text-card-foreground shadow-sm [&_svg]:open:-rotate-180">
+            <summary className="flex cursor-pointer list-none items-center gap-4 rounded-sm">
+                <div>
+                    <svg
+                        className="rotate-0 transform text-primary transition-all duration-300"
+                        fill="none"
+                        height="20"
+                        width="20"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                    >
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+                <div className="flex items-center text-sm text-primary">
+                    <Bug className="mr-2 size-4" />
+                    <div>{t('Show informations')}</div>
+                </div>
+            </summary>
+
+            <div className="mt-4 flex w-full flex-col gap-4 first:w-fit">
+                {/* A Supprimer */}
+                <TypographyH3>{t('Console')}</TypographyH3>
+                <Textarea
+                    ref={consoleTextareaRef}
+                    className="h-36 text-muted-foreground"
+                    readOnly
+                    value={consoleMessages}
+                ></Textarea>
+                {/* Fin de la zone à supprimer */}
+                <SimpleTooltip
+                    tooltipContent={
+                        <p>
+                            {t('Copy application informations to clipboard.')}
+                        </p>
+                    }
+                >
+                    <Button
+                        id="bt-report"
+                        variant="default"
+                        size="sm"
+                        onClick={copyToClipBoard}
+                        className="flex w-fit items-center"
+                    >
+                        <ClipboardCopy className="mr-2 size-4" />
+                        {t('Copy datas')}
+                    </Button>
+                </SimpleTooltip>
+                <pre className="ligatures-none flex overflow-auto bg-slate-800 text-sm leading-6 text-slate-50">
+                    <code className="min-w-full flex-none p-5">
+                        {JSON.stringify(datasFromHost, null, 2)}
+                    </code>
+                </pre>
+                <TypographyH3>{t('Configuration datas')}</TypographyH3>
+                <div className="flex w-full flex-col text-sm">
+                    {appReady && (
+                        <div>appReady: {appReady ? 'true' : 'false'}</div>
+                    )}
+                    {isFirstStart && (
+                        <div>
+                            isFirstStart: {isFirstStart ? 'true' : 'false'}
+                        </div>
+                    )}
+                    {isPuppeteerBrowserInstalled && (
+                        <div>
+                            isPuppeteerBrowserInstalled:{' '}
+                            {isPuppeteerBrowserInstalled ? 'true' : 'false'}
+                        </div>
+                    )}
+                    {workDir && <div>workDir: {workDir}</div>}
+                    {homeDir && <div>homeDir: {homeDir}</div>}
+                    {puppeteerBrowserInstalledVersion && (
+                        <div>
+                            PuppeteerBrowser: {puppeteerBrowserInstalledVersion}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </details>
+    )
+}

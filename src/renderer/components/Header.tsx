@@ -1,4 +1,3 @@
-import logo from '../assets/tete-de-feuille.svg'
 import { useTranslation } from 'react-i18next'
 
 export const Header = () => {

@@ -1,6 +1,6 @@
 import { InitalizationData } from './class/InitalizationData'
 
-type ISimpleUrlInput = {
+export type ISimpleUrlInput = {
     value: string
 }
 
@@ -8,14 +8,14 @@ type InputField = {
     value: string
 }
 
-type ResultMessage = {
+export type ResultMessage = {
     result: boolean
     message: string
     actualVersion?: string
     targetVersion?: string
 }
 
-type InitalizationMessage = {
+export type InitalizationMessage = {
     type: 'message' | 'data'
     modalType: 'started' | 'error' | 'completed'
     title: string

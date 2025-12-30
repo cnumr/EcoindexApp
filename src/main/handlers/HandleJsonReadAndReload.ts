@@ -1,6 +1,6 @@
 import { getWorkDir, isDev } from '../memory'
 
-import { IpcMainEvent } from 'electron'
+import { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
 import { _debugLogs } from '../utils/MultiDebugLogs'
 import { _sendMessageToFrontLog } from '../utils/SendMessageToFrontLog'
 import { convertJSONDatasFromString } from '../utils/ConvertJSONDatas'
@@ -9,6 +9,7 @@ import { getMainLog } from '../main'
 import i18n from '../../configs/i18next.config'
 import { showNotification } from '../utils/ShowNotification'
 import { utils } from '../../shared/constants'
+import type { IJsonMesureData } from '../../interface'
 
 /**
  * Handlers, Json config Read and Reload.
@@ -16,7 +17,7 @@ import { utils } from '../../shared/constants'
  * @returns Promise<IJsonMesureData>
  */
 export const handleJsonReadAndReload = async (
-    event: IpcMainEvent
+    _event: IpcMainEvent | IpcMainInvokeEvent
 ): Promise<IJsonMesureData> => {
     const mainLog = getMainLog().scope('main/handleJsonReadAndReload')
     // showNotification({
@@ -29,7 +30,7 @@ export const handleJsonReadAndReload = async (
             throw new Error('Work dir not found')
         }
         const jsonFilePath = `${_workDir}/${utils.JSON_FILE_NAME}`
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, _reject) => {
             const jsonStream = fs.createReadStream(jsonFilePath)
             jsonStream.on('data', function (chunk) {
                 const jsonDatas = JSON.parse(chunk.toString())
@@ -57,6 +58,6 @@ export const handleJsonReadAndReload = async (
                 error,
             }),
         })
-        // throw new Error(`Json file not read and reloaded. ${error}`)
+        throw new Error(`Json file not read and reloaded. ${error}`)
     }
 }

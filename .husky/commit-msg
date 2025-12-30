@@ -1,0 +1,60 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Get the project root directory (parent of .husky)
+PROJECT_ROOT="$(cd "$(dirname -- "$0")/.." && pwd)"
+
+# Function to find and add Node.js to PATH
+find_node_path() {
+    if command -v node >/dev/null 2>&1; then
+        NODE_PATH=$(command -v node | xargs dirname 2>/dev/null)
+        if [ -n "$NODE_PATH" ] && [ -x "$NODE_PATH/node" ]; then
+            export PATH="$NODE_PATH:$PATH"
+            return 0
+        fi
+    fi
+    
+    for POSSIBLE_PATH in \
+        "/opt/homebrew/opt/nvm/versions/node"/*/bin \
+        "$HOME/.nvm/versions/node"/*/bin \
+        "/opt/homebrew/bin" \
+        "/usr/local/bin" \
+        "$HOME/.local/bin"; do
+        if [ -d "$POSSIBLE_PATH" ] && [ -x "$POSSIBLE_PATH/node" ]; then
+            export PATH="$POSSIBLE_PATH:$PATH"
+            return 0
+        fi
+    done
+    
+    if command -v npm >/dev/null 2>&1; then
+        NPM_PATH=$(command -v npm | xargs dirname 2>/dev/null)
+        if [ -n "$NPM_PATH" ] && [ -x "$NPM_PATH/node" ]; then
+            export PATH="$NPM_PATH:$PATH"
+            return 0
+        fi
+    fi
+    
+    return 1
+}
+
+# Add node_modules/.bin to PATH
+export PATH="$PROJECT_ROOT/node_modules/.bin:$PATH"
+
+# Ensure node is in PATH
+if ! command -v node >/dev/null 2>&1; then
+    find_node_path
+fi
+
+# Use npx if available, otherwise try direct path
+if command -v npx >/dev/null 2>&1; then
+    npx --no -- commitlint --edit $1
+else
+    COMMITLINT="$PROJECT_ROOT/node_modules/.bin/commitlint"
+    if [ -x "$COMMITLINT" ]; then
+        "$COMMITLINT" --edit $1
+    else
+        echo "Error: commitlint not found. Please run 'npm install'." >&2
+        exit 1
+    fi
+fi
+

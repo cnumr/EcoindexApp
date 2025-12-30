@@ -5,11 +5,18 @@ const config = {
     singleQuote: true,
     plugins: ['prettier-plugin-tailwindcss'],
     tailwindAttributes: ['myClassList'],
+    endOfLine: 'lf',
     overrides: [
         {
-            files: 'scr/locales/**/*.json',
+            files: 'src/locales/**/*.json',
             options: {
                 useTabs: false,
+                tabWidth: 2,
+            },
+        },
+        {
+            files: '.changeset/config.json',
+            options: {
                 tabWidth: 2,
             },
         },

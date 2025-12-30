@@ -1,4 +1,5 @@
 import { IpcMainEvent, IpcMainInvokeEvent, dialog } from 'electron'
+import type { OpenDialogOptions } from 'electron'
 
 import { getMainLog } from '../main'
 import { setWorkDir } from '../memory'
@@ -9,12 +10,11 @@ import { setWorkDir } from '../memory'
  * @returns string
  */
 export const handleSelectFolder = async (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _event: IpcMainEvent | IpcMainInvokeEvent
 ) => {
     const mainLog = getMainLog().scope('main/handleSelectFolder')
     try {
-        const options: Electron.OpenDialogOptions = {
+        const options: OpenDialogOptions = {
             properties: ['openDirectory', 'createDirectory'],
         }
         const { canceled, filePaths } = await dialog.showOpenDialog(options)
@@ -22,7 +22,7 @@ export const handleSelectFolder = async (
             setWorkDir(`${filePaths[0]}`)
             return `${filePaths[0]}`
         }
-    } catch (error) {
+    } catch {
         mainLog.error(`Error in handleSelectFolder`)
     }
 }

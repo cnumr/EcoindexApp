@@ -1,4 +1,4 @@
-_Vous pouvez changer la langue de l'application dans le menu `Langue`._
+_Vous pouvez changer la langue de l'application dans le menu `Language`._
 
 This desktop application lets you perform measurements like on [ecoindex.fr](https://ecoindex.fr) , but also get Google's lighthouse measurements, in a single report, with no limitation on measurements. 🎉
 

@@ -1,114 +1,354 @@
+# ecoindex-app
 
+## 0.2.10
+
+### Patch Changes
+
+- 54c570f: ## Corrections de l'auto-update
+    - **Correction de la détection de production** : Remplacement de `process.env.NODE_ENV === 'production'` par `app.isPackaged` pour déterminer si l'application est en production. `NODE_ENV` n'est pas défini dans les builds GitHub Actions, ce qui désactivait l'auto-update même en production. `app.isPackaged` est la méthode recommandée en Electron pour détecter si l'application est packagée (build de production).
+    - **Configuration du provider GitHub** : Utilisation du provider 'github' pour `electron-updater` afin d'utiliser directement l'API GitHub pour récupérer les releases. `update.electronjs.org` est conçu pour l'auto-updater natif d'Electron (`electron.autoUpdater`), pas pour `electron-updater` qui nécessite des fichiers `latest-mac.yml` générés par `electron-builder`. Comme ce projet utilise Electron Forge (pas electron-builder), le provider 'github' est la solution appropriée pour récupérer les releases GitHub directement.
+
+## 0.2.9
+
+### Patch Changes
+
+- 54c570f: ## Corrections de l'auto-update
+    - **Correction de la détection de production** : Remplacement de `process.env.NODE_ENV === 'production'` par `app.isPackaged` pour déterminer si l'application est en production. `NODE_ENV` n'est pas défini dans les builds GitHub Actions, ce qui désactivait l'auto-update même en production. `app.isPackaged` est la méthode recommandée en Electron pour détecter si l'application est packagée (build de production).
+    - **Configuration de l'URL du feed** : Ajout de `autoUpdater.setFeedURL()` avec le provider 'generic' pour configurer l'auto-update avec `update.electronjs.org`. `update.electronjs.org` est un service qui convertit les releases GitHub en format compatible avec electron-updater. L'URL doit pointer vers la base (sans version) : `https://update.electronjs.org/{owner}/{repo}/{platform}-{arch}`, car `update.electronjs.org` gère automatiquement les versions via les releases GitHub.
+
+## 0.2.8
+
+### Patch Changes
+
+- 54c570f: ## Corrections de l'auto-update
+    - **Correction de la détection de production** : Remplacement de `process.env.NODE_ENV === 'production'` par `app.isPackaged` pour déterminer si l'application est en production. `NODE_ENV` n'est pas défini dans les builds GitHub Actions, ce qui désactivait l'auto-update même en production. `app.isPackaged` est la méthode recommandée en Electron pour détecter si l'application est packagée (build de production).
+    - **Configuration de l'URL du feed** : Ajout de `autoUpdater.setFeedURL()` pour configurer l'URL du feed `update.electronjs.org`. Sans cette configuration, `electron-updater` cherchait un fichier `app-update.yml` qui n'existe pas, causant l'erreur "ENOENT: no such file or directory, open 'app-update.yml'". La configuration de l'URL du feed permet à `electron-updater` de fonctionner correctement avec `update.electronjs.org`.
+
+## 0.2.7
+
+### Patch Changes
+
+- 54c570f: ## Correction de la détection de production pour l'auto-update
+    - **Correction de la détection de production** : Remplacement de `process.env.NODE_ENV === 'production'` par `app.isPackaged` pour déterminer si l'application est en production. `NODE_ENV` n'est pas défini dans les builds GitHub Actions, ce qui désactivait l'auto-update même en production. `app.isPackaged` est la méthode recommandée en Electron pour détecter si l'application est packagée (build de production).
+
+## 0.2.6
+
+### Patch Changes
+
+- 2f411af: ## Correction du runner macOS Intel
+    - **Changement du runner macOS Intel** : Utilisation de `macos-15-intel` au lieu de `macos-15` pour le build macOS Intel. Cela résout le problème de fichiers en double lors de la création de la release GitHub, car les fichiers générés par les builds Intel et ARM avaient des noms similaires et étaient confondus lors de la déduplication.
+
+    **Référence** : [GitHub Actions Runner Images - macOS 15](https://github.com/actions/runner-images/blob/macos-15-arm64/20251215.0075/images/macos/macos-15-Readme.md)
+
+## 0.2.5
+
+### Patch Changes
+
+- f3b3376: ## Corrections du workflow GitHub Actions
+    - **Correction du pattern de fichiers** : Suppression du pattern `artifacts/**/*Setup.exe` (avec S majuscule) qui ne correspondait à aucun fichier et générait un warning. Le fichier Windows est `setup.exe` (minuscule).
+    - **Ajout de `fail_on_unmatched_files: false`** : Permet au workflow de continuer même si certains patterns ne correspondent à aucun fichier, évitant les erreurs lors de la création de release GitHub.
+    - **Ajout de `overwrite_files: false`** : Empêche l'action de tenter de mettre à jour des assets existants, ce qui causait l'erreur "Not Found" lors de l'upload de fichiers dupliqués. Le paramètre `overwrite` n'existe pas dans cette action, c'est `overwrite_files` qui doit être utilisé.
+    - **Ajout d'une étape de déduplication** : Ajout d'une étape "Remove duplicate files" qui supprime les fichiers en double avant l'upload. Les patterns glob trouvaient les mêmes fichiers dans plusieurs dossiers d'artifacts (ex: `macos-intel-artifacts` et `macos-arm-artifacts`), causant des tentatives d'upload multiples du même fichier et l'erreur "Not Found".
+
+## 0.2.4
+
+### Patch Changes
+
+- f3b3376: ## Corrections du workflow GitHub Actions
+    - **Correction du pattern de fichiers** : Suppression du pattern `artifacts/**/*Setup.exe` (avec S majuscule) qui ne correspondait à aucun fichier et générait un warning. Le fichier Windows est `setup.exe` (minuscule).
+    - **Ajout de `fail_on_unmatched_files: false`** : Permet au workflow de continuer même si certains patterns ne correspondent à aucun fichier, évitant les erreurs lors de la création de release GitHub.
+    - **Ajout de `overwrite_files: false`** : Empêche l'action de tenter de mettre à jour des assets existants, ce qui causait l'erreur "Not Found" lors de l'upload de fichiers dupliqués. Le paramètre `overwrite` n'existe pas dans cette action, c'est `overwrite_files` qui doit être utilisé.
+
+## 0.2.3
+
+### Patch Changes
+
+- bdc3598: ## Corrections du workflow GitHub Actions
+    - **Correction du pattern de fichiers** : Suppression du pattern `artifacts/**/*Setup.exe` (avec S majuscule) qui ne correspondait à aucun fichier et générait un warning. Le fichier Windows est `setup.exe` (minuscule).
+    - **Ajout de `fail_on_unmatched_files: false`** : Permet au workflow de continuer même si certains patterns ne correspondent à aucun fichier, évitant les erreurs lors de la création de release GitHub.
+    - **Ajout de `overwrite: false`** : Empêche l'action de tenter de mettre à jour des assets existants, ce qui causait l'erreur "Not Found" lors de l'upload de fichiers dupliqués.
+
+## 0.2.2
+
+### Patch Changes
+
+- 185f935: ## Optimisation CI/CD
+    - **Optimisation du workflow de build** : Ajout de la variable d'environnement `PUPPETEER_SKIP_DOWNLOAD: true` dans le step "Install dependencies" du workflow GitHub Actions pour éviter le téléchargement inutile de Puppeteer pendant les builds CI/CD. Cela accélère significativement le processus de build sur toutes les plateformes (Linux, Windows, macOS).
+
+## 0.2.1
+
+### Patch Changes
+
+- 0403db5: ## Corrections et améliorations
+
+    ### GitHub Actions
+    - **Fix** : Mise à jour du runner macOS-13 vers macOS-15 pour éviter les erreurs de dépréciation
+        - Le runner `macos-13` est maintenant retiré par GitHub Actions
+        - Utilisation de `macos-15` (macos-15-intel) comme recommandé
+
+    ### Documentation
+    - **Docs** : Ajout de commentaires explicatifs dans le code pour améliorer la compréhension
+        - Documentation détaillée du flux de collecte dans `HandleCollectAll.ts`
+        - Explication des handlers utilisateur dans `useAppHandlers.ts`
+        - Documentation de la communication IPC dans `useIpcListeners.ts`
+        - Commentaires sur les processus utilityProcess, gestion des chemins de script, etc.
+
+    ### Corrections TypeScript et ESLint
+    - **Fix** : Correction de toutes les erreurs TypeScript (45 erreurs corrigées)
+        - Types IpcMainInvokeEvent vs IpcMainEvent
+        - Propriétés non initialisées avec definite assignment
+        - Vérifications de undefined pour objets optionnels
+        - Types de callback corrigés dans interface.d.ts
+        - Gestion de SetStateAction dans les composants React
+        - Corrections dans les menus (BaseWindow vs BrowserWindow)
+        - Import CliFlags corrigé
+        - Ajout de showConfirmDialog dans IElectronAPI
+    - **Fix** : Correction d'une erreur ESLint (import React manquant)
+
+## 0.2.0
+
+### Minor Changes
+
+- 23bfa5c: ## Résumé des modifications depuis décembre 2025
+
+    ### Nouvelles fonctionnalités
+    - **Confirmation avant mesure simple** : Ajout d'une boîte de dialogue de confirmation si un fichier JSON de configuration est détecté avant de lancer une mesure simple
+    - **Affichage des logs de mesure** : Ajout d'un Textarea dans la popin de chargement affichant les logs générés depuis le début de la mesure avec auto-scroll
+    - **Système de menu dynamique** : Menu de l'application qui se met à jour automatiquement lors du changement de langue
+    - **Système de mise à jour automatique** : Implémentation complète pour macOS/Windows et notifications pour Linux
+    - **Splash Screen** : Affichage d'un écran d'accueil avec contenu markdown et option "ne plus afficher"
+    - **Mode sombre** : Support du dark mode avec détection automatique et switch manuel
+    - **Composants de mesure** : Intégration complète des composants pour mesures simples et complexes (JSON/courses)
+    - **Gestion des traductions** : Ajout de nombreuses clés de traduction pour toutes les nouvelles fonctionnalités
+
+    ### Améliorations et refactorisations
+    - **Centralisation des channels IPC** : Tous les channels IPC sont maintenant centralisés dans `constants.ts` pour une meilleure maintenabilité
+    - **Refactorisation de App.tsx** : Division en hooks personnalisés (useAppState, useAppHandlers, useAppUtils, useIpcListeners, useWorkDirEffect) pour améliorer la maintenabilité
+    - **Gestion des listeners IPC** : Correction des fuites mémoire EventEmitter et amélioration de la gestion des listeners
+    - **Simplification du LanguageSwitcher** : Élimination du clignotement lors du changement de langue
+    - **Amélioration du logging** : Remplacement de console.log/error par electron-log dans tout le codebase
+    - **Nettoyage du code** : Suppression de nombreux fichiers et fonctions inutilisés (EchoReadable, displayReloadButton, forceRefresh, etc.)
+    - **Organisation des composants** : Déplacement des composants et libs vers `src/renderer/` pour une meilleure organisation
+
+    ### Corrections de bugs
+    - **Affichage des messages console** : Correction des doublons de messages dans ConsoleApp
+    - **Synchronisation du changement de langue** : Correction du clignotement et amélioration de la synchronisation entre menu et interface
+    - **Clés de traduction manquantes** : Ajout de toutes les clés de traduction manquantes en français et en anglais
+    - **Résolution de chemins** : Alignement de la logique de résolution de chemins pour les scripts utilityProcess
+
+    ### Documentation
+    - Mise à jour complète de la documentation (ARCHITECTURE.md, DEVELOPMENT.md, FEATURES.md, etc.)
+    - Documentation de la refactorisation de l'organisation des composants
+    - Documentation de la gestion des listeners IPC
+    - Documentation de l'affichage des messages de console
+    - Documentation du système de menu dynamique
+
+## 0.1.16
+
+### Patch Changes
+
+- 7ce3b5e: add language switcher
+- 8c929e0: init electron-log
+- 310ab89: add i18n
+- 3a45146: add prettier
+- 67a881e: add accessibility lint check
+- fecd551: add lib
+- 7fff557: more of electron-store
+- e903350: add commitlint, eslint-plugin-import et @ecocode/eslint-plugin
+- 7d15e4a: Mise à jour de CONTRIBUTING.md pour clarifier le format exact de APPLE_IDENTITY
+
+## 0.1.15
+
+### Patch Changes
+
+- 20346d7: Correction du build Windows en spécifiant explicitement bash comme shell
+
+## 0.1.14
+
+### Patch Changes
+
+- 18fb861: Amélioration des logs de debug pour comprendre pourquoi la signature est adhoc
+
+## 0.1.13
+
+### Patch Changes
+
+- f081ddd: Correction de la syntaxe des variables d'environnement conditionnelles dans GitHub Actions
+
+## 0.1.12
+
+### Patch Changes
+
+- 8921895: Correction des builds Windows et macOS Intel : conditionnement des variables d'environnement macOS et amélioration de la vérification de signature
+
+## 0.1.11
+
+### Patch Changes
+
+- bc5e4ff: Correction des builds Linux et Windows en conditionnant les commandes macOS
+
+## 0.1.10
+
+### Patch Changes
+
+- bcf95b8: Correction de la détection de la configuration de signature et amélioration des logs de debug
+
+## 0.1.9
+
+### Patch Changes
+
+- fe63d57: Amélioration de la vérification du certificat et ajout de logs pour diagnostiquer le problème de signature
+
+## 0.1.8
+
+### Patch Changes
+
+- 009f3ad: Ajout de logs de debug pour diagnostiquer pourquoi la signature n'est pas appliquée
+
+## 0.1.7
+
+### Patch Changes
+
+- 2012e56: Correction du chemin de recherche de l'application pour la vérification de signature
+
+## 0.1.6
+
+### Patch Changes
+
+- 0a16cb7: Ajout du fichier CONTRIBUTING.md avec toutes les informations de développement et simplification du README pour l'utilisation
+- beaecfb: Correction de l'extraction ZIP dans create-dmg.js pour préserver la signature et ajout de vérifications de signature dans le workflow
+
+## 0.1.5
+
+### Patch Changes
+
+- ccaca4e: Correction du script create-dmg.js pour préserver la signature macOS lors de la copie
+- 529de72: Réorganisation de l'ordre des imports dans create-dmg.js
+
+## 0.1.4
+
+### Patch Changes
+
+- 7fe4e2a: Ajout d'instructions détaillées pour obtenir et encoder le certificat macOS
+- 9f9bff1: Ajout de documentation pour ouvrir les applications non signées sur macOS
+- f660ba3: Exiger la signature macOS dans le workflow GitHub Actions
+
+## 0.1.3
+
+### Patch Changes
+
+- 25cc9fc: Correction du workflow changeset pour éviter qu'il s'exécute sur les commits de version
+
+## 0.1.2
+
+### Patch Changes
+
+- e692fa1: Correction du workflow release pour qu'il ne se déclenche qu'après le merge de la PR de version créée par changeset
+
+## 0.1.1
+
+### Patch Changes
+
+- 598956b: Correction d'une faute de frappe dans la description du README
+- 7147b53: Test du processus complet de changeset et release
+- b835027: Test du workflow changeset et release
+
+# OLD CHANGELOG
 
 ## [0.4.1](https://github.com/cnumr/EcoindexApp/compare/0.4.0...0.4.1) (2025-10-04)
 
-
 ### Bug Fixes
 
-* correction des liens vers ecoindex.fr dans le contenu de démarrage en anglais et en français ([2269e38](https://github.com/cnumr/EcoindexApp/commit/2269e38ebbdb00f26dce3076bf1e33804c9dc2ed))
+- correction des liens vers ecoindex.fr dans le contenu de démarrage en anglais et en français ([2269e38](https://github.com/cnumr/EcoindexApp/commit/2269e38ebbdb00f26dce3076bf1e33804c9dc2ed))
 
 # [0.4.0](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.13...0.4.0) (2025-10-04)
 
-
 ### Bug Fixes
 
-* amélioration de la gestion des erreurs lors de la suppression des fichiers temporaires et mise à jour de la préparation des données pour la collecte complexe ([75dfabf](https://github.com/cnumr/EcoindexApp/commit/75dfabfe3d721ebc46dd96625d896aa5324c2831))
-* mise à jour de l'agent utilisateur dans les constantes pour une meilleure compatibilité ([9e365f3](https://github.com/cnumr/EcoindexApp/commit/9e365f3c0a6a8dd89d0deb6f47ba381198e256c3))
-
+- amélioration de la gestion des erreurs lors de la suppression des fichiers temporaires et mise à jour de la préparation des données pour la collecte complexe ([75dfabf](https://github.com/cnumr/EcoindexApp/commit/75dfabfe3d721ebc46dd96625d896aa5324c2831))
+- mise à jour de l'agent utilisateur dans les constantes pour une meilleure compatibilité ([9e365f3](https://github.com/cnumr/EcoindexApp/commit/9e365f3c0a6a8dd89d0deb6f47ba381198e256c3))
 
 ### Features
 
-* ajout de la propriété 'puppeteer-script' à l'interface IJsonMesureData ([966e52e](https://github.com/cnumr/EcoindexApp/commit/966e52e78aa632a53a8eb456c7b34701c0dcbcc7))
-* ajout de la version du plugin ecoindex dans le pied de page de l'application ([8a2cf39](https://github.com/cnumr/EcoindexApp/commit/8a2cf3927b312af85701aa7a035e529138b2545b))
+- ajout de la propriété 'puppeteer-script' à l'interface IJsonMesureData ([966e52e](https://github.com/cnumr/EcoindexApp/commit/966e52e78aa632a53a8eb456c7b34701c0dcbcc7))
+- ajout de la version du plugin ecoindex dans le pied de page de l'application ([8a2cf39](https://github.com/cnumr/EcoindexApp/commit/8a2cf3927b312af85701aa7a035e529138b2545b))
 
 # [0.4.0-rc.13](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.12...0.4.0-rc.13) (2025-08-24)
 
-
 ### Bug Fixes
 
-* amélioration de l'importation de shell-env pour gérer les environnements de manière plus robuste ([346610e](https://github.com/cnumr/EcoindexApp/commit/346610ed270c5438a172ed103256db38692aff95))
-
+- amélioration de l'importation de shell-env pour gérer les environnements de manière plus robuste ([346610e](https://github.com/cnumr/EcoindexApp/commit/346610ed270c5438a172ed103256db38692aff95))
 
 ### Features
 
-* ajout d'un gestionnaire d'ouverture de fenêtre pour les téléchargements dans la fenêtre principale ([683e1d1](https://github.com/cnumr/EcoindexApp/commit/683e1d1fa47205e2f66694b3284ebc1d992c7967))
-* ajout de la gestion des erreurs de NodeJS avec des liens de téléchargement dans les messages d'initialisation et les popins d'information ([5cc8d15](https://github.com/cnumr/EcoindexApp/commit/5cc8d15bf3656add89a65265225cbc2521fbb753))
-* ajout de la vérification de NodeJS dans les traductions en anglais et en français ([f07162a](https://github.com/cnumr/EcoindexApp/commit/f07162ad1855afbd1d6936301a4a24b2ea7bd059))
-* ajout des propriétés 'step' et 'steps' dans le message d'initialisation pour un suivi plus précis des étapes ([5361b85](https://github.com/cnumr/EcoindexApp/commit/5361b8593f8e804d9fd4059a3f12fb17b758748e))
+- ajout d'un gestionnaire d'ouverture de fenêtre pour les téléchargements dans la fenêtre principale ([683e1d1](https://github.com/cnumr/EcoindexApp/commit/683e1d1fa47205e2f66694b3284ebc1d992c7967))
+- ajout de la gestion des erreurs de NodeJS avec des liens de téléchargement dans les messages d'initialisation et les popins d'information ([5cc8d15](https://github.com/cnumr/EcoindexApp/commit/5cc8d15bf3656add89a65265225cbc2521fbb753))
+- ajout de la vérification de NodeJS dans les traductions en anglais et en français ([f07162a](https://github.com/cnumr/EcoindexApp/commit/f07162ad1855afbd1d6936301a4a24b2ea7bd059))
+- ajout des propriétés 'step' et 'steps' dans le message d'initialisation pour un suivi plus précis des étapes ([5361b85](https://github.com/cnumr/EcoindexApp/commit/5361b8593f8e804d9fd4059a3f12fb17b758748e))
 
 # [0.4.0-rc.12](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.11...0.4.0-rc.12) (2025-06-01)
 
-
 ### Bug Fixes
 
-* wrong plateform test ([8439bf7](https://github.com/cnumr/EcoindexApp/commit/8439bf727e0399779c730dd21776d70395312b8a))
-
+- wrong plateform test ([8439bf7](https://github.com/cnumr/EcoindexApp/commit/8439bf727e0399779c730dd21776d70395312b8a))
 
 ### Features
 
-* add audit selector on json measure ([bd53fbd](https://github.com/cnumr/EcoindexApp/commit/bd53fbd086807b5a30989709ffe28b18dff8c504))
+- add audit selector on json measure ([bd53fbd](https://github.com/cnumr/EcoindexApp/commit/bd53fbd086807b5a30989709ffe28b18dff8c504))
 
 # [0.4.0-rc.11](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.10...0.4.0-rc.11) (2025-06-01)
 
 # [0.4.0-rc.10](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.9...0.4.0-rc.10) (2025-05-30)
 
-
 ### Features
 
-* ajout de l'API de journalisation et d'interaction, mise à jour de l'interface et intégration de l'écran de démarrage ([56b3988](https://github.com/cnumr/EcoindexApp/commit/56b39884d8ee9e8ffdf42fdfd7e276ae20daa6e8))
-* ajout de nouvelles catégories dans la fonction _prepareDatas pour une collecte plus complète ([961432a](https://github.com/cnumr/EcoindexApp/commit/961432a2d2412f873ea94a5762802effb9bf1855))
+- ajout de l'API de journalisation et d'interaction, mise à jour de l'interface et intégration de l'écran de démarrage ([56b3988](https://github.com/cnumr/EcoindexApp/commit/56b39884d8ee9e8ffdf42fdfd7e276ae20daa6e8))
+- ajout de nouvelles catégories dans la fonction \_prepareDatas pour une collecte plus complète ([961432a](https://github.com/cnumr/EcoindexApp/commit/961432a2d2412f873ea94a5762802effb9bf1855))
 
 # [0.4.0-rc.9](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.8...0.4.0-rc.9) (2025-05-18)
 
-
 ### Bug Fixes
 
-* remplacement de 'os.platform()' par 'process.platform' pour une vérification correcte de la plateforme dans le code principal ([3d25bcf](https://github.com/cnumr/EcoindexApp/commit/3d25bcf365a6a5c675eb24533287eb7c228d5553))
-
+- remplacement de 'os.platform()' par 'process.platform' pour une vérification correcte de la plateforme dans le code principal ([3d25bcf](https://github.com/cnumr/EcoindexApp/commit/3d25bcf365a6a5c675eb24533287eb7c228d5553))
 
 ### Features
 
-* amélioration de l'affichage des messages d'information avec des styles conditionnels ([f7bad68](https://github.com/cnumr/EcoindexApp/commit/f7bad6855fd6c934e822e01e4ce033652bbc1bee))
-* correction de la vérification de la plateforme pour l'initialisation, en remplaçant 'win32' par 'darwin' ([6e7ec0f](https://github.com/cnumr/EcoindexApp/commit/6e7ec0f58a5a12dafae53b846f14b3f18fbb075e))
+- amélioration de l'affichage des messages d'information avec des styles conditionnels ([f7bad68](https://github.com/cnumr/EcoindexApp/commit/f7bad6855fd6c934e822e01e4ce033652bbc1bee))
+- correction de la vérification de la plateforme pour l'initialisation, en remplaçant 'win32' par 'darwin' ([6e7ec0f](https://github.com/cnumr/EcoindexApp/commit/6e7ec0f58a5a12dafae53b846f14b3f18fbb075e))
 
 # [0.4.0-rc.8](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.7...0.4.0-rc.8) (2025-05-17)
 
-
 ### Bug Fixes
 
-* ajout d'un message de log pour l'extraction des fichiers ASAR sur Windows ([5abbabb](https://github.com/cnumr/EcoindexApp/commit/5abbabbbe60f16bfa7b7f67e665894218541b3d1))
-* ajout de messages de log et de console pour le suivi de l'extraction des fichiers ASAR ([73268d8](https://github.com/cnumr/EcoindexApp/commit/73268d8af42d4b9ef42a4a690bf4f7b578965a0b))
-* réintégration de l'extraction des fichiers ASAR pour Windows avec une vérification de la plateforme ([6cf8281](https://github.com/cnumr/EcoindexApp/commit/6cf828184b0f9c9b627b8f40983fbef3cf1364f1))
-
+- ajout d'un message de log pour l'extraction des fichiers ASAR sur Windows ([5abbabb](https://github.com/cnumr/EcoindexApp/commit/5abbabbbe60f16bfa7b7f67e665894218541b3d1))
+- ajout de messages de log et de console pour le suivi de l'extraction des fichiers ASAR ([73268d8](https://github.com/cnumr/EcoindexApp/commit/73268d8af42d4b9ef42a4a690bf4f7b578965a0b))
+- réintégration de l'extraction des fichiers ASAR pour Windows avec une vérification de la plateforme ([6cf8281](https://github.com/cnumr/EcoindexApp/commit/6cf828184b0f9c9b627b8f40983fbef3cf1364f1))
 
 ### Features
 
-* ajout de la gestion des messages d'initialisation pour améliorer le suivi du processus d'initialisation de l'application ([db6a0c7](https://github.com/cnumr/EcoindexApp/commit/db6a0c7a2708920a1261845927790407fb44da60))
-* finalisation du nouveau chargement (menage à faire) ([a89e0d4](https://github.com/cnumr/EcoindexApp/commit/a89e0d444a96cde33ca9edddb2093581e7c12e28))
+- ajout de la gestion des messages d'initialisation pour améliorer le suivi du processus d'initialisation de l'application ([db6a0c7](https://github.com/cnumr/EcoindexApp/commit/db6a0c7a2708920a1261845927790407fb44da60))
+- finalisation du nouveau chargement (menage à faire) ([a89e0d4](https://github.com/cnumr/EcoindexApp/commit/a89e0d444a96cde33ca9edddb2093581e7c12e28))
 
 # [0.4.0-rc.7](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.6...0.4.0-rc.7) (2025-05-13)
 
-
 ### Bug Fixes
 
-* réintégration de l'extraction des fichiers ASAR pour Windows dans le processus d'initialisation ([34edcff](https://github.com/cnumr/EcoindexApp/commit/34edcff0129733b3c09d867afa1cf78b7b47d133))
-* vérification de l'existence du fichier package.json dans le dossier lib avant l'extraction des fichiers ASAR ([8e25272](https://github.com/cnumr/EcoindexApp/commit/8e252725ac95494f899eda92e4028af799037648))
+- réintégration de l'extraction des fichiers ASAR pour Windows dans le processus d'initialisation ([34edcff](https://github.com/cnumr/EcoindexApp/commit/34edcff0129733b3c09d867afa1cf78b7b47d133))
+- vérification de l'existence du fichier package.json dans le dossier lib avant l'extraction des fichiers ASAR ([8e25272](https://github.com/cnumr/EcoindexApp/commit/8e252725ac95494f899eda92e4028af799037648))
 
 # [0.4.0-rc.6](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.5...0.4.0-rc.6) (2025-05-13)
 
-
 ### Bug Fixes
 
-* correction de la promesse de résolution dans l'extraction des fichiers ASAR ([b413400](https://github.com/cnumr/EcoindexApp/commit/b41340047b484d9705dd0e7cae4c73829658ee36))
+- correction de la promesse de résolution dans l'extraction des fichiers ASAR ([b413400](https://github.com/cnumr/EcoindexApp/commit/b41340047b484d9705dd0e7cae4c73829658ee36))
 
 # [0.4.0-rc.5](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.4...0.4.0-rc.5) (2025-05-13)
 
 # [0.4.0-rc.4](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.3...0.4.0-rc.4) (2025-05-13)
 
-
 ### Bug Fixes
 
-* handle win32 difference ([6162640](https://github.com/cnumr/EcoindexApp/commit/61626405b63f98d13fe12a59b73006869183514b))
+- handle win32 difference ([6162640](https://github.com/cnumr/EcoindexApp/commit/61626405b63f98d13fe12a59b73006869183514b))
 
 # [0.4.0-rc.3](https://github.com/cnumr/EcoindexApp/compare/0.4.0-rc.2...0.4.0-rc.3) (2025-05-12)
 
@@ -118,23 +358,21 @@
 
 # [0.4.0-rc.0](https://github.com/cnumr/EcoindexApp/compare/0.3.0...0.4.0-rc.0) (2025-05-12)
 
-
 ### Bug Fixes
 
-* change plugin version ([e548e26](https://github.com/cnumr/EcoindexApp/commit/e548e26cf47417c208d496208df23495996c44c1))
-
+- change plugin version ([e548e26](https://github.com/cnumr/EcoindexApp/commit/e548e26cf47417c208d496208df23495996c44c1))
 
 ### Features
 
-* [#16](https://github.com/cnumr/EcoindexApp/issues/16) init ([f7edab4](https://github.com/cnumr/EcoindexApp/commit/f7edab43bbf89ac23a684ce757f14193524a9476))
-* add GNU AFFERO GENERAL PUBLIC LICENSE ([b4e44d9](https://github.com/cnumr/EcoindexApp/commit/b4e44d99df7549b5afdac36cc2d6d0f0a4ed5b71))
-* ajout de la gestion de l'ouverture du rapport dans le navigateur pour le mode simple ([04a55bb](https://github.com/cnumr/EcoindexApp/commit/04a55bba71101db3e404d0e0abde1e5fc00b1fcc))
-* ça fonctionne, en mode test, il faut faire du ménage... ([dbc3166](https://github.com/cnumr/EcoindexApp/commit/dbc3166d8bab32f401e5c23720a74e97498a7277))
-* conf ok, build ok, mais ne trouve pas les .mjs dans extraResources ([3c2ac49](https://github.com/cnumr/EcoindexApp/commit/3c2ac491511160e191ce19d99780b15f19744962))
-* continue with new packages... ([1eeec1d](https://github.com/cnumr/EcoindexApp/commit/1eeec1da8767345b0cde50891009197d18553788))
-* nouvelle initialisation de l'application, utilisant le node interne d'Electron [#16](https://github.com/cnumr/EcoindexApp/issues/16) , mais ça ne build pas... ([17d005d](https://github.com/cnumr/EcoindexApp/commit/17d005dc0eef97071b3b535cbf9ed912e94c8af1))
-* suppression de logs de débogage et ajout de l'envoi de messages au front ([132087f](https://github.com/cnumr/EcoindexApp/commit/132087f166a5a8a09a902f379d4143d5292dd468))
-* works builded locally, to generate and try on normal computer. nouvelle initialisation de l'application, utilisant le node interne d'Electron [#16](https://github.com/cnumr/EcoindexApp/issues/16) ([ec510d1](https://github.com/cnumr/EcoindexApp/commit/ec510d176bd0ce92cfb6aa056500221cde1edabe))
+- [#16](https://github.com/cnumr/EcoindexApp/issues/16) init ([f7edab4](https://github.com/cnumr/EcoindexApp/commit/f7edab43bbf89ac23a684ce757f14193524a9476))
+- add GNU AFFERO GENERAL PUBLIC LICENSE ([b4e44d9](https://github.com/cnumr/EcoindexApp/commit/b4e44d99df7549b5afdac36cc2d6d0f0a4ed5b71))
+- ajout de la gestion de l'ouverture du rapport dans le navigateur pour le mode simple ([04a55bb](https://github.com/cnumr/EcoindexApp/commit/04a55bba71101db3e404d0e0abde1e5fc00b1fcc))
+- ça fonctionne, en mode test, il faut faire du ménage... ([dbc3166](https://github.com/cnumr/EcoindexApp/commit/dbc3166d8bab32f401e5c23720a74e97498a7277))
+- conf ok, build ok, mais ne trouve pas les .mjs dans extraResources ([3c2ac49](https://github.com/cnumr/EcoindexApp/commit/3c2ac491511160e191ce19d99780b15f19744962))
+- continue with new packages... ([1eeec1d](https://github.com/cnumr/EcoindexApp/commit/1eeec1da8767345b0cde50891009197d18553788))
+- nouvelle initialisation de l'application, utilisant le node interne d'Electron [#16](https://github.com/cnumr/EcoindexApp/issues/16) , mais ça ne build pas... ([17d005d](https://github.com/cnumr/EcoindexApp/commit/17d005dc0eef97071b3b535cbf9ed912e94c8af1))
+- suppression de logs de débogage et ajout de l'envoi de messages au front ([132087f](https://github.com/cnumr/EcoindexApp/commit/132087f166a5a8a09a902f379d4143d5292dd468))
+- works builded locally, to generate and try on normal computer. nouvelle initialisation de l'application, utilisant le node interne d'Electron [#16](https://github.com/cnumr/EcoindexApp/issues/16) ([ec510d1](https://github.com/cnumr/EcoindexApp/commit/ec510d176bd0ce92cfb6aa056500221cde1edabe))
 
 # [0.3.0](https://github.com/cnumr/EcoindexApp/compare/0.3.0-rc.9...0.3.0) (2024-10-17)
 

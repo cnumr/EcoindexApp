@@ -12,7 +12,6 @@ import { getMainWindow } from '../../memory'
  * @returns Promise&lt;ConfigData>
  */
 export const initPluginNormalInstallation = (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _event: IpcMainEvent | IpcMainInvokeEvent
 ) => {
     const mainLog = getMainLog().scope(
@@ -34,10 +33,13 @@ export const initPluginNormalInstallation = (
                 // mainLog.debug(`stdout: ${stdout}`)
                 toReturned.result = true
                 toReturned.message = `lighthouse-plugin-ecoindex installed or updated 🎉`
-                getMainWindow().webContents.send(
-                    channels.HOST_INFORMATIONS_BACK,
-                    toReturned
-                )
+                const mainWindow = getMainWindow()
+                if (mainWindow) {
+                    mainWindow.webContents.send(
+                        channels.HOST_INFORMATIONS_BACK,
+                        toReturned
+                    )
+                }
                 return resolve(toReturned)
             }
         })

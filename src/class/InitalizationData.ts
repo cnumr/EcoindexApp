@@ -1,4 +1,4 @@
-type InitalizationDataType =
+export type InitalizationDataType =
     | 'workDir'
     | 'homeDir'
     | 'appReady'
@@ -15,18 +15,8 @@ export class InitalizationData {
     static APP_CAN_NOT_BE_LAUNCHED = 'app_can_not_be_launched'
     static NODE_INSTALLED = 'node_installed'
     static NODE_VERSION_OK = 'node_version_ok'
-    type: InitalizationDataType
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    type!: InitalizationDataType
     result: any
-    //     type InitalizationData = {
-    //     type:
-    //         | 'workDir'
-    //         | 'homeDir'
-    //         | 'appReady'
-    //         | 'puppeteer_browser_installed'
-    //         | 'puppeteer_browser_installation'
-    //         | 'app_can_not_be_launched'
-    // }
     public constructor() {
         //
     }

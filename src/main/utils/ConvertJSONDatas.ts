@@ -1,3 +1,5 @@
+import type { IJsonMesureData, ISimpleUrlInput } from '../../interface'
+
 /**
  * ISimpleUrlInput[] -> string[]
  * @param jsonDatas with urls ISimpleUrlInput[]
@@ -36,6 +38,5 @@ export const convertJSONDatasFromString = (
         )
         jsonDatas.courses[index].urls = urls
     })
-    // console.log(`_convertJSONDatasFromString`, output)
     return output
 }

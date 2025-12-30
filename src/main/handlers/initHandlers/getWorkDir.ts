@@ -15,7 +15,6 @@ const store = new Store()
  * @param _event MainEvent.
  * @returns Promise&lt;ConfigData>
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const initGetWorkDir = (_event: IpcMainEvent | IpcMainInvokeEvent) => {
     const mainLog = getMainLog().scope('main/initialization/initGetWorkDir')
     const toReturned = new ConfigData('workDir')
@@ -27,7 +26,7 @@ export const initGetWorkDir = (_event: IpcMainEvent | IpcMainInvokeEvent) => {
     }
     try {
         fs.accessSync(lastWorkDir as string)
-    } catch (error) {
+    } catch {
         store.set(`lastWorkDir`, homedir)
         lastWorkDir = homedir
         mainLog.info(`lastWorkDir unknown, fall back to homeDir`, lastWorkDir)
@@ -36,19 +35,25 @@ export const initGetWorkDir = (_event: IpcMainEvent | IpcMainInvokeEvent) => {
     return new Promise<ConfigData>((resolve, reject) => {
         try {
             toReturned.result = lastWorkDir as string
-            getMainWindow().webContents.send(
-                channels.HOST_INFORMATIONS_BACK,
-                toReturned
-            )
+            const mainWindow = getMainWindow()
+            if (mainWindow) {
+                mainWindow.webContents.send(
+                    channels.HOST_INFORMATIONS_BACK,
+                    toReturned
+                )
+            }
             resolve(toReturned)
-        } catch (error) {
+        } catch {
             mainLog.error(`Error on initGetWorkDir 🚫`)
             toReturned.error = `Error on initGetWorkDir 🚫`
             toReturned.message = `Error on initGetWorkDir 🚫`
-            getMainWindow().webContents.send(
-                channels.HOST_INFORMATIONS_BACK,
-                toReturned
-            )
+            const mainWindow = getMainWindow()
+            if (mainWindow) {
+                mainWindow.webContents.send(
+                    channels.HOST_INFORMATIONS_BACK,
+                    toReturned
+                )
+            }
             reject(toReturned)
         }
     })

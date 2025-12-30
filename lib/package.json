@@ -10,11 +10,8 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "lighthouse": "12.5.1",
-        "lighthouse-plugin-ecoindex-core": "6.0.3",
-        "lighthouse-plugin-ecoindex-courses": "6.0.3"
-    },
-    "peerDependencies": {
-        "lighthouse": "12.5.1"
+        "lighthouse": "13.0.1",
+        "lighthouse-plugin-ecoindex-core": "6.0.6",
+        "lighthouse-plugin-ecoindex-courses": "6.0.6"
     }
 }

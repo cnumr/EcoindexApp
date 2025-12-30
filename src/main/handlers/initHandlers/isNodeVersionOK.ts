@@ -16,7 +16,6 @@ const store = new Store()
  * @returns Promise&lt;ConfigData>
  */
 export const initIsNodeNodeVersionOK = async (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _event: IpcMainEvent | IpcMainInvokeEvent
 ) => {
     const mainLog = getMainLog().scope(
@@ -24,7 +23,7 @@ export const initIsNodeNodeVersionOK = async (
     )
     const toReturned = new ConfigData('node_version_is_ok')
     const tryReadVersion = async (): Promise<ConfigData> => {
-        let nodePath = getNodeDir()
+        let nodePath: string | null = getNodeDir() || null
         if (!nodePath) nodePath = await resolveNodeBinary()
         if (!nodePath) {
             toReturned.error =
@@ -46,10 +45,13 @@ export const initIsNodeNodeVersionOK = async (
                 toReturned.message = returned
                 setNodeV(returned)
                 store.set(`nodeVersion`, returned)
-                getMainWindow().webContents.send(
-                    channels.HOST_INFORMATIONS_BACK,
-                    toReturned
-                )
+                const mainWindow = getMainWindow()
+                if (mainWindow) {
+                    mainWindow.webContents.send(
+                        channels.HOST_INFORMATIONS_BACK,
+                        toReturned
+                    )
+                }
                 return resolve(toReturned)
             })
         })

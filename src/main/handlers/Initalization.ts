@@ -5,14 +5,16 @@ import {
     utils,
 } from '../../shared/constants'
 
-import { InitalizationData } from '../../class/InitalizationData'
+import {
+    InitalizationData,
+    type InitalizationDataType,
+} from '../../class/InitalizationData'
 import { InitalizationMessage } from '@/types'
 import Store from 'electron-store'
-import extractAsarLib from './HandleExtractAsarLib'
+import extractAsarLib from './initHandlers/HandleExtractAsarLib'
 import { getMainLog } from '../main'
 import { getMainWindow } from '../memory'
-import { handleSplashScreen } from './HandleSplashScreen'
-import i18n from '../../configs/i18next.config'
+import i18n, { initializeI18n } from '../../configs/i18next.config'
 import { initGetHomeDir } from './initHandlers/getHomeDir'
 import { initGetWorkDir } from './initHandlers/getWorkDir'
 import { initIsNodeInstalled } from './initHandlers/IsNodeInstalled'
@@ -38,7 +40,14 @@ type initializedDatas = {
 }
 
 const readInitalizedDatas = (value: initializedDatas): boolean => {
-    return value.initIsNodeInstalled && value.initIsNodeNodeVersionOK
+    return !!(value.initIsNodeInstalled && value.initIsNodeNodeVersionOK)
+}
+
+const sendInitializationMessage = (message: InitalizationMessage) => {
+    const mainWindow = getMainWindow()
+    if (mainWindow) {
+        mainWindow.webContents.send(channels.INITIALIZATION_MESSAGES, message)
+    }
 }
 
 /**
@@ -56,13 +65,29 @@ export const initialization = async (
     const mainLog = getMainLog().scope('main/initialization')
     const initializedDatas: initializedDatas = {}
 
-    mainLog.info(`forceInitialisation`, forceInitialisation)
+    mainLog.info(
+        'Initialization function called, forceInitialisation:',
+        forceInitialisation
+    )
+
     try {
+        // S'assurer que i18next est initialisé et que les traductions sont chargées
+        mainLog.debug('Initializing i18next...')
+        await initializeI18n()
+        mainLog.debug('i18next initialized successfully')
+
+        // Charger la langue depuis le store si elle n'est pas déjà chargée
+        const savedLanguage = (store.get('language') as string) || 'en'
+        if (i18n.language !== savedLanguage) {
+            await i18n.changeLanguage(savedLanguage)
+            mainLog.debug('Language changed to:', savedLanguage)
+        }
+
         const nbsteps = 9
         const steps = isDarwin ? nbsteps : nbsteps + 1
         let currentStep = 1
         mainLog.log(`Initialization start...`)
-        getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+        sendInitializationMessage({
             type: 'message',
             modalType: 'started',
             title: `${i18n.t('initialization.title')}`,
@@ -74,7 +99,7 @@ export const initialization = async (
         await new Promise((resolve) => setTimeout(resolve, 5000))
 
         // #region Check Node
-        getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+        sendInitializationMessage({
             type: 'message',
             modalType: 'started',
             title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
@@ -88,7 +113,7 @@ export const initialization = async (
             checkNodeReturned.result as boolean
         mainLog.log(checkNodeReturned)
         if (!initializedDatas.initIsNodeInstalled) {
-            getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+            sendInitializationMessage({
                 type: 'message',
                 modalType: 'error',
                 title: `${i18n.t('initialization.fatal.error')}`,
@@ -97,21 +122,27 @@ export const initialization = async (
                     label: `${i18n.t('initialization.node.install.Label')}`,
                     url: utils.DOWNLOAD_NODE_LINK,
                 },
-                data: {},
             })
             return false
         }
-        getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+        sendInitializationMessage({
             type: 'data',
+            modalType: 'completed',
+            title: '',
+            message: '',
             data: {
-                type: InitalizationData.NODE_INSTALLED,
-                result: checkNodeReturned.result,
+                type: InitalizationData.NODE_INSTALLED as InitalizationDataType,
+                result:
+                    checkNodeReturned.result !== null &&
+                    checkNodeReturned.result !== undefined
+                        ? String(checkNodeReturned.result)
+                        : '',
             },
-        })
+        } as InitalizationMessage)
         currentStep++
         // #endregion
         // #region Check Node Version
-        getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+        sendInitializationMessage({
             type: 'message',
             modalType: 'started',
             title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
@@ -125,7 +156,7 @@ export const initialization = async (
             checkNodeVersionReturned.result as boolean
         mainLog.log(checkNodeVersionReturned)
         if (!initializedDatas.initIsNodeNodeVersionOK) {
-            getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+            sendInitializationMessage({
                 type: 'message',
                 modalType: 'error',
                 title: `${i18n.t('initialization.fatal.error')}`,
@@ -134,23 +165,29 @@ export const initialization = async (
                     label: `${i18n.t('initialization.node.install.Label')}`,
                     url: utils.DOWNLOAD_NODE_LINK,
                 },
-                data: {},
             })
             return false
         }
-        getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+        sendInitializationMessage({
             type: 'data',
+            modalType: 'completed',
+            title: '',
+            message: '',
             data: {
-                type: InitalizationData.NODE_VERSION_OK,
-                result: checkNodeVersionReturned.result,
+                type: InitalizationData.NODE_VERSION_OK as InitalizationDataType,
+                result:
+                    checkNodeVersionReturned.result !== null &&
+                    checkNodeVersionReturned.result !== undefined
+                        ? String(checkNodeVersionReturned.result)
+                        : '',
             },
-        })
+        } as InitalizationMessage)
         currentStep++
         // #endregion
 
         // #region Extraction pour windows
         if (!isDarwin) {
-            getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+            sendInitializationMessage({
                 type: 'message',
                 modalType: 'started',
                 title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
@@ -163,7 +200,7 @@ export const initialization = async (
         }
         // #endregion
         // #region Get User HomeDir
-        getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+        sendInitializationMessage({
             type: 'message',
             modalType: 'started',
             title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
@@ -176,19 +213,26 @@ export const initialization = async (
         const getHomeDirReturned = await initGetHomeDir(event)
         initializedDatas.initGetHomeDir = getHomeDirReturned.result as string
         mainLog.log(getHomeDirReturned)
-        getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+        sendInitializationMessage({
             type: 'data',
+            modalType: 'completed',
+            title: '',
+            message: '',
             data: {
-                type: InitalizationData.HOMEDIR,
-                result: getHomeDirReturned.result,
+                type: InitalizationData.HOMEDIR as InitalizationDataType,
+                result:
+                    getHomeDirReturned.result !== null &&
+                    getHomeDirReturned.result !== undefined
+                        ? String(getHomeDirReturned.result)
+                        : '',
             },
-        })
+        } as InitalizationMessage)
         currentStep++
         // #endregion
         // #region WorkDir
         // attendre 2 secondes
         await new Promise((resolve) => setTimeout(resolve, 2000))
-        getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+        sendInitializationMessage({
             type: 'message',
             modalType: 'started',
             title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
@@ -202,17 +246,24 @@ export const initialization = async (
         const getWorkDirReturned = await initGetWorkDir(event)
         initializedDatas.initGetWorkDir = getWorkDirReturned.result as string
         mainLog.log(getWorkDirReturned)
-        getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+        sendInitializationMessage({
             type: 'data',
+            modalType: 'completed',
+            title: '',
+            message: '',
             data: {
-                type: InitalizationData.WORKDIR,
-                result: getWorkDirReturned.result,
+                type: InitalizationData.WORKDIR as InitalizationDataType,
+                result:
+                    getWorkDirReturned.result !== null &&
+                    getWorkDirReturned.result !== undefined
+                        ? String(getWorkDirReturned.result)
+                        : '',
             },
-        })
+        } as InitalizationMessage)
         currentStep++
         // #endregion
         // #region Puppeteer Browser Installed
-        getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+        sendInitializationMessage({
             type: 'message',
             modalType: 'started',
             title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
@@ -225,18 +276,25 @@ export const initialization = async (
             await initPuppeteerBrowserIsInstalled(event)
         initializedDatas.initPuppeteerBrowserIsInstalled =
             getPuppeteerBrowserIsInstalledReturned.result !== null
-        getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+        sendInitializationMessage({
             type: 'data',
+            modalType: 'completed',
+            title: '',
+            message: '',
             data: {
-                type: InitalizationData.PUPPETEER_BROWSER_INSTALLED,
-                result: getPuppeteerBrowserIsInstalledReturned.result,
+                type: InitalizationData.PUPPETEER_BROWSER_INSTALLED as InitalizationDataType,
+                result:
+                    getPuppeteerBrowserIsInstalledReturned.result !== null &&
+                    getPuppeteerBrowserIsInstalledReturned.result !== undefined
+                        ? String(getPuppeteerBrowserIsInstalledReturned.result)
+                        : '',
             },
-        })
+        } as InitalizationMessage)
         currentStep++
         // #endregion
         // #region Puppeteer Browser Installation
         if (getPuppeteerBrowserIsInstalledReturned.error) {
-            getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+            sendInitializationMessage({
                 type: 'message',
                 modalType: 'started',
                 title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
@@ -255,17 +313,14 @@ export const initialization = async (
             if (getPuppeteerBrowserInstallationReturned.result !== null) {
                 // mainLog.log('Waiting 10 seconds before verification...')
                 // await new Promise((resolve) => setTimeout(resolve, 10000))
-                getMainWindow().webContents.send(
-                    channels.INITIALIZATION_MESSAGES,
-                    {
-                        type: 'message',
-                        modalType: 'started',
-                        title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
-                        message: `${i18n.t('initialization.browser-puppeteer.verification')}`,
-                        step: currentStep,
-                        steps: steps,
-                    }
-                )
+                sendInitializationMessage({
+                    type: 'message',
+                    modalType: 'started',
+                    title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
+                    message: `${i18n.t('initialization.browser-puppeteer.verification')}`,
+                    step: currentStep,
+                    steps: steps,
+                })
                 mainLog.log(
                     `${currentStep}.b Verification Puppeteer installed after installation ...`
                 )
@@ -296,7 +351,7 @@ export const initialization = async (
             mainLog.info(
                 `Without Puppeteer Browser, the app can't work. Stop and alert.`
             )
-            getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+            sendInitializationMessage({
                 type: 'message',
                 modalType: 'error',
                 title: `${i18n.t('initialization.title-error')}`,
@@ -309,17 +364,28 @@ export const initialization = async (
             // stop all
             return false
         } else {
-            getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+            sendInitializationMessage({
                 type: 'data',
+                modalType: 'completed',
+                title: '',
+                message: '',
                 data: {
-                    type: InitalizationData.PUPPETEER_BROWSER_INSTALLED,
-                    result: getPuppeteerBrowserIsInstalledReturned.result,
+                    type: InitalizationData.PUPPETEER_BROWSER_INSTALLED as InitalizationDataType,
+                    result:
+                        getPuppeteerBrowserIsInstalledReturned.result !==
+                            null &&
+                        getPuppeteerBrowserIsInstalledReturned.result !==
+                            undefined
+                            ? String(
+                                  getPuppeteerBrowserIsInstalledReturned.result
+                              )
+                            : '',
                 },
-            })
+            } as InitalizationMessage)
         }
         currentStep++
         // #endregion
-        getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+        sendInitializationMessage({
             type: 'message',
             modalType: 'completed',
             title: `${currentStep}/${steps} - ${i18n.t('initialization.title')}`,
@@ -328,16 +394,21 @@ export const initialization = async (
 
         const isReady = forceAppReady || readInitalizedDatas(initializedDatas)
         if (isReady) {
-            // TODO
+            mainLog.info('Application initialized successfully')
             store.set(storeConstants.APP_INSTALLED_ONCE, true)
-            getMainWindow().webContents.send(channels.INITIALIZATION_MESSAGES, {
+            sendInitializationMessage({
                 type: 'data',
                 data: {
-                    type: InitalizationData.APP_READY,
+                    type: InitalizationData.APP_READY as InitalizationDataType,
                     result: true,
                 },
             } as InitalizationMessage)
-            handleSplashScreen(null, 'normal')
+            // Attendre que la popin d'initialisation se ferme (2 secondes + marge)
+            await new Promise((resolve) => setTimeout(resolve, 2500))
+            // Afficher le splash screen après la fermeture de la popin
+            const { handleSplashScreen } =
+                await import('./initHandlers/HandleSplashScreen')
+            await handleSplashScreen(null, 'normal')
             return true
         }
         return false

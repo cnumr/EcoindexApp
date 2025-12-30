@@ -13,11 +13,14 @@ export const _sendMessageToFrontConsole = (
 ) => {
     const mainLog = getMainLog().scope('main/_sendMessageToFrontConsole')
     try {
-        getMainWindow().webContents.send(
-            channels.ASYNCHRONOUS_LOG,
-            message,
-            optionalParams
-        )
+        const mainWindow = getMainWindow()
+        if (mainWindow) {
+            mainWindow.webContents.send(
+                channels.ASYNCHRONOUS_LOG,
+                message,
+                optionalParams
+            )
+        }
     } catch (error) {
         mainLog.error('Error in _sendMessageToFrontConsole', error)
     }
