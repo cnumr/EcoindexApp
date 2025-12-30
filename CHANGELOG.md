@@ -1,5 +1,28 @@
 # ecoindex-app
 
+## 0.6.0
+
+### Minor Changes
+
+- 564048a: ## Mise à jour de version 0.5.0
+
+    Mise à jour de la version de l'application de 0.4.1 à 0.5.0.
+
+    C'est une toute nouvelle de l'application, entièrement mise à jour (React, TypeScript, Tailwind CSS, Shadcn/ui, Electron, etc.). Elle utilise Changeset pour la gestion des versions et des changelog.
+
+### Patch Changes
+
+- 29cb4da: ## Refactorisation de l'auto-updater
+    - **Utilisation de l'auto-updater natif d'Electron** : Remplacement de `electron-updater` par l'auto-updater natif d'Electron (`electron.autoUpdater`) pour simplifier la configuration et s'aligner avec l'ancien projet (cnumr/EcoindexApp).
+    - **Utilisation de update.electronjs.org** : Configuration de l'URL du feed pour utiliser `update.electronjs.org`, un service gratuit qui convertit les releases GitHub en format compatible avec l'auto-updater natif. L'URL est construite dynamiquement depuis `package.json` : `https://update.electronjs.org/{owner}/{repo}/{platform}-{arch}/{version}`.
+    - **Simplification** : Suppression du script `generate-update-files.js` et des fichiers YAML du workflow GitHub Actions, car ils ne sont plus nécessaires avec l'auto-updater natif.
+    - **Compatibilité** : Adaptation de la signature de `onUpdateDownloaded` pour correspondre à l'API de l'auto-updater natif d'Electron.
+
+- 29cb4da: ## Test de la mise à jour automatique
+    - **Refactorisation de l'auto-updater** : Migration vers l'auto-updater natif d'Electron avec `update.electronjs.org` pour simplifier la configuration et s'aligner avec l'ancien projet.
+    - **Mise à jour de la documentation** : Documentation mise à jour pour refléter l'utilisation de l'auto-updater natif d'Electron au lieu de `electron-updater`.
+    - **Configuration simplifiée** : Plus besoin de générer des fichiers `latest-mac.yml` - `update.electronjs.org` gère automatiquement la conversion des releases GitHub.
+
 ## 0.2.10
 
 ### Patch Changes
