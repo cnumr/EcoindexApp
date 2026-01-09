@@ -460,6 +460,12 @@ L'interface de configuration avancée permet de personnaliser tous les paramètr
 - **Extra headers** : Headers HTTP supplémentaires (cookies, authentification, etc.)
   - Format : Clé-valeur (ex: `Authorization: Bearer token`)
   - Utilisé pour les sites nécessitant une authentification
+  - **Mode de saisie** : Le composant `KeyValue` supporte deux modes de saisie :
+    - **Mode formulaire** (par défaut) : Saisie via interface avec champs séparés pour chaque paire clé-valeur
+    - **Mode texte libre** : Saisie dans un textarea au format `clé=valeur` (une paire par ligne)
+    - Bascule entre les deux modes via un bouton avec icônes
+    - Validation automatique du format en mode texte libre
+    - Conversion bidirectionnelle entre les deux formats
 
 - **User-Agent personnalisé** : Personnalisation de l'User-Agent utilisé par Lighthouse
 
@@ -471,6 +477,8 @@ L'interface de configuration avancée permet de personnaliser tous les paramètr
 - **Variables d'environnement** : Variables personnalisées à passer au script de mesure
   - Format : Clé-valeur (clés en majuscules)
   - Accessibles dans le script via `process.env.NOM_VARIABLE`
+  - **Mode de saisie** : Même fonctionnalité de bascule formulaire/texte libre que pour les extra headers
+  - Les clés sont automatiquement converties en majuscules en mode texte libre
 
 ### 8.4 Gestion des rapports
 

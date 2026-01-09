@@ -54,7 +54,14 @@ export const SimplePanMesure: FC<ISimpleMesureLayout> = ({
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <form id="simple-form">
+                <form
+                    id="simple-form"
+                    onSubmit={(e) => {
+                        // Empêcher la soumission du formulaire par défaut
+                        // pour permettre les retours à la ligne dans les textareas
+                        e.preventDefault()
+                    }}
+                >
                     <AdvConfiguration
                         statementVisible={false}
                         configurationDatas={localAdvConfig}

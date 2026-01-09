@@ -211,33 +211,35 @@ export const AdvConfiguration: FC<ILayout> = ({
             <fieldset>
                 <legend>{t('Extra header')}</legend>
                 <p>{t('Header to add cookies, Authentication...')} </p>
-                <div>
-                    <KeyValue
-                        datas={
-                            configurationDatas?.['extra-header'] as IKeyValue
-                        }
-                        visible={true}
-                        isFullWidth={true}
-                        title={t('Extra header')}
-                        setDatas={(
-                            e: IKeyValue | React.SetStateAction<IKeyValue>
-                        ) => {
-                            const newData =
-                                typeof e === 'function'
-                                    ? e(
-                                          (configurationDatas?.[
-                                              'extra-header'
-                                          ] as IKeyValue) || {}
-                                      )
-                                    : e
-                            setConfigurationDatas?.({
-                                ...configurationDatas,
-                                'extra-header': newData,
-                            })
-                            setUpdated?.(true)
-                        }}
-                    />
-                </div>
+                <KeyValue
+                    datas={
+                        (configurationDatas?.['extra-header'] as IKeyValue) ||
+                        {}
+                    }
+                    visible={true}
+                    isFullWidth={true}
+                    title={t('Extra header')}
+                    enableTextMode={true}
+                    placeholder="Authorization=Bearer token&#10;Cookie=session=abc123"
+                    textModeFormat={t('advConfiguration.textModeFormat')}
+                    setDatas={(
+                        e: IKeyValue | React.SetStateAction<IKeyValue>
+                    ) => {
+                        const newData =
+                            typeof e === 'function'
+                                ? e(
+                                      (configurationDatas?.[
+                                          'extra-header'
+                                      ] as IKeyValue) || {}
+                                  )
+                                : e
+                        setConfigurationDatas?.({
+                            ...configurationDatas,
+                            'extra-header': newData,
+                        })
+                        setUpdated?.(true)
+                    }}
+                />
             </fieldset>
             <fieldset>
                 <legend className="mandatory">
@@ -440,20 +442,21 @@ export const AdvConfiguration: FC<ILayout> = ({
             <fieldset>
                 <legend>{t('advConfiguration.envvar.title')}</legend>
                 <p>{t('advConfiguration.envvar.description')}</p>
-                <div>
-                    <KeyValue
-                        datas={envVars}
-                        visible={true}
-                        isFullWidth={true}
-                        isKeyInUppercase={true}
-                        title={t('advConfiguration.envvar.title')}
-                        setDatas={(
-                            e: IKeyValue | React.SetStateAction<IKeyValue>
-                        ) => {
-                            setEnvVars(typeof e === 'function' ? e(envVars) : e)
-                        }}
-                    />
-                </div>
+                <KeyValue
+                    datas={envVars}
+                    visible={true}
+                    isFullWidth={true}
+                    isKeyInUppercase={true}
+                    enableTextMode={true}
+                    placeholder="API_KEY=your-api-key&#10;DATABASE_URL=postgres://..."
+                    textModeFormat={t('advConfiguration.textModeFormatEnvVars')}
+                    title={t('advConfiguration.envvar.title')}
+                    setDatas={(
+                        e: IKeyValue | React.SetStateAction<IKeyValue>
+                    ) => {
+                        setEnvVars(typeof e === 'function' ? e(envVars) : e)
+                    }}
+                />
             </fieldset>
         </details>
     )

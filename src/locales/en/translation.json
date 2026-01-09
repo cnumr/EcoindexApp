@@ -216,7 +216,13 @@
     "envvar": {
       "title": "Environment variables",
       "description": "Environment variables to pass to the measurements script (for an identifier/password to use with the Puppeteer custom script, for example). \nThey will not be saved!"
-    }
+    },
+    "textMode": "Text mode",
+    "formMode": "Form mode",
+    "switchToTextMode": "Switch to text mode",
+    "switchToFormMode": "Switch to form mode",
+    "textModeFormat": "Format: one key=value pair per line. Example: Authorization=Bearer token",
+    "textModeFormatEnvVars": "Format: one KEY=value pair per line. Keys will be converted to uppercase. Example: API_KEY=your-key"
   },
   "Enter a key": "Enter a key",
   "Enter a value": "Enter a value",

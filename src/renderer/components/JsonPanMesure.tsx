@@ -355,7 +355,14 @@ export const JsonPanMesure: FC<ILayout> = ({
                         <span>{t('Save')}</span>
                     </Button>
                 </div>
-                <form id="json-form">
+                <form
+                    id="json-form"
+                    onSubmit={(e) => {
+                        // Empêcher la soumission du formulaire par défaut
+                        // pour permettre les retours à la ligne dans les textareas
+                        e.preventDefault()
+                    }}
+                >
                     <AdvConfiguration
                         configurationDatas={
                             jsonDatas || { output: [], 'audit-category': [] }
