@@ -216,7 +216,13 @@
     "envvar": {
       "title": "Variables d'environnement",
       "description": "Variables d'environnement à passer au script de mesures (pour un identifiant/password à utiliser avec le script Puppeteer custom, par exemple). Elles ne seront pas sauvegardées !"
-    }
+    },
+    "textMode": "Mode texte",
+    "formMode": "Mode formulaire",
+    "switchToTextMode": "Basculer en mode texte",
+    "switchToFormMode": "Basculer en mode formulaire",
+    "textModeFormat": "Format: une paire clé=valeur par ligne. Exemple: Authorization=Bearer token",
+    "textModeFormatEnvVars": "Format: une paire CLÉ=valeur par ligne. Les clés seront converties en majuscules. Exemple: API_KEY=votre-clé"
   },
   "Enter a key": "Entrer une clé",
   "Enter a value": "Entrer une valeur",

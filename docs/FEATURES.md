@@ -141,6 +141,20 @@ Voir [API.md](API.md) pour la documentation complète des canaux IPC.
 - `store-get` : Récupérer une valeur
 - `store-delete` : Supprimer une clé
 
+**Mesures** :
+
+- `simple-mesures` : Lancer une mesure simple (une ou plusieurs URLs)
+- `save-json-file` : Sauvegarder et/ou exécuter une mesure complexe (parcours)
+- `read-reload-json-file` : Lire et recharger un fichier JSON de configuration
+- `is-json-config-file-exist` : Vérifier si un fichier JSON de configuration existe
+- `asynchronous-log` : Messages de log en temps réel pendant les mesures
+- `show-confirm-dialog` : Afficher une boîte de dialogue de confirmation native
+
+**Fichiers et dossiers** :
+
+- `select-folder` : Sélectionner un répertoire de travail
+- `select-puppeteer-file` : Sélectionner un fichier de script Puppeteer
+
 ## 5. Écran de démarrage (Splash Screen) et Popin d'initialisation
 
 L'application affiche une popin d'initialisation pendant le processus d'initialisation avec :
@@ -167,6 +181,20 @@ L'application affiche une popin d'initialisation pendant le processus d'initiali
 - `progress: number` : Valeur de progression (0-100)
 - `isAlert: boolean` : Mode alerte (rouge pour les erreurs)
 - `errorLink?: { label: string, url: string }` : Lien d'aide optionnel
+
+### Popin de chargement pendant les mesures
+
+**Fichier** : `src/renderer/components/PopinLoading.tsx`
+
+Pendant l'exécution des mesures (simples ou complexes), une popin de chargement s'affiche avec :
+
+- **Titre dynamique** : Affiche le type de mesure en cours (ex: "Url(s) Measure (Simple mode) started 🚀")
+- **Console de logs intégrée** : Affiche les logs en temps réel du script de mesure
+- **Filtrage intelligent** : N'affiche que les logs générés pendant la mesure en cours (filtre les messages précédents)
+- **Fermeture automatique** : Se ferme automatiquement à la fin de la mesure (succès ou échec)
+- **Gestion des erreurs** : Affiche les erreurs dans la console intégrée
+
+Cette popin permet à l'utilisateur de suivre la progression des mesures en temps réel et de voir les messages de débogage si nécessaire.
 
 ### Chargement de la langue
 
@@ -318,38 +346,236 @@ Toutes les messages de mise à jour sont traduits dans `src/locales/{fr,en}/tran
 - Pas d'installation automatique
 - L'utilisateur doit installer manuellement le nouveau package (DEB/RPM)
 
+## 8. Mesures Lighthouse/Ecoindex
+
+L'application permet d'effectuer des mesures complètes de l'impact écologique de sites web en utilisant Lighthouse et les plugins Ecoindex. Deux modes de mesure sont disponibles : **mesures simples** et **mesures complexes (parcours)**.
+
+### 8.1 Mesures simples
+
+Les mesures simples permettent d'analyser une ou plusieurs URLs individuellement. Chaque URL est traitée séparément et génère son propre rapport.
+
+**Interface** : `src/renderer/components/SimplePanMesure.tsx`
+
+**Handler** : `src/main/handlers/HandleCollectAll.ts` → `handleSimpleCollect`
+
+#### Fonctionnalités
+
+- **Saisie d'URLs multiples** : L'utilisateur peut ajouter plusieurs URLs à analyser
+- **Configuration avancée** : Toutes les options de configuration sont disponibles (voir section 8.3)
+- **Confirmation intelligente** : Si un fichier de configuration JSON (`ecoindex.json`) est détecté dans le répertoire de travail, une boîte de dialogue de confirmation s'affiche pour suggérer une mesure complexe
+- **Génération de rapports** : Génère des rapports HTML, JSON et/ou Statement selon la configuration
+- **Ouverture automatique** : À la fin de la mesure, l'explorateur de fichiers s'ouvre automatiquement sur le rapport HTML généré
+
+#### Flux d'exécution
+
+1. L'utilisateur saisit une ou plusieurs URLs dans l'interface
+2. Configuration des options avancées (formats de sortie, catégories d'audit, etc.)
+3. Vérification du répertoire de travail (confirmation si dossier par défaut)
+4. Détection d'un fichier JSON existant (confirmation si détecté)
+5. Lancement de la mesure via IPC (`handleSimpleMesures`)
+6. Exécution du script `courses_index.mjs` dans un processus séparé
+7. Génération des rapports dans `{workDir}/{timestamp}/`
+8. Ouverture automatique de l'explorateur de fichiers
+
+#### Formats de sortie
+
+Les rapports sont générés dans le répertoire `{workDir}/{timestamp}/` avec le format suivant :
+- `generic.report.html` : Rapport HTML complet avec toutes les métriques
+- `generic.report.json` : Rapport JSON avec toutes les données brutes (si activé)
+- `generic.statement.json` : Statement JSON pour l'écoindex (si activé et JSON activé)
+
+### 8.2 Mesures complexes (parcours)
+
+Les mesures complexes permettent d'analyser des parcours utilisateur définis dans un fichier JSON. Chaque parcours (course) peut contenir plusieurs URLs et des options spécifiques.
+
+**Interface** : `src/renderer/components/JsonPanMesure.tsx`
+
+**Handler** : `src/main/handlers/HandleCollectAll.ts` → `handleJsonSaveAndCollect`
+
+#### Fonctionnalités
+
+- **Configuration de courses** : L'utilisateur peut définir plusieurs courses (parcours) avec :
+  - Nom de la course
+  - Target (cible)
+  - Description
+  - Liste d'URLs à analyser
+  - Flag "is-best-pages" (une seule course doit être marquée comme best-page)
+- **Sauvegarde de configuration** : La configuration est sauvegardée dans `{workDir}/ecoindex.json`
+- **Rechargement automatique** : Si un fichier `ecoindex.json` existe dans le répertoire de travail, il est automatiquement chargé au changement de répertoire
+- **Exécution des courses** : Toutes les courses sont exécutées séquentiellement via Lighthouse
+- **Génération de rapports** : Un rapport est généré pour chaque course
+
+#### Structure d'une course
+
+```json
+{
+  "name": "Nom de la course",
+  "target": "Cible de la course",
+  "course": "Description",
+  "is-best-pages": false,
+  "urls": [
+    { "value": "https://www.example.com/" }
+  ]
+}
+```
+
+#### Validation
+
+- **Best-page obligatoire** : Une et une seule course doit être marquée comme "best-page" (`is-best-pages: true`)
+- **Statement nécessite JSON** : Si le format Statement est activé, le format JSON doit également être activé
+
+#### Flux d'exécution
+
+1. Configuration des courses dans l'interface
+2. Sauvegarde de la configuration dans `ecoindex.json` (optionnel)
+3. Lancement des mesures via IPC (`handleJsonSaveAndCollect`)
+4. Si `andCollect = true` :
+   - Sauvegarde du fichier JSON
+   - Exécution du script `courses_index.mjs`
+   - Génération des rapports pour chaque course
+5. Ouverture automatique du répertoire de travail à la fin
+
+### 8.3 Configuration avancée
+
+L'interface de configuration avancée permet de personnaliser tous les paramètres des mesures Lighthouse.
+
+**Composant** : `src/renderer/components/AdvConfiguration.tsx`
+
+#### Formats de sortie
+
+- **HTML** : Rapport HTML interactif avec visualisations
+- **JSON** : Rapport JSON avec toutes les données brutes
+- **Statement** : Statement JSON pour l'écoindex (nécessite JSON activé)
+
+#### Catégories d'audit
+
+- **SEO** : Optimisation pour les moteurs de recherche
+- **Performance** : Performance et vitesse de chargement
+- **Accessibility** : Accessibilité web
+- **Best Practices** : Bonnes pratiques web
+- **lighthouse-plugin-ecoindex-core** : Plugin Ecoindex (obligatoire, toujours activé)
+
+#### Options avancées
+
+- **Extra headers** : Headers HTTP supplémentaires (cookies, authentification, etc.)
+  - Format : Clé-valeur (ex: `Authorization: Bearer token`)
+  - Utilisé pour les sites nécessitant une authentification
+  - **Mode de saisie** : Le composant `KeyValue` supporte deux modes de saisie :
+    - **Mode formulaire** (par défaut) : Saisie via interface avec champs séparés pour chaque paire clé-valeur
+    - **Mode texte libre** : Saisie dans un textarea au format `clé=valeur` (une paire par ligne)
+    - Bascule entre les deux modes via un bouton avec icônes
+    - Validation automatique du format en mode texte libre
+    - Conversion bidirectionnelle entre les deux formats
+
+- **User-Agent personnalisé** : Personnalisation de l'User-Agent utilisé par Lighthouse
+
+- **Script Puppeteer** : Script JavaScript personnalisé pour des interactions complexes
+  - Permet d'effectuer des actions avant la mesure (clics, scrolls, remplissage de formulaires, etc.)
+  - Format : Chemin vers un fichier `.js` ou `.mjs`
+  - Exécuté avant chaque mesure pour préparer la page
+
+- **Variables d'environnement** : Variables personnalisées à passer au script de mesure
+  - Format : Clé-valeur (clés en majuscules)
+  - Accessibles dans le script via `process.env.NOM_VARIABLE`
+  - **Mode de saisie** : Même fonctionnalité de bascule formulaire/texte libre que pour les extra headers
+  - Les clés sont automatiquement converties en majuscules en mode texte libre
+
+### 8.4 Gestion des rapports
+
+#### Génération des rapports
+
+Les rapports sont générés dans un répertoire avec timestamp au format ISO :
+```
+{workDir}/{timestamp}/
+```
+
+Exemple : `~/Documents/EcoindexApp/2025-01-15T10-30-45/`
+
+#### Types de rapports
+
+**Rapport HTML** (`generic.report.html`) :
+- Rapport interactif avec visualisations
+- Métriques Lighthouse (Performance, SEO, Accessibility, Best Practices)
+- Métriques Ecoindex (score, émissions CO2, consommation eau)
+- Recommandations et opportunités d'amélioration
+
+**Rapport JSON** (`generic.report.json`) :
+- Toutes les données brutes de Lighthouse
+- Métriques détaillées
+- Utilisable pour traitement automatisé
+
+**Statement JSON** (`generic.statement.json`) :
+- Statement formaté pour l'écoindex
+- Nécessite le format JSON activé
+- Utilisé pour générer des rapports consolidés
+
+#### Ouverture automatique
+
+- **Mesures simples** : L'explorateur de fichiers s'ouvre automatiquement sur le fichier `generic.report.html` à la fin de la mesure
+- **Mesures complexes** : Le répertoire de travail s'ouvre automatiquement à la fin de toutes les mesures
+
+#### Console de logs
+
+Pendant l'exécution des mesures, tous les logs sont affichés en temps réel dans la console de l'application :
+- Progression de chaque mesure
+- Messages d'erreur éventuels
+- Informations de débogage
+
+### 8.5 Architecture technique des mesures
+
+#### Flux d'exécution
+
+```
+Interface React (Renderer)
+    ↓
+IPC (handleSimpleMesures / handleJsonSaveAndCollect)
+    ↓
+Main Process (HandleCollectAll.ts)
+    ↓
+Préparation des données (URLs, config, timestamp)
+    ↓
+Écriture fichier temporaire command-data.json
+    ↓
+utilityProcess.fork(courses_index.mjs)
+    ↓
+Script Node.js isolé qui :
+  - Lit command-data.json
+  - Lance Lighthouse avec plugin ecoindex
+  - Génère les rapports (HTML/JSON/Statement)
+  - Envoie des messages de progression via IPC
+    ↓
+Rapports générés dans {workDir}/{timestamp}/
+```
+
+#### Script de mesure
+
+Le script `lib/courses_index.mjs` est exécuté dans un processus séparé (`utilityProcess`) pour :
+- Isoler l'exécution de Lighthouse du processus principal
+- Éviter de bloquer l'interface utilisateur
+- Permettre une meilleure gestion des erreurs
+
+#### Communication IPC
+
+Le script envoie des messages IPC au processus principal :
+- `{ type: 'progress', data: string }` : Progression de la mesure
+- `{ type: 'error', data: string }` : Erreur rencontrée
+- `{ type: 'complete', data: string }` : Mesure terminée avec succès
+
+Les logs stdout/stderr sont également capturés et affichés dans la console.
+
 ## Limitations actuelles
-
-### Fonctionnalités non implémentées
-
-1. **Mesures Lighthouse/Ecoindex** : Canaux IPC définis mais handlers manquants
-2. **Interface de configuration avancée** : Non développée
-3. **Gestion des rapports** : Non implémentée
-4. **Installation/mise à jour des plugins Lighthouse** : Partiellement implémentée
 
 ### Dépendances externes
 
-- Node.js 22+ requis sur le système hôte
-- Installation automatique de Puppeteer (téléchargement ~300MB)
+- **Node.js 22+** requis sur le système hôte
+- **Installation automatique de Puppeteer** : Téléchargement automatique du navigateur Chromium (~300MB) lors de la première utilisation
 
 ### Plateformes
 
-- Testé principalement sur macOS
-- Windows : extraction ASAR nécessaire
-- Linux : support basique
+- **macOS** : Testé et fonctionnel
+- **Windows** : Extraction ASAR nécessaire (automatique)
+- **Linux** : Support basique, mises à jour manuelles
 
-## Évolutions futures prévues
+### Fonctionnalités partiellement implémentées
 
-D'après les canaux IPC et interfaces définis, les fonctionnalités suivantes sont prévues :
-
-1. **Mesures simples** : Analyse d'une URL unique
-    - **Confirmation si fichier JSON détecté** : Si un fichier de configuration JSON (`input-file.json`) est détecté dans le dossier de travail, une boîte de dialogue de confirmation s'affiche avant de lancer la mesure simple. Cette fonctionnalité permet d'éviter de lancer une mesure simple quand une configuration de mesure complexe existe déjà dans le dossier de travail.
-        - Titre : "Voulez-vous vraiment lancer une mesure simple ?"
-        - Message : "Un fichier de configuration de mesure complexe a été détecté dans le dossier sélectionné, il semble qu'une mesure de parcours (complexe) soit plus adaptée."
-        - Boutons : [Annuler] [Continuer]
-        - Si l'utilisateur clique sur "Annuler", la mesure simple n'est pas lancée.
-2. **Mesures depuis JSON** : Analyse de plusieurs URLs depuis un fichier de configuration
-3. **Gestion des parcours** : Support des "courses" (parcours d'analyse)
-4. **Installation de plugins** : Installation/mise à jour des plugins Lighthouse Ecoindex
-5. **Génération de rapports** : Création et affichage de rapports HTML
-6. **Configuration avancée** : Interface pour configurer les options Lighthouse
+- **Installation/mise à jour des plugins Lighthouse** : Vérification et installation automatique partiellement implémentée

@@ -12,10 +12,11 @@ Bienvenue dans la documentation de **EcoindexApp**, une application desktop mult
 
 ### Informations générales
 
-- **Version** : `0.1.15`
+- **Version** : `0.7.0`
 - **Licence** : AGPL-3.0
 - **Auteur** : Renaud Héluin / Association Green IT
 - **Plateformes supportées** : Windows, macOS, Linux
+- **État** : ✅ Fonctionnel et testé - Toutes les fonctionnalités de mesure sont opérationnelles
 
 ## Structure de la documentation
 
@@ -27,7 +28,7 @@ Architecture technique de l'application, stack technologique, structure du proje
 
 ### ⚙️ [Fonctionnalités](FEATURES.md)
 
-Description détaillée de toutes les fonctionnalités : initialisation, i18n, stockage, communication IPC, etc.
+Description détaillée de toutes les fonctionnalités : initialisation, i18n, stockage, communication IPC, **mesures Lighthouse/Ecoindex (simples et complexes)**, configuration avancée, gestion des rapports, etc.
 
 ### 🔧 [Développement](DEVELOPMENT.md)
 
@@ -76,4 +77,4 @@ npm run make
 
 ---
 
-**Dernière mise à jour** : Décembre 2024
+**Dernière mise à jour** : Janvier 2025
