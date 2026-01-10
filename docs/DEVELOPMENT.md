@@ -177,6 +177,18 @@ Actuellement, il n'y a pas de tests automatisés. Les tests sont effectués manu
     - Changement de langue
     - Persistance des données
 
+### Test de l'auto-updater
+
+Pour tester le système de mise à jour automatique avant de publier une release, consultez le guide détaillé : [TESTING_AUTO_UPDATER.md](./TESTING_AUTO_UPDATER.md)
+
+**Méthode rapide** (en mode développement) :
+1. Ouvrir les DevTools (`View > Toggle DevTools`)
+2. Dans la console, exécuter :
+   ```javascript
+   window.electronAPI.testUpdateDialog()
+   ```
+3. La boîte de dialogue de mise à jour devrait apparaître
+
 ## Debugging
 
 ### Logs

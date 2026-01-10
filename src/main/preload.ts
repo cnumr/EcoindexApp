@@ -7,6 +7,9 @@ import type {
 } from '../interface'
 import { channels } from '../shared/constants'
 
+// Vérifier si on est en mode développement
+const isDev = !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
+
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('ipcRenderer', {
     on(...args: Parameters<typeof ipcRenderer.on>) {
@@ -113,6 +116,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
             ipcRenderer.removeAllListeners(channels.CHANGE_LANGUAGE_TO_FRONT)
         }
     },
+    // API de test pour l'auto-updater (uniquement en mode développement)
+    ...(isDev && {
+        testUpdateDialog: () =>
+            ipcRenderer.invoke(channels.TEST_UPDATE_DIALOG),
+    }),
 })
 
 // --------- Expose store API (comme dans l'ancienne application) ---------

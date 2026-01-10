@@ -18,7 +18,7 @@
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-import { app, autoUpdater, dialog } from 'electron'
+import { app, autoUpdater, dialog, BrowserWindow } from 'electron'
 
 import { format } from 'util'
 import i18n from '../configs/i18next.config'
@@ -221,13 +221,13 @@ class Updater {
      * @param {Date} _releaseDate
      * @param {string} _updateURL
      */
-    protected onUpdateDownloaded(
+    protected async onUpdateDownloaded(
         _: Event,
         releaseNotes: string,
         releaseName: string,
         _releaseDate: Date,
         _updateURL: string
-    ): void {
+    ): Promise<void> {
         updaterLog.log('update-downloaded', {
             releaseName,
             releaseDate: _releaseDate,
@@ -243,13 +243,68 @@ class Updater {
             detail: i18n.t('update.restartToApply'),
         }
 
-        // dialog.showMessageBox avec callback pour compatibilité avec l'auto-updater natif
-
-        ;(dialog.showMessageBox as any)(options, (response: number) => {
-            if (response === 0) {
-                autoUpdater.quitAndInstall()
+        try {
+            // Utiliser la Promise au lieu du callback (API moderne d'Electron)
+            const result = await dialog.showMessageBox(options)
+            
+            if (result.response === 0) {
+                // L'utilisateur a choisi "Redémarrer"
+                updaterLog.log('User chose to restart, calling quitAndInstall()')
+                
+                // Fermer toutes les fenêtres avant quitAndInstall pour s'assurer que l'application est dans un état propre
+                // Cela est particulièrement important sur macOS mais peut aider sur toutes les plateformes
+                const allWindows = BrowserWindow.getAllWindows()
+                updaterLog.log(`Closing ${allWindows.length} window(s) before restart`)
+                allWindows.forEach((window) => {
+                    window.close()
+                })
+                
+                // Attendre un court délai pour que les fenêtres se ferment proprement
+                // avant d'appeler quitAndInstall
+                await new Promise((resolve) => setTimeout(resolve, 100))
+                
+                // Appeler quitAndInstall avec restart=true pour redémarrer automatiquement
+                // Le premier paramètre (restart) indique de redémarrer après l'installation
+                // Le second paramètre (isSilent) indique si l'installation doit être silencieuse
+                updaterLog.log('Calling autoUpdater.quitAndInstall(true, false)')
+                autoUpdater.quitAndInstall(true, false)
+            } else {
+                updaterLog.log('User chose to restart later')
             }
-        })
+        } catch (error) {
+            updaterLog.error('Error showing update dialog:', error)
+        }
+    }
+
+    /**
+     * Méthode de test pour simuler l'événement update-downloaded
+     * Permet de tester la boîte de dialogue et le redémarrage sans avoir besoin d'une vraie mise à jour
+     * @param {boolean} force - Si true, force le test même en mode production (à utiliser avec précaution)
+     */
+    public async testUpdateDialog(force = false): Promise<void> {
+        if (!force && IS_PROD) {
+            updaterLog.warn(
+                'testUpdateDialog: Cannot test in production mode. Use force=true to override (not recommended).'
+            )
+            return
+        }
+
+        updaterLog.log('testUpdateDialog: Simulating update-downloaded event')
+        
+        // Simuler l'événement update-downloaded avec des données de test
+        const mockEvent = {} as Event
+        const mockReleaseNotes = 'Version de test - Correction du redémarrage après mise à jour'
+        const mockReleaseName = 'v0.7.1-test'
+        const mockReleaseDate = new Date()
+        const mockUpdateURL = 'https://github.com/cnumr/EcoindexApp/releases/tag/v0.7.1-test'
+
+        await this.onUpdateDownloaded(
+            mockEvent,
+            mockReleaseNotes,
+            mockReleaseName,
+            mockReleaseDate,
+            mockUpdateURL
+        )
     }
 
     /**
