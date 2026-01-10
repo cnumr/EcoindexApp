@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Sun, SunMoon } from 'lucide-react'
+import { Sun, Moon } from 'lucide-react'
 
 import { Switch } from './ui/switch'
 
@@ -57,7 +57,7 @@ const DarkModeSwitcherComponent = React.forwardRef<
                     checked={sysMode}
                     onCheckedChange={(v) => setSysMode(v)}
                 />
-                <SunMoon className="size-4" />
+                <Moon className="size-4" />
             </div>
         </div>
     )
