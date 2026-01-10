@@ -516,6 +516,9 @@ export const JsonPanMesure: FC<ILayout> = ({
                                                 }
                                                 visible={true}
                                                 isFullWidth
+                                                enableTextMode={true}
+                                                placeholder="https://www.example.com/&#10;https://www.example2.com/"
+                                                textModeFormat={t('simpleUrlsList.textModeFormat')}
                                             />
                                         )}
                                     </div>
