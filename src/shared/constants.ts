@@ -73,6 +73,8 @@ const constants: IConstants = {
         MAIN_PROCESS_MESSAGE: 'main-process-message',
         // Channel pour les boîtes de dialogue
         SHOW_CONFIRM_DIALOG: 'show-confirm-dialog',
+        // Channel pour tester l'auto-updater (dev uniquement)
+        TEST_UPDATE_DIALOG: 'test-update-dialog',
     },
     scripts: {
         GET_NODE: 'get-node',

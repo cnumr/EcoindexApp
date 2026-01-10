@@ -212,6 +212,25 @@ ipcMain.handle(channels.IS_JSON_CONFIG_FILE_EXIST, async (event, workDir) => {
     return await handleIsJsonConfigFileExist(event, workDir)
 })
 
+// Handler IPC pour tester l'auto-updater (uniquement en mode développement)
+if (!app.isPackaged && process.platform !== 'linux') {
+    ipcMain.handle(channels.TEST_UPDATE_DIALOG, async () => {
+        const mainLog = getMainLog().scope('main/testUpdateDialog')
+        try {
+            mainLog.info('Test update dialog requested')
+            const updater = Updater.getInstance()
+            await updater.testUpdateDialog(false)
+            return { success: true, message: 'Test dialog triggered' }
+        } catch (error) {
+            mainLog.error('Error testing update dialog:', error)
+            return {
+                success: false,
+                message: error instanceof Error ? error.message : 'Unknown error',
+            }
+        }
+    })
+}
+
 // Handler IPC pour afficher une boîte de dialogue de confirmation
 ipcMain.handle(
     channels.SHOW_CONFIRM_DIALOG,

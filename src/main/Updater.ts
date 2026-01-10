@@ -277,6 +277,37 @@ class Updater {
     }
 
     /**
+     * Méthode de test pour simuler l'événement update-downloaded
+     * Permet de tester la boîte de dialogue et le redémarrage sans avoir besoin d'une vraie mise à jour
+     * @param {boolean} force - Si true, force le test même en mode production (à utiliser avec précaution)
+     */
+    public async testUpdateDialog(force = false): Promise<void> {
+        if (!force && IS_PROD) {
+            updaterLog.warn(
+                'testUpdateDialog: Cannot test in production mode. Use force=true to override (not recommended).'
+            )
+            return
+        }
+
+        updaterLog.log('testUpdateDialog: Simulating update-downloaded event')
+        
+        // Simuler l'événement update-downloaded avec des données de test
+        const mockEvent = {} as Event
+        const mockReleaseNotes = 'Version de test - Correction du redémarrage après mise à jour'
+        const mockReleaseName = 'v0.7.1-test'
+        const mockReleaseDate = new Date()
+        const mockUpdateURL = 'https://github.com/cnumr/EcoindexApp/releases/tag/v0.7.1-test'
+
+        await this.onUpdateDownloaded(
+            mockEvent,
+            mockReleaseNotes,
+            mockReleaseName,
+            mockReleaseDate,
+            mockUpdateURL
+        )
+    }
+
+    /**
      * @returns {Updater}
      */
     public static getInstance(): Updater {
