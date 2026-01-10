@@ -224,6 +224,9 @@
     "textModeFormat": "Format: one key=value pair per line. Example: Authorization=Bearer token",
     "textModeFormatEnvVars": "Format: one KEY=value pair per line. Keys will be converted to uppercase. Example: API_KEY=your-key"
   },
+  "simpleUrlsList": {
+    "textModeFormat": "Format: one URL per line. Example: https://www.example.com/"
+  },
   "Enter a key": "Enter a key",
   "Enter a value": "Enter a value",
   "key-value": {

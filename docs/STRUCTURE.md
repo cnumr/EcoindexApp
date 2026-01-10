@@ -51,7 +51,7 @@ EcoindexApp-2025/
 │   │   │   ├── JsonPanMesure.tsx     # Panneau de mesure JSON
 │   │   │   ├── AdvConfiguration.tsx  # Configuration avancée
 │   │   │   ├── KeyValue.tsx          # Composant clé-valeur avec bascule mode formulaire/texte libre
-│   │   │   ├── SimpleUrlsList.tsx    # Liste d'URLs simples
+│   │   │   ├── SimpleUrlsList.tsx    # Liste d'URLs simples avec bascule mode formulaire/texte libre
 │   │   │   ├── InitErrorAlerts.tsx   # Alertes d'erreur d'initialisation
 │   │   │   ├── MySkeleton.tsx       # Composant skeleton
 │   │   │   ├── PopinLoading.tsx      # Popin de chargement

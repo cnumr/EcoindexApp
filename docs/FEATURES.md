@@ -361,6 +361,10 @@ Les mesures simples permettent d'analyser une ou plusieurs URLs individuellement
 #### Fonctionnalités
 
 - **Saisie d'URLs multiples** : L'utilisateur peut ajouter plusieurs URLs à analyser
+  - **Mode formulaire** (par défaut) : Saisie via interface avec un champ séparé pour chaque URL
+  - **Mode texte libre** : Saisie dans un textarea au format une URL par ligne, facilitant le copier-coller de listes d'URLs
+  - Bascule entre les deux modes via un bouton avec icônes
+  - Conversion bidirectionnelle automatique entre les deux formats
 - **Configuration avancée** : Toutes les options de configuration sont disponibles (voir section 8.3)
 - **Confirmation intelligente** : Si un fichier de configuration JSON (`ecoindex.json`) est détecté dans le répertoire de travail, une boîte de dialogue de confirmation s'affiche pour suggérer une mesure complexe
 - **Génération de rapports** : Génère des rapports HTML, JSON et/ou Statement selon la configuration
@@ -399,6 +403,9 @@ Les mesures complexes permettent d'analyser des parcours utilisateur définis da
   - Target (cible)
   - Description
   - Liste d'URLs à analyser
+    - **Mode formulaire** (par défaut) : Saisie via interface avec un champ séparé pour chaque URL
+    - **Mode texte libre** : Saisie dans un textarea au format une URL par ligne, facilitant le copier-coller
+    - Bascule entre les deux modes disponible pour chaque course
   - Flag "is-best-pages" (une seule course doit être marquée comme best-page)
 - **Sauvegarde de configuration** : La configuration est sauvegardée dans `{workDir}/ecoindex.json`
 - **Rechargement automatique** : Si un fichier `ecoindex.json` existe dans le répertoire de travail, il est automatiquement chargé au changement de répertoire

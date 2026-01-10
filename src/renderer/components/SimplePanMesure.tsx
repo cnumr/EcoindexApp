@@ -104,6 +104,9 @@ export const SimplePanMesure: FC<ISimpleMesureLayout> = ({
                             visible={true}
                             language={language}
                             title=""
+                            enableTextMode={true}
+                            placeholder="https://www.example.com/&#10;https://www.example2.com/"
+                            textModeFormat={t('simpleUrlsList.textModeFormat')}
                         />
                     </fieldset>
                 </form>
