@@ -18,7 +18,7 @@
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-import { app, autoUpdater, dialog } from 'electron'
+import { app, autoUpdater, dialog, BrowserWindow } from 'electron'
 
 import { format } from 'util'
 import i18n from '../configs/i18next.config'
@@ -221,13 +221,13 @@ class Updater {
      * @param {Date} _releaseDate
      * @param {string} _updateURL
      */
-    protected onUpdateDownloaded(
+    protected async onUpdateDownloaded(
         _: Event,
         releaseNotes: string,
         releaseName: string,
         _releaseDate: Date,
         _updateURL: string
-    ): void {
+    ): Promise<void> {
         updaterLog.log('update-downloaded', {
             releaseName,
             releaseDate: _releaseDate,
@@ -243,13 +243,37 @@ class Updater {
             detail: i18n.t('update.restartToApply'),
         }
 
-        // dialog.showMessageBox avec callback pour compatibilité avec l'auto-updater natif
-
-        ;(dialog.showMessageBox as any)(options, (response: number) => {
-            if (response === 0) {
-                autoUpdater.quitAndInstall()
+        try {
+            // Utiliser la Promise au lieu du callback (API moderne d'Electron)
+            const result = await dialog.showMessageBox(options)
+            
+            if (result.response === 0) {
+                // L'utilisateur a choisi "Redémarrer"
+                updaterLog.log('User chose to restart, calling quitAndInstall()')
+                
+                // Fermer toutes les fenêtres avant quitAndInstall pour s'assurer que l'application est dans un état propre
+                // Cela est particulièrement important sur macOS mais peut aider sur toutes les plateformes
+                const allWindows = BrowserWindow.getAllWindows()
+                updaterLog.log(`Closing ${allWindows.length} window(s) before restart`)
+                allWindows.forEach((window) => {
+                    window.close()
+                })
+                
+                // Attendre un court délai pour que les fenêtres se ferment proprement
+                // avant d'appeler quitAndInstall
+                await new Promise((resolve) => setTimeout(resolve, 100))
+                
+                // Appeler quitAndInstall avec restart=true pour redémarrer automatiquement
+                // Le premier paramètre (restart) indique de redémarrer après l'installation
+                // Le second paramètre (isSilent) indique si l'installation doit être silencieuse
+                updaterLog.log('Calling autoUpdater.quitAndInstall(true, false)')
+                autoUpdater.quitAndInstall(true, false)
+            } else {
+                updaterLog.log('User chose to restart later')
             }
-        })
+        } catch (error) {
+            updaterLog.error('Error showing update dialog:', error)
+        }
     }
 
     /**
