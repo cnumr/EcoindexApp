@@ -469,6 +469,9 @@ L'interface de configuration avancée permet de personnaliser tous les paramètr
   - Utilisé pour les sites nécessitant une authentification
   - **Mode de saisie** : Le composant `KeyValue` supporte deux modes de saisie :
     - **Mode formulaire** (par défaut) : Saisie via interface avec champs séparés pour chaque paire clé-valeur
+      - Les valeurs sont masquées par défaut (type `password`) pour la sécurité
+      - Bouton œil pour afficher/masquer chaque valeur individuellement
+      - Vérification automatique : empêche l'ajout d'une clé "key" ou "KEY" si elle existe déjà
     - **Mode texte libre** : Saisie dans un textarea au format `clé=valeur` (une paire par ligne)
     - Bascule entre les deux modes via un bouton avec icônes
     - Validation automatique du format en mode texte libre
@@ -485,6 +488,9 @@ L'interface de configuration avancée permet de personnaliser tous les paramètr
   - Format : Clé-valeur (clés en majuscules)
   - Accessibles dans le script via `process.env.NOM_VARIABLE`
   - **Mode de saisie** : Même fonctionnalité de bascule formulaire/texte libre que pour les extra headers
+    - Les valeurs sont masquées par défaut (type `password`) pour la sécurité
+    - Bouton œil pour afficher/masquer chaque valeur individuellement
+    - Vérification automatique : empêche l'ajout d'une clé "key" ou "KEY" si elle existe déjà
   - Les clés sont automatiquement converties en majuscules en mode texte libre
 
 ### 8.4 Gestion des rapports
