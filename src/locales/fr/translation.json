@@ -232,7 +232,10 @@
   "key-value": {
     "add": {
       "to": "Ajouter un élément à"
-    }
+    },
+    "showValue": "Afficher la valeur",
+    "hideValue": "Masquer la valeur",
+    "keyAlreadyExists": "La clé \"{{key}}\" existe déjà."
   },
   "loading file content...": "Chargement du contenu du fichier...",
   "Config file founded 👀": "Fichier de configuration trouvé 👀",

@@ -1,4 +1,11 @@
-import { CirclePlus, Trash2, FileText, Grid3x3 } from 'lucide-react'
+import {
+    CirclePlus,
+    Trash2,
+    FileText,
+    Grid3x3,
+    Eye,
+    EyeOff,
+} from 'lucide-react'
 
 import { Button } from './ui/button'
 import React, { FC, useMemo, useState } from 'react'
@@ -59,6 +66,11 @@ export const KeyValue: FC<ILayout> = ({
      * État pour suivre si on vient d'entrer en mode texte
      */
     const [hasEnteredTextMode, setHasEnteredTextMode] = useState(false)
+
+    /**
+     * État pour suivre quels champs value sont visibles (Set des clés)
+     */
+    const [visibleValues, setVisibleValues] = useState<Set<string>>(new Set())
 
     /**
      * Convertit un objet IKeyValue en texte (format clé=valeur, une par ligne)
@@ -159,9 +171,19 @@ export const KeyValue: FC<ILayout> = ({
     // Function to add a new input field
     const handleAddFields = () => {
         try {
-            const newDataElement: IKeyValue = isKeyInUppercase
-                ? { KEY: 'value' }
-                : { key: 'value' }
+            const newKey = isKeyInUppercase ? 'KEY' : 'key'
+
+            // Vérifier si la clé existe déjà
+            if (newKey in datas) {
+                window.alert(
+                    t('key-value.keyAlreadyExists', {
+                        key: newKey,
+                    })
+                )
+                return
+            }
+
+            const newDataElement: IKeyValue = { [newKey]: '' }
             setDatas?.({
                 ...datas,
                 ...newDataElement,
@@ -175,6 +197,12 @@ export const KeyValue: FC<ILayout> = ({
     const handleRemoveFields = (key: string) => {
         const newInputFields = { ...datas }
         delete newInputFields[key]
+        // Nettoyer l'état de visibilité pour la clé supprimée
+        setVisibleValues((prev) => {
+            const newSet = new Set(prev)
+            newSet.delete(key)
+            return newSet
+        })
         try {
             setDatas?.(newInputFields)
         } catch (error) {
@@ -214,6 +242,15 @@ export const KeyValue: FC<ILayout> = ({
             if (descriptor) {
                 Object.defineProperty(values, newKey, descriptor)
             }
+            // Mettre à jour la visibilité si la clé change
+            if (visibleValues.has(oldKey)) {
+                setVisibleValues((prev) => {
+                    const newSet = new Set(prev)
+                    newSet.delete(oldKey)
+                    newSet.add(newKey)
+                    return newSet
+                })
+            }
             // delete values[oldKey]
         }
         const tempValues: IKeyValue = {}
@@ -232,6 +269,21 @@ export const KeyValue: FC<ILayout> = ({
                 error
             )
         }
+    }
+
+    /**
+     * Toggle la visibilité d'un champ value
+     */
+    const toggleValueVisibility = (key: string) => {
+        setVisibleValues((prev) => {
+            const newSet = new Set(prev)
+            if (newSet.has(key)) {
+                newSet.delete(key)
+            } else {
+                newSet.add(key)
+            }
+            return newSet
+        })
     }
     return (
         <div
@@ -352,16 +404,52 @@ export const KeyValue: FC<ILayout> = ({
                                     onChange={(e) => handleKeyChange(index, e)}
                                     className="block w-full"
                                 />
-                                <Input
-                                    type="text"
-                                    data-idx-value={index}
-                                    data-key={dataKey}
-                                    data-type="value"
-                                    placeholder={t('Enter a value')}
-                                    value={datas[dataKey]}
-                                    onChange={(e) => handleValueChange(e)}
-                                    className="block w-full"
-                                />
+                                <div className="relative flex w-full items-center">
+                                    <Input
+                                        type={
+                                            visibleValues.has(dataKey)
+                                                ? 'text'
+                                                : 'password'
+                                        }
+                                        data-idx-value={index}
+                                        data-key={dataKey}
+                                        data-type="value"
+                                        placeholder={t('Enter a value')}
+                                        value={datas[dataKey]}
+                                        onChange={(e) => handleValueChange(e)}
+                                        className="block w-full pr-10"
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="absolute right-0 h-full px-2 hover:bg-transparent"
+                                        onClick={() =>
+                                            toggleValueVisibility(dataKey)
+                                        }
+                                        title={
+                                            visibleValues.has(dataKey)
+                                                ? t('key-value.hideValue')
+                                                : t('key-value.showValue')
+                                        }
+                                    >
+                                        {visibleValues.has(dataKey) ? (
+                                            <EyeOff
+                                                className="size-4 text-muted-foreground"
+                                                aria-label={t(
+                                                    'key-value.hideValue'
+                                                )}
+                                            />
+                                        ) : (
+                                            <Eye
+                                                className="size-4 text-muted-foreground"
+                                                aria-label={t(
+                                                    'key-value.showValue'
+                                                )}
+                                            />
+                                        )}
+                                    </Button>
+                                </div>
 
                                 <Button
                                     variant="destructive"
