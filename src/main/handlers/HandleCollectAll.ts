@@ -530,6 +530,9 @@ export const handleSimpleCollect = async (
             [key: string]: string
         }
         collectDatas.command['user-agent'] = localAdvConfig['user-agent']
+        if (localAdvConfig['lang']) {
+            collectDatas.command['lang'] = localAdvConfig['lang']
+        }
         // Le script Puppeteer est optionnel, utilisé pour des interactions complexes
         if (localAdvConfig['puppeteer-script']) {
             collectDatas.command['puppeteer-script'] =
@@ -693,6 +696,9 @@ export const handleJsonSaveAndCollect = async (
                 jsonDatas.output as ('statement' | 'json' | 'html')[],
                 jsonFilePath
             )
+            if (jsonDatas['lang']) {
+                collectDatas.command['lang'] = jsonDatas['lang']
+            }
             _debugLogs('Json measure start...')
             _debugLogs(`JSON datas ${JSON.stringify(jsonDatas, null, 2)}`)
             try {

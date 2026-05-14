@@ -222,7 +222,12 @@
     "switchToTextMode": "Basculer en mode texte",
     "switchToFormMode": "Basculer en mode formulaire",
     "textModeFormat": "Format: une paire clé=valeur par ligne. Exemple: Authorization=Bearer token",
-    "textModeFormatEnvVars": "Format: une paire CLÉ=valeur par ligne. Les clés seront converties en majuscules. Exemple: API_KEY=votre-clé"
+    "textModeFormatEnvVars": "Format: une paire CLÉ=valeur par ligne. Les clés seront converties en majuscules. Exemple: API_KEY=votre-clé",
+    "lang": {
+      "title": "Langue des rapports",
+      "description": "Langue utilisée pour les libellés des rapports Lighthouse.",
+      "default": "Par défaut (EN)"
+    }
   },
   "simpleUrlsList": {
     "textModeFormat": "Format: une URL par ligne. Exemple: https://www.example.com/"

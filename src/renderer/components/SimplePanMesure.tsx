@@ -77,6 +77,7 @@ export const SimplePanMesure: FC<ISimpleMesureLayout> = ({
                                 'extra-header': config['extra-header'],
                                 output: config['output'],
                                 'audit-category': config['audit-category'],
+                                lang: config['lang'],
                             }
                             if (config['audit-category']) {
                                 _jsonDatas['puppeteer-script'] =

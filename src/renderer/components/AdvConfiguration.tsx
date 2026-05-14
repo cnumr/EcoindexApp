@@ -458,6 +458,29 @@ export const AdvConfiguration: FC<ILayout> = ({
                     }}
                 />
             </fieldset>
+            <fieldset>
+                <legend>{t('advConfiguration.lang.title')}</legend>
+                <p>{t('advConfiguration.lang.description')}</p>
+                <select
+                    id="lang"
+                    value={configurationDatas?.lang ?? ''}
+                    className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    onChange={(e) => {
+                        const value = e.target.value as 'en' | 'fr' | ''
+                        setConfigurationDatas?.({
+                            ...configurationDatas,
+                            lang: value === '' ? undefined : value,
+                        })
+                        setUpdated?.(true)
+                    }}
+                >
+                    <option value="">
+                        {t('advConfiguration.lang.default')}
+                    </option>
+                    <option value="en">EN</option>
+                    <option value="fr">FR</option>
+                </select>
+            </fieldset>
         </details>
     )
 }

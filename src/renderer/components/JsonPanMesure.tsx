@@ -387,6 +387,7 @@ export const JsonPanMesure: FC<ILayout> = ({
                                 'extra-header': config['extra-header'],
                                 output: config['output'],
                                 'audit-category': config['audit-category'],
+                                lang: config['lang'],
                             }
                             if (config['audit-category']) {
                                 _jsonDatas['puppeteer-script'] =
@@ -518,7 +519,9 @@ export const JsonPanMesure: FC<ILayout> = ({
                                                 isFullWidth
                                                 enableTextMode={true}
                                                 placeholder="https://www.example.com/&#10;https://www.example2.com/"
-                                                textModeFormat={t('simpleUrlsList.textModeFormat')}
+                                                textModeFormat={t(
+                                                    'simpleUrlsList.textModeFormat'
+                                                )}
                                             />
                                         )}
                                     </div>

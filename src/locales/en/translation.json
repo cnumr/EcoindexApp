@@ -222,7 +222,12 @@
     "switchToTextMode": "Switch to text mode",
     "switchToFormMode": "Switch to form mode",
     "textModeFormat": "Format: one key=value pair per line. Example: Authorization=Bearer token",
-    "textModeFormatEnvVars": "Format: one KEY=value pair per line. Keys will be converted to uppercase. Example: API_KEY=your-key"
+    "textModeFormatEnvVars": "Format: one KEY=value pair per line. Keys will be converted to uppercase. Example: API_KEY=your-key",
+    "lang": {
+      "title": "Report language",
+      "description": "Language used for Lighthouse report labels.",
+      "default": "Default (EN)"
+    }
   },
   "simpleUrlsList": {
     "textModeFormat": "Format: one URL per line. Example: https://www.example.com/"
