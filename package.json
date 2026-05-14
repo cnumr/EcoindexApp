@@ -44,7 +44,8 @@
         "release": "npm run build && changeset publish",
         "localize:generate": "babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}' --out-dir .babel-temp --copy-files --quiet && rm -rf .babel-temp",
         "postinstall": "cd lib && npm ci",
-        "update-packages": "cd lib && rm -rf node_modules && npm i lighthouse@latest lighthouse-plugin-ecoindex-core@latest lighthouse-plugin-ecoindex-courses@latest --save --save-exact",
+        "update-packages": "sh update-packages.sh",
+        "update-packages-old": "npm i lighthouse-plugin-ecoindex-courses@latest && cd lib && rm -rf node_modules && npm i lighthouse@latest lighthouse-plugin-ecoindex-core@latest lighthouse-plugin-ecoindex-courses@latest --save --save-exact",
         "prepare": "husky",
         "clean": "rm -rf node_modules && rm -rf lib/node_modules && rm -rf .webpack && rm -rf .vite && rm -rf out"
     },
@@ -131,7 +132,7 @@
         "i18next": "^25.7.1",
         "i18next-fs-backend": "^2.6.1",
         "i18next-resources-to-backend": "^1.2.1",
-        "lighthouse-plugin-ecoindex-courses": "^7.0.1",
+        "lighthouse-plugin-ecoindex-courses": "^7.3.0",
         "lucide-react": "^0.555.0",
         "react": "^19.2.1",
         "react-dom": "^19.2.1",
