@@ -280,9 +280,30 @@ function TheApp() {
                                             envVars={envVars}
                                             setEnvVars={setEnvVars}
                                             localAdvConfig={localAdvConfig}
-                                            setLocalAdvConfig={
-                                                setLocalAdvConfig
-                                            }
+                                            setLocalAdvConfig={(config) => {
+                                                setLocalAdvConfig(config)
+                                                setJsonDatas((prev) => ({
+                                                    ...prev,
+                                                    'extra-header':
+                                                        config['extra-header'],
+                                                    output: config['output'],
+                                                    'audit-category':
+                                                        config[
+                                                            'audit-category'
+                                                        ],
+                                                    'puppeteer-script':
+                                                        config[
+                                                            'puppeteer-script'
+                                                        ],
+                                                    'user-agent':
+                                                        config['user-agent'],
+                                                    'output-path':
+                                                        config['output-path'],
+                                                    'output-name':
+                                                        config['output-name'],
+                                                    lang: config.lang,
+                                                }))
+                                            }}
                                         />
                                     </TabsContent>
                                     <TabsContent value="json-mesure">
@@ -293,7 +314,28 @@ function TheApp() {
                                             }
                                             language={i18nResources.language}
                                             jsonDatas={jsonDatas}
-                                            setJsonDatas={setJsonDatas}
+                                            setJsonDatas={(data) => {
+                                                setJsonDatas(data)
+                                                setLocalAdvConfig((prev) => ({
+                                                    ...prev,
+                                                    'extra-header':
+                                                        data['extra-header'],
+                                                    output: data['output'],
+                                                    'audit-category':
+                                                        data['audit-category'],
+                                                    'puppeteer-script':
+                                                        data[
+                                                            'puppeteer-script'
+                                                        ],
+                                                    'user-agent':
+                                                        data['user-agent'],
+                                                    'output-path':
+                                                        data['output-path'],
+                                                    'output-name':
+                                                        data['output-name'],
+                                                    lang: data.lang,
+                                                }))
+                                            }}
                                             mesure={(envVars) =>
                                                 runJsonSaveAndCollect(
                                                     true,

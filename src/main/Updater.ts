@@ -246,28 +246,32 @@ class Updater {
         try {
             // Utiliser la Promise au lieu du callback (API moderne d'Electron)
             const result = await dialog.showMessageBox(options)
-            
+
             if (result.response === 0) {
                 // L'utilisateur a choisi "Redémarrer"
-                updaterLog.log('User chose to restart, calling quitAndInstall()')
-                
+                updaterLog.log(
+                    'User chose to restart, calling quitAndInstall()'
+                )
+
                 // Fermer toutes les fenêtres avant quitAndInstall pour s'assurer que l'application est dans un état propre
                 // Cela est particulièrement important sur macOS mais peut aider sur toutes les plateformes
                 const allWindows = BrowserWindow.getAllWindows()
-                updaterLog.log(`Closing ${allWindows.length} window(s) before restart`)
+                updaterLog.log(
+                    `Closing ${allWindows.length} window(s) before restart`
+                )
                 allWindows.forEach((window) => {
                     window.close()
                 })
-                
+
                 // Attendre un court délai pour que les fenêtres se ferment proprement
                 // avant d'appeler quitAndInstall
                 await new Promise((resolve) => setTimeout(resolve, 100))
-                
+
                 // Appeler quitAndInstall avec restart=true pour redémarrer automatiquement
                 // Le premier paramètre (restart) indique de redémarrer après l'installation
                 // Le second paramètre (isSilent) indique si l'installation doit être silencieuse
-                updaterLog.log('Calling autoUpdater.quitAndInstall(true, false)')
-                autoUpdater.quitAndInstall(true, false)
+                updaterLog.log('Calling autoUpdater.quitAndInstall()')
+                autoUpdater.quitAndInstall()
             } else {
                 updaterLog.log('User chose to restart later')
             }
@@ -290,13 +294,15 @@ class Updater {
         }
 
         updaterLog.log('testUpdateDialog: Simulating update-downloaded event')
-        
+
         // Simuler l'événement update-downloaded avec des données de test
         const mockEvent = {} as Event
-        const mockReleaseNotes = 'Version de test - Correction du redémarrage après mise à jour'
+        const mockReleaseNotes =
+            'Version de test - Correction du redémarrage après mise à jour'
         const mockReleaseName = 'v0.7.1-test'
         const mockReleaseDate = new Date()
-        const mockUpdateURL = 'https://github.com/cnumr/EcoindexApp/releases/tag/v0.7.1-test'
+        const mockUpdateURL =
+            'https://github.com/cnumr/EcoindexApp/releases/tag/v0.7.1-test'
 
         await this.onUpdateDownloaded(
             mockEvent,

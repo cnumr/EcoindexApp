@@ -19,6 +19,7 @@ export interface IAdvancedMesureData {
     'output-path'?: string
     'user-agent'?: string
     'output-name'?: string
+    lang?: 'en' | 'fr'
 }
 
 export interface ICourse {
@@ -131,6 +132,7 @@ declare global {
         'output-path'?: string
         'user-agent'?: string
         'output-name'?: string
+        lang?: 'en' | 'fr'
     }
     interface IJsonMesureData extends IAdvancedMesureData {
         courses: ICourse[]
