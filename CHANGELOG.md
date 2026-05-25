@@ -1,5 +1,11 @@
 # ecoindex-app
 
+## 0.12.1
+
+### Patch Changes
+
+- 708cd09: Bump `lighthouse-plugin-ecoindex-core` and `lighthouse-plugin-ecoindex-courses` from 7.3.0 to 7.3.1
+
 ## 0.12.0
 
 ### Minor Changes
