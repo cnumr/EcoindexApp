@@ -1,5 +1,11 @@
 # ecoindex-app
 
+## 0.12.3
+
+### Patch Changes
+
+- 10d2b87: Update Lighthouse and EcoIndex dependencies.
+
 ## 0.12.2
 
 ### Patch Changes
