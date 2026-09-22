@@ -1,5 +1,11 @@
 # ecoindex-app
 
+## 0.12.4
+
+### Patch Changes
+
+- b61f287: version bump lighthouse-plugin-ecoindex-\*: 7.4.2
+
 ## 0.12.3
 
 ### Patch Changes
