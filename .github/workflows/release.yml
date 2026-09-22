@@ -24,12 +24,12 @@ jobs:
             version: ${{ steps.check.outputs.version }}
         steps:
             - name: Checkout Repo
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
               with:
                   fetch-depth: 0
 
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v7
               with:
                   node-version-file: '.nvmrc'
 
@@ -68,21 +68,21 @@ jobs:
         runs-on: ${{ matrix.os.image }}
         steps:
             - name: Checkout Repo
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
 
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v7
               with:
                   node-version-file: '.nvmrc'
 
             - name: Setup Python (macOS only)
               if: matrix.os.name == 'macos-intel' || matrix.os.name == 'macos-arm'
-              uses: actions/setup-python@v5
+              uses: actions/setup-python@v7
               with:
                   python-version: '3.12'
 
             - name: Cache node modules
-              uses: actions/cache@v4
+              uses: actions/cache@v6
               with:
                   path: node_modules
                   key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}
@@ -350,7 +350,7 @@ jobs:
                   hdiutil detach "$MOUNT_POINT" -quiet
 
             - name: Upload artifacts
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v7
               with:
                   name: ${{ matrix.os.name }}-artifacts
                   path: |
@@ -369,10 +369,10 @@ jobs:
             contents: write
         steps:
             - name: Checkout Repo
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
 
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v7
               with:
                   node-version-file: '.nvmrc'
 
@@ -380,7 +380,7 @@ jobs:
               run: npm ci
 
             - name: Download all artifacts
-              uses: actions/download-artifact@v4
+              uses: actions/download-artifact@v8
               with:
                   path: artifacts
 
@@ -413,7 +413,7 @@ jobs:
               run: echo ${{ github.sha }} > Release.txt
 
             - name: Create GitHub Release
-              uses: softprops/action-gh-release@v2
+              uses: softprops/action-gh-release@v3
               with:
                   name: Release Electron-app ${{ needs.check-release.outputs.version }}
                   tag_name: ${{ needs.check-release.outputs.version }}
