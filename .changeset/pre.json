@@ -4,5 +4,5 @@
     "initialVersions": {
         "ecoindex-app": "0.12.5"
     },
-    "changesets": []
+    "changesets": ["fix-packaged-mjs-paths"]
 }
