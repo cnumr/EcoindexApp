@@ -425,6 +425,8 @@ jobs:
                       artifacts/**/*.rpm
                       artifacts/**/*.zip
                   generate_release_notes: true
+                  prerelease: ${{ contains(needs.check-release.outputs.version, '-') }}
+                  make_latest: ${{ !contains(needs.check-release.outputs.version, '-') }}
                   fail_on_unmatched_files: false
                   overwrite_files: false
               env:
