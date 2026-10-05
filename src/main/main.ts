@@ -1,4 +1,4 @@
-import { BrowserWindow, app, ipcMain, dialog } from 'electron'
+import { BrowserWindow, app, ipcMain, dialog, shell } from 'electron'
 import i18n, { initializeI18n } from '../configs/i18next.config'
 
 import { LinuxUpdate } from '../class/LinuxUpdate'
@@ -21,6 +21,7 @@ import { handleSelectFolder } from './handlers/HandleSelectFolder'
 import { handleSelectPuppeteerFilePath } from './handlers/HandleSelectPuppeteerFilePath'
 import { handleIsJsonConfigFileExist } from './handlers/HandleIsJsonConfigFileExist'
 import { handleJsonReadAndReload } from './handlers/HandleJsonReadAndReload'
+import { registerExternalLinkHandlers } from './externalLinks'
 
 // Configuration de electron-log
 log.initialize()
@@ -225,7 +226,8 @@ if (!app.isPackaged && process.platform !== 'linux') {
             mainLog.error('Error testing update dialog:', error)
             return {
                 success: false,
-                message: error instanceof Error ? error.message : 'Unknown error',
+                message:
+                    error instanceof Error ? error.message : 'Unknown error',
             }
         }
     })
@@ -446,13 +448,10 @@ app.on('activate', () => {
     }
 })
 
-// New window example arg: new windows url
 app.on('browser-window-created', (_, window) => {
-    window.webContents.setWindowOpenHandler(({ url }) => {
-        if (url.startsWith('https:')) {
-            // shell.openExternal(url);
-            return { action: 'deny' }
-        }
-        return { action: 'allow' }
-    })
+    registerExternalLinkHandlers(
+        window.webContents,
+        (url) => shell.openExternal(url),
+        (error) => getMainLog().error('Failed to open external URL:', error)
+    )
 })

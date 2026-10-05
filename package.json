@@ -25,7 +25,7 @@
     "main": ".vite/build/main.js",
     "type": "module",
     "scripts": {
-        "test": "echo 'No tests yet'",
+        "test": "node --test --experimental-strip-types src/main/externalLinks.test.ts",
         "start": "electron-forge start",
         "package": "npm run lint && electron-forge package",
         "premake": "npm run asar:pack:lib",
