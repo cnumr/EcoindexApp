@@ -1,5 +1,11 @@
 # ecoindex-app
 
+## 0.12.5
+
+### Patch Changes
+
+- 6ecef81: Open external links in the host browser while preventing untrusted navigation inside Electron.
+
 ## 0.12.4
 
 ### Patch Changes
