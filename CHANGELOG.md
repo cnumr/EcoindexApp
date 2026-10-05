@@ -1,5 +1,11 @@
 # ecoindex-app
 
+## 0.12.6-rc.0
+
+### Patch Changes
+
+- 1004924: Resolve packaged utility scripts from the correct resources directory on Windows while preserving macOS and Linux paths.
+
 ## 0.12.5
 
 ### Patch Changes
