@@ -6,6 +6,7 @@ import { channels } from '../../../shared/constants'
 import { getMainLog } from '../../main'
 import { getMainWindow } from '../../memory'
 import path from 'path'
+import { resolvePackagedLibScriptPath } from '../../utils/resolveLibScriptPath'
 
 /**
  * Initialization, Install Puppeteer browsers on host.
@@ -37,22 +38,11 @@ export const initPuppeteerBrowserInstallation = async (
                 mainLog.debug(`Using development path: ${pathToScript}`)
             } else if (process.resourcesPath) {
                 // En production packagée : utiliser process.resourcesPath
-                if (process.platform === 'win32') {
-                    // Sur Windows, lib est extrait
-                    pathToScript = path.join(
-                        process.resourcesPath,
-                        '..',
-                        'lib',
-                        'browser_install.mjs'
-                    )
-                } else {
-                    // Sur macOS/Linux, utiliser lib.asar
-                    pathToScript = path.join(
-                        process.resourcesPath,
-                        'lib.asar',
-                        'browser_install.mjs'
-                    )
-                }
+                pathToScript = resolvePackagedLibScriptPath(
+                    process.resourcesPath,
+                    process.platform,
+                    'browser_install.mjs'
+                )
                 mainLog.debug(`Using production path: ${pathToScript}`)
             } else {
                 // Fallback : utiliser le dossier lib du projet

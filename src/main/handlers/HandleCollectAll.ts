@@ -25,6 +25,7 @@ import i18n from '../../configs/i18next.config'
 import path from 'node:path'
 import { showNotification } from '../utils/ShowNotification'
 import { utils } from '../../shared/constants'
+import { resolvePackagedLibScriptPath } from '../utils/resolveLibScriptPath'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -257,9 +258,9 @@ async function _runDirectCollect(
                 mainLog.debug(`Using development path: ${pathToScript}`)
             } else if (process.resourcesPath) {
                 // En production packagée : utiliser process.resourcesPath
-                pathToScript = path.join(
+                pathToScript = resolvePackagedLibScriptPath(
                     process.resourcesPath,
-                    process.platform === 'win32' ? 'lib' : 'lib.asar',
+                    process.platform,
                     'courses_index.mjs'
                 )
                 mainLog.debug(`Using production path: ${pathToScript}`)

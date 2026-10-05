@@ -1,0 +1,8 @@
+{
+    "mode": "pre",
+    "tag": "rc",
+    "initialVersions": {
+        "ecoindex-app": "0.12.5"
+    },
+    "changesets": []
+}
